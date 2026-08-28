@@ -1,0 +1,1 @@
+{"version":3,"file":"Slide.d.ts","sourceRoot":"","sources":["../../../src/components/story/Slide.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAqB,MAAM,OAAO,CAAC;AAE1C,OAAO,EAAE,KAAK,IAAI,SAAS,EAAE,MAAM,qBAAqB,CAAC;AAGzD,UAAU,UAAU;IAClB,KAAK,EAAE,SAAS,CAAC;IACjB,OAAO,EAAE,MAAM,CAAC;IAChB,KAAK,EAAE,MAAM,CAAC;CACf;AAED,eAAO,MAAM,KAAK,uFAwEhB,CAAC"}

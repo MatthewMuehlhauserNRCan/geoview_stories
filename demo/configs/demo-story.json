@@ -1,0 +1,125 @@
+{
+  "title": "GeoView Stories Demo",
+  "introSlide": {
+    "title": "Welcome to GeoView Stories",
+    "subtitle": "An interactive storytelling platform for geospatial data",
+    "backgroundImage": "images/banner_draft_4-rapids.jpg"
+  },
+  "slides": [
+    {
+      "title": "Introduction",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Getting Started",
+          "content": "Welcome to **GeoView Stories**! This is a proof-of-concept for creating interactive stories with maps.\n\nThis demo shows the basic functionality including:\n- Scroll-based navigation\n- Persistent table of contents (desktop)\n- URL hash routing\n- Text, image, and video panels\n- Interactive map with points of interest\n- Quote panels"
+        }
+      ]
+    },
+    {
+      "title": "Guiding Principles for Collaboration",
+      "backgroundImage": "images/BackgroundImageTest.jpg",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Guiding Principles for Collaboration",
+          "content": "To guide development of the Toolkit, TCEI Indigenous groups and the Government of Canada identified seven principles as a foundation for collaboration on the TCEI Toolkit process, form and content. \n\nThe following quote was shared from Eddie Gardner, Elder from Skwah First Nation \n> When we build relationships with our neighbours, we must learn to live together respectfully and strive to understand one another. You cannot separate the aquatic from the terrestrial - they are all interconnected. Spirituality and Western Science need to be weaved together to make meaningful and long-lasting change for the greater good."
+        },
+        {
+          "type": "image",
+          "altText": "A circle with the text 'Guiding Principles' has seven lines coming out of it. Each line has text at the end. The text is as follows: Respect for Indigenous Knowledge and Cultures. Respecting Indigenous-led knowledge systems and oral histories and demonstrating recognition and consideration for Indigenous protocols, governance and decision-making processes, ceremony, laws, spirituality, language, and values. Data and Information Sovereignty: Respecting Indigenous nations' ownership and control of their data and information to protect and empower communities. Collaboration and Relationships: Working towards mutual understanding and fostering better relationships between and among Indigenous nations and governments. Integrity and Transparency: Demonstrating integrity and transparency to promote fairness and trust. Intergenerational Well-Being: Recognizing the importance of intergenerational knowledge transfer, ensuring accessibility and cultural relevancy for youth and future generations. Upholding the value and supporting the continuity of Indigenous wisdom regarding cumulative effects and intergenerational well-being. Environmental Stewardship: Promoting sustainable, holistic approaches that protect land, air, water, and species. Incorporating Indigenous teachings and learnings from the land and understanding Indigenous roles as caretakers and stewards. Interconnectedness: Recognizing and embracing the interconnectedness of all living beings and ecosystems, weaving Indigenous and western knowledge together in a holistic and inclusive approach.",
+          "caption": "",
+          "src": "images/Guiding Principles-v02.png"
+        }
+      ]
+    },
+    {
+      "title": "Basic Map",
+      "panel": [
+        {
+          "type": "text",
+          "title": "GeoView Integration",
+          "content": "Below is a basic GeoView map showing Canada in Lambert Conformal Conic projection (EPSG:3978). This demonstrates the core map functionality."
+        },
+        {
+          "type": "map",
+          "title": "Canada Basemap",
+          "config": "configs/default-map.json",
+          "scrollguard": true
+        }
+      ]
+    },
+    {
+      "title": "Interactive Map Example",
+      "panel": [
+        {
+          "type": "interactive-map",
+          "title": "Example Interactive Map",
+          "config": "configs/interactive-map.json",
+          "points": [
+            {
+              "title": "Point of Interest A",
+              "text": "This is an example point of interest. Click to see more details and zoom to this location on the map.",
+              "target": {
+                "layerId": "Project_Summaries/1",
+                "oid": 1,
+                "value": "Kapawe'no First Nation",
+                "scale": 50000
+              }
+            },
+            {
+              "title": "Point of Interest B",
+              "text": "Another example location showing scroll-triggered map interactions.",
+              "target": {
+                "layerId": "Project_Summaries/1",
+                "oid": 2,
+                "value": "Adams Lake First Nation",
+                "scale": 75000
+              }
+            },
+            {
+              "title": "Return to Overview",
+              "text": "Click here to return to the full map extent.",
+              "target": {
+                "returnHome": true
+              }
+            }
+          ],
+          "duration": 1500,
+          "scrollguard": true
+        }
+      ]
+    },
+    {
+      "title": "Video Example",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Multimedia Support",
+          "content": "Storylines supports various multimedia formats including videos from YouTube and local sources."
+        },
+        {
+          "type": "video",
+          "title": "Example Video",
+          "videoType": "YouTube",
+          "src": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          "height": 400
+        }
+      ]
+    },
+    {
+      "title": "Next Steps",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Continue Development",
+          "content": "**Implemented Features:**\n- ✅ Video panels (local, external, YouTube)\n- ✅ Quote panels with attribution\n- ✅ Persistent vertical navigation (desktop)\n- ✅ Basic GeoView map integration\n- ✅ Interactive map with POI system (placeholder)\n\n**Coming Soon:**\n1. Scroll-triggered map animations for POIs\n2. Custom map configurations\n3. Image galleries and slideshows\n4. Dynamic content panels\n5. Chart integration"
+        }
+      ]
+    }
+  ],
+  "tocOrientation": "vertical",
+  "contextLabel": "Learn more about GeoView",
+  "contextLink": "https://github.com/Canadian-Geospatial-Platform/geoview",
+  "lang": "en"
+}

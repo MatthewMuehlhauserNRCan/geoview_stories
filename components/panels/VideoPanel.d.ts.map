@@ -1,0 +1,1 @@
+{"version":3,"file":"VideoPanel.d.ts","sourceRoot":"","sources":["../../../src/components/panels/VideoPanel.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAK,MAAM,OAAO,CAAC;AAE1B,OAAO,EAAE,UAAU,IAAI,cAAc,EAAE,MAAM,qBAAqB,CAAC;AAEnE,UAAU,eAAe;IACvB,KAAK,EAAE,cAAc,CAAC;CACvB;AAED,eAAO,MAAM,UAAU,EAAE,KAAK,CAAC,EAAE,CAAC,eAAe,CAsEhD,CAAC"}

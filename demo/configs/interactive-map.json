@@ -1,0 +1,31 @@
+{
+  "map": {
+    "interaction": "dynamic",
+    "viewSettings": {
+      "initialView": {
+        "zoomAndCenter": [4, [-100, 60]]
+      },
+      "projection": 3978
+    },
+    "basemapOptions": {
+      "basemapId": "transport",
+      "shaded": true,
+      "labeled": true
+    },
+    "listOfGeoviewLayerConfig": [
+      {
+        "geoviewLayerId": "Project_Summaries",
+        "geoviewLayerName": "Project Summaries",
+        "metadataAccessPath": "https://maps-cartes.ec.gc.ca/arcgis/rest/services/TCEI-IECT_Storylines/TCEI_IECT/MapServer",
+        "geoviewLayerType": "esriFeature",
+        "listOfLayerEntryConfig": [
+          {
+            "layerId": "1"
+          }
+        ]
+      }
+    ]
+  },
+  "components": ["north-arrow", "overview-map"],
+  "theme": "geo.ca"
+}
