@@ -1,0 +1,50 @@
+{
+  "name": "geoview-storylines",
+  "version": "0.1.0",
+  "description": "Interactive storytelling application for GeoView maps",
+  "private": true,
+  "main": "src/index.tsx",
+  "license": "MIT",
+  "scripts": {
+    "serve": "webpack serve --progress --color --config webpack.dev.js",
+    "build": "webpack --progress --color --config webpack.prod.js",
+    "build-dev": "webpack --progress --color --config webpack.dev.js",
+    "host": "npm run build && npm run prepare-deploy && npm run serve-deploy",
+    "prepare-deploy": "node scripts/prepare-deploy.js",
+    "serve-deploy": "npx serve deploy -p 3001",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
+    "lint": "eslint src --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.1.1",
+    "@mui/material": "^9.1.2",
+    "@mui/system": "^9.1.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-markdown": "^9.0.1",
+    "react-router-dom": "^7.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.6",
+    "@types/react-dom": "^19.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "css-loader": "^7.1.2",
+    "eslint": "^9.0.0",
+    "html-webpack-plugin": "^5.6.3",
+    "prettier": "^3.4.2",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.7.2",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.0",
+    "webpack-merge": "^6.0.1"
+  },
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=8.15.0"
+  }
+}
