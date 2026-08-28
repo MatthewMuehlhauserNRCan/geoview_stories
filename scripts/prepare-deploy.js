@@ -72,6 +72,14 @@ if (fs.existsSync(publicDir)) {
   }
 }
 
+// Create .nojekyll file to disable Jekyll processing on GitHub Pages
+console.log('Creating .nojekyll file...');
+fs.writeFileSync(path.join(deployDir, '.nojekyll'), '');
+
+// Create an empty .gitignore to prevent parent .gitignore from being applied
+console.log('Creating empty .gitignore in deploy folder...');
+fs.writeFileSync(path.join(deployDir, '.gitignore'), '# Empty - allow all files for deployment\n');
+
 console.log('✅ Deployment folder prepared successfully!');
 console.log(`📁 Location: ${deployDir}`);
 console.log('\nContents:');
