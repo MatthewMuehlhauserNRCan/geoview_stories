@@ -30,8 +30,6 @@ function copyFile(src, dest) {
   fs.copyFileSync(src, dest);
 }
 
-console.log('Preparing deployment folder...');
-
 // Clean and create deploy directory
 const deployDir = path.join(__dirname, '..', 'deploy');
 if (fs.existsSync(deployDir)) {
@@ -40,7 +38,6 @@ if (fs.existsSync(deployDir)) {
 fs.mkdirSync(deployDir, { recursive: true });
 
 // Copy dist folder (built library)
-console.log('Copying dist/...');
 const distDir = path.join(__dirname, '..', 'dist');
 if (fs.existsSync(distDir)) {
   copyDir(distDir, path.join(deployDir, 'dist'));
@@ -49,7 +46,6 @@ if (fs.existsSync(distDir)) {
 }
 
 // Copy demo folder
-console.log('Copying demo/...');
 const demoDir = path.join(__dirname, '..', 'demo');
 if (fs.existsSync(demoDir)) {
   copyDir(demoDir, path.join(deployDir, 'demo'));
@@ -58,7 +54,6 @@ if (fs.existsSync(demoDir)) {
 }
 
 // Copy public files to root
-console.log('Copying public files...');
 const publicDir = path.join(__dirname, '..', 'public');
 if (fs.existsSync(publicDir)) {
   const publicFiles = fs.readdirSync(publicDir);
@@ -73,19 +68,7 @@ if (fs.existsSync(publicDir)) {
 }
 
 // Create .nojekyll file to disable Jekyll processing on GitHub Pages
-console.log('Creating .nojekyll file...');
 fs.writeFileSync(path.join(deployDir, '.nojekyll'), '');
 
 // Create an empty .gitignore to prevent parent .gitignore from being applied
-console.log('Creating empty .gitignore in deploy folder...');
 fs.writeFileSync(path.join(deployDir, '.gitignore'), '# Empty - allow all files for deployment\n');
-
-console.log('✅ Deployment folder prepared successfully!');
-console.log(`📁 Location: ${deployDir}`);
-console.log('\nContents:');
-console.log('  - index.html (documentation)');
-console.log('  - dist/geoview-story.js (library)');
-console.log('  - demo/index.html (demo page)');
-console.log('  - demo/configs/ (demo configs)');
-console.log('  - demo/images/ (demo assets)');
-console.log('\nRun "npm run serve-deploy" to preview the deployment locally.');

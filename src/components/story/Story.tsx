@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Box, Fade } from '@mui/material';
 import { useParams, useLocation } from 'react-router-dom';
 import { StoryConfig, TocItem } from '@/types/StoryConfig';
@@ -18,20 +18,18 @@ export const Story: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const slideRefs = useRef<React.RefObject<HTMLElement | null>[]>([]);
   const scrollToSlide = useScrollToSlide(64);
   const [tocCollapsed, setTocCollapsed] = React.useState(false);
 
-  // Generate slide IDs and refs
+  // Generate slide IDs and refs - use useMemo to create refs immediately when config changes
   const slideIds = config?.slides.map((slide, index) => generateSlideId(index, slide.title)) || [];
   
-  useEffect(() => {
-    if (config) {
-      slideRefs.current = config.slides.map(() => React.createRef<HTMLElement | null>());
-    }
+  const slideRefs = useMemo(() => {
+    if (!config) return [];
+    return config.slides.map(() => React.createRef<HTMLElement | null>());
   }, [config]);
 
-  const activeIndex = useScrollSpy(slideRefs.current, slideIds, !loading);
+  const activeIndex = useScrollSpy(slideRefs, slideIds, !loading && !!config);
 
   // Background image state management for true crossfade
   const [bgLayer1, setBgLayer1] = useState<string>('');
@@ -63,8 +61,8 @@ export const Story: React.FC = () => {
       try {
         setLoading(true);
         
-        // Determine config path
-        const configPath = storyId ? `/configs/${storyId}.json` : '/configs/demo-story.json';
+        // Determine config path (relative for GitHub Pages subdirectory support)
+        const configPath = storyId ? `configs/${storyId}.json` : 'configs/demo-story.json';
         const loadedConfig = await loadStoryConfig(configPath);
         
         if (!validateStoryConfig(loadedConfig)) {
@@ -208,7 +206,7 @@ export const Story: React.FC = () => {
           {config.slides.map((slide, index) => (
             <Slide
               key={index}
-              ref={slideRefs.current[index]}
+              ref={slideRefs[index]}
               slide={slide}
               slideId={slideIds[index]}
               index={index}

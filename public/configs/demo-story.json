@@ -3,12 +3,11 @@
   "introSlide": {
     "title": "Welcome to GeoView Stories",
     "subtitle": "An interactive storytelling platform for geospatial data",
-    "backgroundImage": "/images/banner_draft_4-rapids.jpg"
+    "backgroundImage": "images/banner_draft_4-rapids.jpg"
   },
   "slides": [
     {
       "title": "Introduction",
-      "backgroundImage": "/images/BackgroundImageTest.jpg",
       "panel": [
         {
           "type": "text",
@@ -19,6 +18,7 @@
     },
     {
       "title": "Guiding Principles for Collaboration",
+      "backgroundImage": "images/BackgroundImageTest.jpg",
       "panel": [
         {
           "type": "text",
@@ -29,7 +29,7 @@
           "type": "image",
           "altText": "A circle with the text 'Guiding Principles' has seven lines coming out of it. Each line has text at the end. The text is as follows: Respect for Indigenous Knowledge and Cultures. Respecting Indigenous-led knowledge systems and oral histories and demonstrating recognition and consideration for Indigenous protocols, governance and decision-making processes, ceremony, laws, spirituality, language, and values. Data and Information Sovereignty: Respecting Indigenous nations' ownership and control of their data and information to protect and empower communities. Collaboration and Relationships: Working towards mutual understanding and fostering better relationships between and among Indigenous nations and governments. Integrity and Transparency: Demonstrating integrity and transparency to promote fairness and trust. Intergenerational Well-Being: Recognizing the importance of intergenerational knowledge transfer, ensuring accessibility and cultural relevancy for youth and future generations. Upholding the value and supporting the continuity of Indigenous wisdom regarding cumulative effects and intergenerational well-being. Environmental Stewardship: Promoting sustainable, holistic approaches that protect land, air, water, and species. Incorporating Indigenous teachings and learnings from the land and understanding Indigenous roles as caretakers and stewards. Interconnectedness: Recognizing and embracing the interconnectedness of all living beings and ecosystems, weaving Indigenous and western knowledge together in a holistic and inclusive approach.",
           "caption": "",
-          "src": "/images/Guiding Principles-v02.png"
+          "src": "images/Guiding Principles-v02.png"
         }
       ]
     },
@@ -44,7 +44,7 @@
         {
           "type": "map",
           "title": "Canada Basemap",
-          "config": "/configs/default-map.json",
+          "config": "configs/default-map.json",
           "scrollguard": true
         }
       ]
@@ -55,7 +55,7 @@
         {
           "type": "interactive-map",
           "title": "Example Interactive Map",
-          "config": "/configs/interactive-map.json",
+          "config": "configs/interactive-map.json",
           "points": [
             {
               "title": "Point of Interest A",

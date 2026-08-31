@@ -21,53 +21,76 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel 
   const [error, setError] = useState<string | null>(null);
   const [activePoiIndex, setActivePoiIndex] = useState<number | null>(null);
   const [showScrollGuard, setShowScrollGuard] = useState(false);
-  const mapId = useRef(`interactive-map-${Math.random().toString(36).substr(2, 9)}`);
+  
+  // Use stable ID based on config path - prevents duplicate map creation
+  const mapId = useRef(`interactive-map-${panel.config.replace(/[^a-zA-Z0-9]/g, '-')}`);
   const mapInstanceRef = useRef<any>(null);
   const initializingRef = useRef(false);
+  const destroyingRef = useRef(false);
+  const mountedRef = useRef(true);
   const unsubscribeRef = useRef<(() => void) | null>(null);
   const featureDataRef = useRef<Map<number, { extent: [number, number, number, number]; fieldValue?: string }>>(new Map());
   const scrollGuardTimeoutRef = useRef<number | null>(null);
 
   // Initialize GeoView map
   useEffect(() => {
+    mountedRef.current = true;
+    
     const initMap = async () => {
       try {        
         // Check if already initializing (prevents React strict mode double-init)
-        if (initializingRef.current) {
+        if (initializingRef.current || destroyingRef.current) {
+          console.log('[InteractiveMap] Already initializing or destroying, skipping...');
           return;
         }
 
         // Check if cgpv is available
         if (!window.cgpv) {
-          console.error('⚠️ GeoView (cgpv) not loaded. Waiting...');
-          setTimeout(initMap, 500);
+          console.warn('[InteractiveMap] GeoView not loaded, waiting...');
+          if (mountedRef.current) {
+            setTimeout(initMap, 500);
+          }
           return;
         }
 
-        // Check if this component already initialized (DOM element has ID attribute)
-        if (mapContainerRef.current?.hasAttribute('id')) {
+        // CRITICAL: Check if map already exists in GeoView's internal registry
+        // This prevents React Strict Mode from trying to initialize a map that's still being cleaned up
+        const existingMapIds = window.cgpv.api.getMapViewerIds();
+        if (existingMapIds.includes(mapId.current)) {
+          console.log('[InteractiveMap] Map still exists in GeoView registry (Strict Mode cleanup race), recovering...');
           try {
-            const mapViewer = window.cgpv?.api?.getMapViewer(mapId.current);
-            if (mapViewer) {
-              mapInstanceRef.current = mapViewer;
+            const existingMapViewer = window.cgpv.api.getMapViewer(mapId.current);
+            if (existingMapViewer) {
+              mapInstanceRef.current = existingMapViewer;
+              // Map exists and is usable - fetch feature data and mark as loaded
+              mapContainerRef.current?.classList.add('geoview-loaded');
+              fetchFeatureData();
+              setLoading(false);
+              return;
             }
           } catch (err) {
-            // Map doesn't exist yet
-          }
-          setLoading(false);
-          return;
-        }
-
-        // Check if map already exists in GeoView API
-        try {
-          const mapViewer = window.cgpv?.api?.getMapViewer(mapId.current);
-          if (mapViewer) {
-            mapInstanceRef.current = mapViewer;
-            setLoading(false);
+            // Couldn't get the map, it might be in a bad state
+            console.log('[InteractiveMap] Map exists but unusable, waiting for cleanup...');
+            // Retry after a short delay to let cleanup finish
+            if (mountedRef.current) {
+              setTimeout(initMap, 100);
+            }
             return;
           }
-        } catch (err) {
-          // Map doesn't exist yet, continue with initialization
+        }
+
+        console.log('[InteractiveMap] Map does not exist, creating new one');
+
+        // CRITICAL: Check if container already has GeoView attributes
+        // This means cleanup from previous mount hasn't finished yet
+        if (mapContainerRef.current?.hasAttribute('id')) {
+          const existingId = mapContainerRef.current.getAttribute('id');
+          console.log('[InteractiveMap] Container still has ID attribute:', existingId, '- cleanup incomplete, waiting...');
+          // Wait for cleanup to finish removing attributes
+          if (mountedRef.current) {
+            setTimeout(initMap, 100);
+          }
+          return;
         }
 
         // Mark as initializing
@@ -75,7 +98,7 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel 
 
         // Determine config path - map 'default' to interactive-map.json
         const configPath = panel.config === 'default' || panel.config === '' 
-          ? '/configs/interactive-map.json' 
+          ? 'configs/interactive-map.json' 
           : panel.config;
 
         // Load config file
@@ -106,13 +129,29 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel 
           }
         });
 
-        // Initialize GeoView - call for each map, GeoView will process new containers
+        // Initialize GeoView - GeoView will process all new containers with IDs
         try {
-          window.cgpv.init();
-        } catch (err) {
-          console.error('❌ Error calling cgpv.init():', err);
-          setError('Failed to initialize GeoView');
-          setLoading(false);
+          await window.cgpv.init();
+        } catch (err: any) {
+          // Handle "already exists" error from React Strict Mode race condition
+          // This happens when async cleanup hasn't finished before remount
+          if (err?.message?.includes('already exists') || err?.name === 'MapViewerAlreadyExistsError') {
+            console.log('[InteractiveMap] Init failed - map still in registry, waiting for cleanup to complete...');
+            // Remove the attributes we just set
+            if (mapContainerRef.current) {
+              mapContainerRef.current.removeAttribute('id');
+              mapContainerRef.current.removeAttribute('data-config');
+              mapContainerRef.current.removeAttribute('data-lang');
+              mapContainerRef.current.classList.remove('geoview-map');
+            }
+            // Retry after cleanup completes
+            if (mountedRef.current) {
+              setTimeout(initMap, 150);
+            }
+            return;
+          }
+          // Other errors
+          throw err;
         }
       } catch (err) {
         console.error('Error initializing interactive map:', err);
@@ -125,6 +164,10 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel 
     initMap();
 
     return () => {
+      // Mark component as unmounted
+      mountedRef.current = false;
+      destroyingRef.current = true;
+      
       // Unsubscribe from onMapReady event
       if (unsubscribeRef.current) {
         unsubscribeRef.current();
@@ -134,14 +177,30 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel 
       // Reset initializing flag
       initializingRef.current = false;
       
-      // Properly destroy the map viewer if it was created
-      try {
-        if (window.cgpv?.api?.getMapViewer(mapId.current)) {
-          window.cgpv.api.deleteMapViewer?.(mapId.current, false);
-        }
-      } catch (err) {
-        // Map doesn't exist or already deleted
+      // CRITICAL: Remove ID from container so GeoView doesn't think it's already processed
+      // This must happen synchronously before React Strict Mode remounts
+      if (mapContainerRef.current) {
+        mapContainerRef.current.removeAttribute('id');
+        mapContainerRef.current.removeAttribute('data-config');
+        mapContainerRef.current.removeAttribute('data-lang');
+        mapContainerRef.current.classList.remove('geoview-map', 'geoview-loaded');
       }
+      
+      // Destroy the map asynchronously
+      (async () => {
+        try {
+          const mapViewer = window.cgpv?.api?.getMapViewer(mapId.current);
+          if (mapViewer && window.cgpv?.api?.deleteMapViewer) {
+            console.log('[InteractiveMap] Destroying map on unmount:', mapId.current);
+            await window.cgpv.api.deleteMapViewer(mapId.current, true);
+            console.log('[InteractiveMap] Map destroyed successfully');
+          }
+        } catch (err) {
+          console.log('[InteractiveMap] Cleanup: map already destroyed or not found');
+        } finally {
+          destroyingRef.current = false;
+        }
+      })();
     };
   }, [panel.config]);
 

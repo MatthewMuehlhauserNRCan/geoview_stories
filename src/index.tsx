@@ -98,7 +98,6 @@ function init(containerId: string, configPath: string): void {
   );
 
   instances.set(containerId, { container, root, configPath });
-  console.log(`GeoView Story: Initialized story viewer in "${containerId}" with config "${configPath}"`);
 }
 
 /**
@@ -114,7 +113,6 @@ function destroy(containerId: string): void {
 
   instance.root.unmount();
   instances.delete(containerId);
-  console.log(`GeoView Story: Destroyed story viewer in "${containerId}"`);
 }
 
 /**
@@ -137,10 +135,6 @@ function autoInit(): void {
 
     init(id, configPath);
   });
-
-  if (elements.length > 0) {
-    console.log(`GeoView Story: Auto-initialized ${elements.length} viewer(s)`);
-  }
 }
 
 // Auto-initialize on DOMContentLoaded

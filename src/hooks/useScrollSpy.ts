@@ -13,8 +13,10 @@ export const useScrollSpy = (
   const observerRef = useRef<IntersectionObserver | null>(null);
   const intersectionMapRef = useRef<Map<string, number>>(new Map());
 
-  useEffect(() => {
-    if (!enabled || slideRefs.length === 0) return;
+  useEffect(() => {    
+    if (!enabled || slideRefs.length === 0) {
+      return;
+    }
 
     // Clean up previous observer
     if (observerRef.current) {
@@ -23,6 +25,14 @@ export const useScrollSpy = (
 
     // Reset intersection map
     intersectionMapRef.current = new Map();
+
+    // Check which refs are actually populated
+    const populatedRefs = slideRefs.filter(ref => ref.current !== null);
+    
+    if (populatedRefs.length === 0) {
+      console.warn('[ScrollSpy] No populated refs found!');
+      return;
+    }
 
     // Create new IntersectionObserver
     observerRef.current = new IntersectionObserver(
@@ -51,27 +61,31 @@ export const useScrollSpy = (
         if (maxId) {
           const index = slideIds.indexOf(maxId);
           if (index !== -1) {
-            setActiveIndex(index);
-            
-            // Update URL hash without scrolling
-            const newHash = `#${maxId}`;
-            if (window.location.hash !== newHash) {
-              window.history.replaceState(null, '', newHash);
+            if (index !== activeIndex) {
+              setActiveIndex(index);
+              
+              // Update URL hash without scrolling
+              const newHash = `#${maxId}`;
+              if (window.location.hash !== newHash) {
+                window.history.replaceState(null, '', newHash);
+              }
             }
           }
         }
       },
       {
         root: null,
-        rootMargin: '-10% 0px -50% 0px', // More lenient trigger zone
-        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5], // Multiple thresholds for better tracking
+        rootMargin: '-20% 0px -20% 0px', // Trigger when 20% visible from top/bottom
+        threshold: [0, 0.25, 0.5, 0.75, 1.0], // Multiple thresholds for better tracking
       }
     );
 
     // Observe all slide elements
-    slideRefs.forEach((ref) => {
+    slideRefs.forEach((ref, index) => {
       if (ref.current) {
         observerRef.current?.observe(ref.current);
+      } else {
+        console.warn(`[ScrollSpy] Ref ${index} has no current element`);
       }
     });
 

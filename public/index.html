@@ -58,11 +58,17 @@
 <body>
   <div class="info-box">
     <h1>GeoView Story Library</h1>
-    <p>This is the GeoView Story library. To use it:</p>
+    <p>A React-based storytelling library for creating interactive stories with GeoView maps.</p>
     
-    <h2>Option 1: Auto-Init with Data Attributes</h2>
-    <pre><code>&lt;!-- Include the library --&gt;
-&lt;script src="dist/geoview-story.js"&gt;&lt;/script&gt;
+    <h2>📦 CDN Link</h2>
+    <pre><code>https://matthewmuehlhausernrcan.github.io/geoview_stories/geoview-story.js</code></pre>
+    
+    <h2>Option 1: Auto-Init with Data Attributes (Recommended)</h2>
+    <pre><code>&lt;!-- Include GeoView --&gt;
+&lt;script src="https://canadian-geospatial-platform.github.io/geoview/public/cgpv-main.js"&gt;&lt;/script&gt;
+
+&lt;!-- Include GeoView Story library --&gt;
+&lt;script src="https://matthewmuehlhausernrcan.github.io/geoview_stories/geoview-story.js"&gt;&lt;/script&gt;
 
 &lt;!-- Add a container with class and data-config --&gt;
 &lt;div 
@@ -71,8 +77,9 @@
 &gt;&lt;/div&gt;</code></pre>
 
     <h2>Option 2: Manual Init with JavaScript</h2>
-    <pre><code>&lt;!-- Include the library --&gt;
-&lt;script src="dist/geoview-story.js"&gt;&lt;/script&gt;
+    <pre><code>&lt;!-- Include libraries --&gt;
+&lt;script src="https://canadian-geospatial-platform.github.io/geoview/public/cgpv-main.js"&gt;&lt;/script&gt;
+&lt;script src="https://matthewmuehlhausernrcan.github.io/geoview_stories/geoview-story.js"&gt;&lt;/script&gt;
 
 &lt;!-- Add a container --&gt;
 &lt;div id="my-story-container"&gt;&lt;/div&gt;
@@ -83,10 +90,10 @@
 &lt;/script&gt;</code></pre>
 
     <h2>See the Demo</h2>
-    <p><a href="demo/index.html">View Demo →</a></p>
+    <p><a href="demo/">View Demo →</a></p>
     
     <h2>Documentation</h2>
-    <p>For configuration options and panel types, see the <code>demo/configs/demo-story.json</code> file.</p>
+    <p>For configuration options and panel types, see the <a href="https://github.com/MatthewMuehlhauserNRCan/geoview_stories">GitHub repository</a>.</p>
   </div>
 </body>
 </html>
