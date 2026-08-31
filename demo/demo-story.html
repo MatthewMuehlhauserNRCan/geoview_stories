@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GeoView Story - Demo</title>
+  <title>My GeoView Story</title>
   
-  <!-- GeoView CGP (required for map panels) -->
+  <!-- Step 1: Include GeoView (required for map panels) -->
   <script src="https://canadian-geospatial-platform.github.io/geoview/public/cgpv-main.js"></script>
   
   <style>
+    /* Remove default margins for full-screen story */
     body {
       margin: 0;
       padding: 0;
@@ -21,13 +22,18 @@
   </style>
 </head>
 <body>
-  <!-- Story viewer container with auto-init -->
+  <!-- Step 2: Add a story container with data-config attribute -->
+  <!-- The library will automatically initialize any element with class="geoview-story" -->
   <div 
     class="geoview-story" 
     data-config="configs/demo-story.json"
   ></div>
 
-  <!-- GeoView Story Library -->
-  <script src="../geoview-story.js"></script>
+  <!-- Step 3: Include GeoView Story Library -->
+  <!-- Option A: From GitHub Pages CDN (recommended) -->
+  <script src="https://matthewmuehlhausernrcan.github.io/geoview_stories/geoview-story.js"></script>
+  
+  <!-- Option B: From local build (for development) -->
+  <!-- <script src="../geoview-story.js"></script> -->
 </body>
 </html>
