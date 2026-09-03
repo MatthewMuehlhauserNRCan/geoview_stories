@@ -3,7 +3,7 @@ import { InteractiveMapPanel as InteractiveMapPanelType } from '@/types/StoryCon
 import '@/types/GeoView';
 declare global {
     interface Window {
-        _cgpvInitCalled?: boolean;
+        _cgpvInitializing?: Set<string>;
     }
 }
 interface InteractiveMapPanelProps {
