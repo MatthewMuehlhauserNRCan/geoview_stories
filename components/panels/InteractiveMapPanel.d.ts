@@ -1,11 +1,6 @@
 import React from 'react';
 import { InteractiveMapPanel as InteractiveMapPanelType } from '@/types/StoryConfig';
 import '@/types/GeoView';
-declare global {
-    interface Window {
-        _cgpvInitializing?: Set<string>;
-    }
-}
 interface InteractiveMapPanelProps {
     panel: InteractiveMapPanelType;
     panelInstanceId?: string;

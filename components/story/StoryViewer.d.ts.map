@@ -1,1 +1,1 @@
-{"version":3,"file":"StoryViewer.d.ts","sourceRoot":"","sources":["../../../src/components/story/StoryViewer.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAsC,MAAM,OAAO,CAAC;AAY3D,UAAU,gBAAgB;IACxB,UAAU,EAAE,MAAM,CAAC;CACpB;AAED,eAAO,MAAM,WAAW,EAAE,KAAK,CAAC,EAAE,CAAC,gBAAgB,CAsMlD,CAAC"}
+{"version":3,"file":"StoryViewer.d.ts","sourceRoot":"","sources":["../../../src/components/story/StoryViewer.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAsC,MAAM,OAAO,CAAC;AAa3D,UAAU,gBAAgB;IACxB,UAAU,EAAE,MAAM,CAAC;CACpB;AAED,eAAO,MAAM,WAAW,EAAE,KAAK,CAAC,EAAE,CAAC,gBAAgB,CAyMlD,CAAC"}
