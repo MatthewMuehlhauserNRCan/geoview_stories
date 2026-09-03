@@ -5,17 +5,21 @@
 declare global {
     interface Window {
         cgpv: {
-            init: (callback?: () => void) => void;
+            init: (callback?: () => void) => Promise<void>;
             onMapInit: (callback: (mapViewer: any) => void) => () => void;
             onMapReady: (callback: (mapViewer: any) => void) => () => void;
+            onceMapViewerSet: (filter?: (event: any) => boolean) => Promise<GeoviewMapViewer>;
             api: {
                 getMapViewerIds: () => string[];
-                deleteMapViewer?: (mapId: string, deleteContainer: boolean) => void;
+                hasMapViewer: (mapId: string) => boolean;
+                deleteMapViewer?: (mapId: string, deleteContainer: boolean) => Promise<void>;
                 getMapViewer: (mapId: string) => GeoviewMapViewer | undefined;
+                waitForMapViewer: (mapId: string) => Promise<GeoviewMapViewer>;
             };
         };
     }
     interface GeoviewMapViewer {
+        mapId: string;
         controllers: {
             mapController: {
                 zoomToInitialExtent: () => void;
@@ -25,7 +29,19 @@ declare global {
                 getGeoviewLayerPaths: () => string[];
                 getGeoviewLayer: (layerPath: string) => GeoviewLayer | undefined;
             };
+            uiController: {
+                setCrosshairActive: (active: boolean) => void;
+            };
         };
+        layer: {
+            waitForLayersLoaded: () => Promise<number>;
+        };
+        delete: () => Promise<void>;
+        waitForMapReady: () => Promise<void>;
+        map?: {
+            getSize: () => [number, number] | undefined;
+        };
+        createMapConfigFromMapState: (maintainGeocoreLayerNames?: boolean) => any;
     }
     interface GeoviewLayer {
         getOLSource: () => any;

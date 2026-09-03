@@ -8,6 +8,7 @@ declare global {
 }
 interface InteractiveMapPanelProps {
     panel: InteractiveMapPanelType;
+    panelInstanceId?: string;
 }
 export declare const InteractiveMapPanel: React.FC<InteractiveMapPanelProps>;
 export {};
