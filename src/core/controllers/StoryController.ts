@@ -1,4 +1,4 @@
-import { StoryStore } from '../stores/StoryStore';
+import { storyStore } from '../stores/StoryStore';
 import { loadStoryConfig, configHasMaps } from '@/utils/configLoader';
 import '@/types/GeoView'; // Import GeoView global types
 
@@ -9,7 +9,6 @@ import '@/types/GeoView'; // Import GeoView global types
  */
 export class StoryController {
   private static instance: StoryController;
-  private store = StoryStore.getInstance();
   private containerElement: HTMLElement | null = null;
 
   private constructor() {}
@@ -28,17 +27,18 @@ export class StoryController {
    */
   async init(containerEl: HTMLElement, configPath: string): Promise<void> {
     this.containerElement = containerEl;
-    this.store.setLoading(true);
-    this.store.setError(null);
+    const { setLoading, setError, setConfig, setInitialized } = storyStore.getState();
+    setLoading(true);
+    setError(null);
 
     try {
       const config = await loadStoryConfig(configPath);
-      this.store.setConfig(config);
+      setConfig(config);
 
       // Reveal the story now so slides (and any map elements) actually mount.
       // cgpv.init() only discovers elements already in the DOM, so this must
       // happen before we wait for/initialize maps below.
-      this.store.setLoading(false);
+      setLoading(false);
 
       if (configHasMaps(config)) {
         if (!window.cgpv) {
@@ -59,11 +59,11 @@ export class StoryController {
         await window.cgpv.init();
       }
 
-      this.store.setInitialized(true);
+      setInitialized(true);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
-      this.store.setError(errorMessage);
-      this.store.setLoading(false);
+      setError(errorMessage);
+      setLoading(false);
       console.error('[StoryController] Initialization failed:', err);
       throw err;
     }
@@ -101,15 +101,8 @@ export class StoryController {
    */
   private registerMapListeners(): void {
     window.cgpv.onMapReady((mapViewer) => {
-      this.store.setMapReady(mapViewer.mapId, true);
+      storyStore.getState().setMapReady(mapViewer.mapId, true);
     });
-  }
-
-  /**
-   * Get the current store
-   */
-  getStore(): StoryStore {
-    return this.store;
   }
 
   /**
@@ -123,7 +116,7 @@ export class StoryController {
    * Reset controller state
    */
   reset(): void {
-    this.store.reset();
+    storyStore.getState().reset();
     this.containerElement = null;
   }
 }

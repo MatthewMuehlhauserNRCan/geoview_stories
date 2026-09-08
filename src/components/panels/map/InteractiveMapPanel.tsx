@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Typography, Paper, Chip, Stack, CircularProgress } from '@mui/material';
+import { Box, Typography, Paper, Chip, Stack, useTheme } from '@mui/material';
 import { InteractiveMapPanel as InteractiveMapPanelType } from '@/types/StoryConfig';
 import { useMapReady } from '@/hooks/useMapReady';
+import { MapLoadingOverlay, MapScrollGuardOverlay } from './MapOverlays';
+import { getSxClasses as getSharedSxClasses } from './map-shared-style';
+import { getSxClasses } from './InteractiveMapPanel-style';
 import '@/types/GeoView'; // Import GeoView global types
 
 interface InteractiveMapPanelProps {
@@ -22,6 +25,9 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
   const featureDataRef = useRef<Map<number, { extent: [number, number, number, number]; fieldValue?: string }>>(new Map());
   const mapReady = useMapReady(mapId);
   const loading = !error && !mapReady;
+  const theme = useTheme();
+  const shared = getSharedSxClasses(theme);
+  const ownClasses = getSxClasses(theme);
 
   // cgpv.onMapReady is a single global callback slot owned by StoryController;
   // this only checks that the library itself loaded.
@@ -238,14 +244,7 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
 
   if (error) {
     return (
-      <Paper
-        elevation={2}
-        sx={{
-          overflow: 'hidden',
-          borderRadius: 2,
-          backgroundColor: 'error.light',
-        }}
-      >
+      <Paper elevation={2} sx={[shared.paper, { backgroundColor: 'error.light' }]}>
         <Box sx={{ p: 4, textAlign: 'center' }}>
           <Typography variant="body1" color="error">
             {error}
@@ -256,135 +255,38 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        gap: { xs: 0, md: 3 }, // No gap on mobile for full-width map
-        minHeight: '600px',
-        mx: { xs: -2, md: 0 }, // Negative margin on mobile to break out of parent padding
-      }}
-    >
+    <Box sx={ownClasses.root}>
       {/* Map Container - Sticky on mobile and desktop */}
-      <Box
-        sx={{
-          flex: { xs: '0 0 auto', md: '2' },
-          width: { xs: '100%', md: 'auto' }, // Full width on mobile
-          minWidth: 0,
-          position: 'sticky',
-          top: { xs: 64, md: 80 }, // Stick below header on both mobile and desktop
-          alignSelf: 'flex-start',
-          height: { xs: '40vh', md: 'calc(100vh - 100px)' }, // 40% viewport height on mobile, full height on desktop
-          maxHeight: { md: '800px' },
-          zIndex: 10, // Ensure map stays above content when sticky
-        }}
-      >
-        <Paper
-          elevation={2}
-          sx={{
-            overflow: 'hidden',
-            borderRadius: { xs: 0, md: 2 }, // No border radius on mobile for flush edge
-            height: '100%',
-            position: 'relative',
-          }}
-        >
+      <Box sx={ownClasses.mapWrapper}>
+        <Paper elevation={2} sx={[shared.paper, ownClasses.mapPaper]}>
           {panel.title && (
-            <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
+            <Box sx={shared.titleBar}>
               <Typography variant="h5" component="h3" sx={{ fontWeight: 600 }}>
                 {panel.title}
               </Typography>
             </Box>
           )}
-          <Box sx={{ position: 'relative', height: panel.title ? 'calc(100% - 65px)' : '100%' }}>
+          <Box sx={ownClasses.mapBody(!!panel.title)}>
             <Box
               id={mapId}
               data-config-url={panel.config}
               data-lang="en"
               className="geoview-map"
-              sx={{
-                width: '100%',
-                height: '100%',
-                backgroundColor: 'grey.200',
-              }}
+              sx={[shared.container, { height: '100%' }]}
             />
-            {loading && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                  zIndex: 1000,
-                  pointerEvents: 'none',
-                }}
-              >
-                <Box sx={{ textAlign: 'center' }}>
-                  <CircularProgress />
-                  <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-                    Loading interactive map...
-                  </Typography>
-                </Box>
-              </Box>
-            )}
-            {/* Scroll guard overlay */}
-            {showScrollGuard && panel.scrollguard && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                  zIndex: 1002,
-                  pointerEvents: 'none',
-                  transition: 'opacity 0.2s',
-                }}
-              >
-                <Box
-                  sx={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    px: 3,
-                    py: 2,
-                    borderRadius: 2,
-                    boxShadow: 3,
-                  }}
-                >
-                  <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                    Use Ctrl + scroll to zoom the map
-                  </Typography>
-                </Box>
-              </Box>
-            )}
+            {loading && <MapLoadingOverlay message="Loading interactive map..." />}
+            {showScrollGuard && panel.scrollguard && <MapScrollGuardOverlay />}
           </Box>
         </Paper>
       </Box>
 
       {/* Points of Interest List - Scrollable */}
-      {(() => {
-        return null;
-      })()}
       {panel.points && panel.points.length > 0 && (
-        <Box
-          sx={{
-            flex: '1',
-            minWidth: 0,
-            mt: { xs: 3, md: 0 }, // Add top margin on mobile for spacing from map
-            px: { xs: 2, md: 0 }, // Add padding back on mobile for POI content
-          }}
-        >
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 3, px: 1 }}>
+        <Box sx={ownClasses.poiSection}>
+          <Typography variant="h6" sx={ownClasses.poiSectionHeading}>
             Scroll through locations
           </Typography>
-          <Stack spacing={30} sx={{ pt: { xs: 3, md: 30 }, pb: 30 }}> {/* Less top padding on mobile since map is sticky above */}
+          <Stack spacing={30} sx={ownClasses.poiStack}>
             {panel.points.map((poi, index) => (
               <Paper
                 key={index}
@@ -392,59 +294,19 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
                   poiRefs.current[index] = el;
                 }}
                 elevation={activePoiIndex === index ? 4 : 1}
-                sx={{
-                  overflow: 'hidden',
-                  border: '2px solid',
-                  borderColor: activePoiIndex === index ? 'primary.main' : 'transparent',
-                  borderRadius: 2,
-                  backgroundColor: 'background.paper',
-                  transition: 'all 0.3s ease',
-                  transform: activePoiIndex === index ? 'scale(1.02)' : 'scale(1)',
-                  minHeight: { xs: 'auto', md: '400px' }, // Auto height on mobile, tall cards on desktop
-                }}
+                sx={ownClasses.poiCard(activePoiIndex === index)}
               >
                 {/* POI Image */}
                 {poi.image && (
-                  <Box
-                    sx={{
-                      position: 'relative',
-                      width: '100%',
-                      paddingTop: '56.25%', // 16:9 aspect ratio
-                      overflow: 'hidden',
-                      backgroundColor: 'grey.200',
-                    }}
-                  >
+                  <Box sx={ownClasses.poiImageWrapper}>
                     <Box
                       component="img"
                       src={poi.image}
                       alt={poi.altText || poi.title}
-                      sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                      }}
+                      sx={ownClasses.poiImage}
                     />
                     {/* Location Pin Icon Overlay */}
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: 16,
-                        left: 16,
-                        width: 40,
-                        height: 40,
-                        backgroundColor: 'white',
-                        border: '2px solid',
-                        borderColor: 'primary.main',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: 2,
-                      }}
-                    >
+                    <Box sx={ownClasses.poiPinBadge}>
                       <Typography variant="h6" color="primary.main" sx={{ fontWeight: 700 }}>
                         {index + 1}
                       </Typography>
@@ -453,16 +315,9 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
                 )}
 
                 {/* POI Content */}
-                <Box sx={{ p: 3 }}>
+                <Box sx={ownClasses.poiContent}>
                   {poi.title && (
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: 600,
-                        mb: 1,
-                        color: 'text.primary',
-                      }}
-                    >
+                    <Typography variant="h6" sx={ownClasses.poiTitle}>
                       {poi.title}
                     </Typography>
                   )}
@@ -471,14 +326,7 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
                     const featureData = featureDataRef.current.get(index);
                     if (featureData?.fieldValue) {
                       return (
-                        <Typography
-                          variant="subtitle1"
-                          sx={{
-                            fontWeight: 500,
-                            mb: 1,
-                            color: 'primary.main',
-                          }}
-                        >
+                        <Typography variant="subtitle1" sx={ownClasses.poiFieldValue}>
                           {featureData.fieldValue}
                         </Typography>
                       );
@@ -486,12 +334,12 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
                     return null;
                   })()}
                   {poi.text && (
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2, lineHeight: 1.6 }}>
+                    <Typography variant="body2" color="text.secondary" sx={ownClasses.poiText}>
                       {poi.text}
                     </Typography>
                   )}
                   {poi.target && (
-                    <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
+                    <Stack direction="row" spacing={1} sx={ownClasses.poiChips}>
                       {poi.target.layerId && (
                         <Chip
                           label={`Layer: ${poi.target.layerId}`}

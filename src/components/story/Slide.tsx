@@ -1,7 +1,8 @@
 import React, { forwardRef } from 'react';
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { Slide as SlideType } from '@/types/StoryConfig';
 import { PanelRenderer } from '../panels/PanelRenderer';
+import { getSxClasses, getPanelSx } from './story-styles';
 
 interface SlideProps {
   slide: SlideType;
@@ -10,6 +11,8 @@ interface SlideProps {
 }
 
 export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideId, index }, ref) => {
+  const classes = getSxClasses(useTheme()).slide;
+
   // Determine layout: horizontal if text + image/map, vertical otherwise
   const hasMultiplePanels = slide.panel.length > 1;
   const hasTextAndImage = hasMultiplePanels && 
@@ -19,65 +22,14 @@ export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideI
   const flexDirection = hasTextAndImage ? { xs: 'column', md: 'row' } : 'column';
 
   return (
-    <Box
-      ref={ref}
-      component="section"
-      id={slideId}
-      data-slide-index={index}
-      sx={{
-        minHeight: '100vh',
-        py: 8,
-        position: 'relative',
-        width: '100%',
-      }}
-    >
-      <Box sx={{ position: 'relative', width: '100%', px: { xs: 2, md: 4 } }}>
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection, 
-          gap: 4,
-          alignItems: hasTextAndImage ? 'stretch' : 'center',
-          justifyContent: 'center',
-          minHeight: 'calc(100vh - 128px)',
-        }}>
-          {slide.panel.map((panel, panelIndex) => {
-            // Calculate flex basis for panels
-            const isTextPanel = panel.type === 'text';
-            const isMediaPanel = ['image', 'map', 'video'].includes(panel.type);
-            
-            // Determine sizing
-            let panelSx: any = {
-              flex: hasTextAndImage ? '1 1 auto' : '0 1 auto',
-              width: '100%',
-            };
-
-            if (hasTextAndImage) {
-              // Text takes 1/3, media takes 2/3
-              panelSx.maxWidth = isTextPanel ? { xs: '100%', md: '33.333%' } : { xs: '100%', md: '66.667%' };
-
-              if (isMediaPanel) {
-                // Pin the media in place while the text scrolls past it; text stays
-                // in normal flow so it can grow to any length without its own scrollbar.
-                panelSx.position = { md: 'sticky' };
-                panelSx.top = { md: '80px' };
-                panelSx.alignSelf = { md: 'flex-start' };
-                panelSx.maxHeight = { md: 'calc(100vh - 96px)' };
-                panelSx.overflow = { md: 'hidden' };
-              }
-            } else if (isTextPanel && !hasMultiplePanels) {
-              // Single text panel: 1/3 width, centered
-              panelSx.maxWidth = { xs: '100%', md: '33.333%' };
-            }
-
-            return (
-              <Box 
-                key={panelIndex}
-                sx={panelSx}
-              >
-                <PanelRenderer panel={panel} panelInstanceId={`${slideId}-panel-${panelIndex}`} />
-              </Box>
-            );
-          })}
+    <Box ref={ref} component="section" id={slideId} data-slide-index={index} sx={classes.section}>
+      <Box sx={classes.inner}>
+        <Box sx={classes.row(flexDirection, hasTextAndImage)}>
+          {slide.panel.map((panel, panelIndex) => (
+            <Box key={panelIndex} sx={getPanelSx(panel, hasTextAndImage, hasMultiplePanels)}>
+              <PanelRenderer panel={panel} panelInstanceId={`${slideId}-panel-${panelIndex}`} />
+            </Box>
+          ))}
         </Box>
       </Box>
     </Box>

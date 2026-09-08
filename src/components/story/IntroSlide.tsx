@@ -1,7 +1,8 @@
 import React from 'react';
-import { Box, Container, Typography, Button } from '@mui/material';
+import { Box, Container, Typography, Button, useTheme } from '@mui/material';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { IntroSlide as IntroSlideType } from '@/types/StoryConfig';
+import { getSxClasses } from './story-styles';
 
 interface IntroSlideProps {
   intro: IntroSlideType;
@@ -9,77 +10,27 @@ interface IntroSlideProps {
 }
 
 export const IntroSlide: React.FC<IntroSlideProps> = ({ intro, onEnter }) => {
+  const classes = getSxClasses(useTheme()).introSlide;
   return (
-    <Box
-      sx={{
-        minHeight: '50vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-        backgroundColor: 'primary.main',
-      }}
-    >
+    <Box sx={classes.root}>
       {intro.backgroundImage && (
-        <Box
-          component="img"
-          src={intro.backgroundImage}
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center',
-            zIndex: 0,
-          }}
-        />
+        <Box component="img" src={intro.backgroundImage} sx={classes.backgroundImage} />
       )}
-      <Container maxWidth="md" sx={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
+      <Container maxWidth="md" sx={classes.container}>
         {intro.logo && (
-          <Box sx={{ mb: 4 }}>
-            <img
-              src={intro.logo.src}
-              alt={intro.logo.altText}
-              style={{ maxHeight: 120, maxWidth: '100%' }}
-            />
+          <Box sx={classes.logoWrapper}>
+            <Box component="img" src={intro.logo.src} alt={intro.logo.altText} sx={classes.logo} />
           </Box>
         )}
-        <Typography
-          variant="h2"
-          component="h1"
-          sx={{
-            color: 'white',
-            fontWeight: 700,
-            mb: 2,
-          }}
-        >
+        <Typography variant="h2" component="h1" sx={classes.title}>
           {intro.title}
         </Typography>
         {intro.subtitle && (
-          <Typography
-            variant="h5"
-            sx={{
-              color: 'white',
-              mb: 4,
-            }}
-          >
+          <Typography variant="h5" sx={classes.subtitle}>
             {intro.subtitle}
           </Typography>
         )}
-        <Button
-          variant="contained"
-          size="large"
-          onClick={onEnter}
-          endIcon={<ArrowDownwardIcon />}
-          sx={{
-            px: 4,
-            py: 1.5,
-            fontSize: '1.1rem',
-          }}
-        >
+        <Button variant="contained" size="large" onClick={onEnter} endIcon={<ArrowDownwardIcon />} sx={classes.enterButton}>
           Begin Story
         </Button>
       </Container>

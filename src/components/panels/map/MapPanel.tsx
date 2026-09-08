@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Paper, CircularProgress } from '@mui/material';
+import { Box, Typography, Paper, useTheme } from '@mui/material';
 import { MapPanel as MapPanelType } from '@/types/StoryConfig';
 import { useMapReady } from '@/hooks/useMapReady';
+import { MapLoadingOverlay, MapScrollGuardOverlay } from './MapOverlays';
+import { getSxClasses as getSharedSxClasses } from './map-shared-style';
+import { getSxClasses } from './MapPanel-style';
 import '@/types/GeoView'; // Import GeoView global types
 
 interface MapPanelProps {
@@ -15,6 +18,9 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
   const [showScrollGuard, setShowScrollGuard] = useState(false);
   const mapReady = useMapReady(mapId);
   const loading = !error && !mapReady;
+  const theme = useTheme();
+  const shared = getSharedSxClasses(theme);
+  const classes = getSxClasses(theme);
 
   // cgpv.onMapReady is a single global callback slot owned by StoryController;
   // this only checks that the library itself loaded.
@@ -70,15 +76,8 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
 
   if (error) {
     return (
-      <Box sx={{ mx: { xs: -2, md: 0 } }}>
-        <Paper
-          elevation={2}
-          sx={{
-            overflow: 'hidden',
-            borderRadius: { xs: 0, md: 2 },
-            backgroundColor: 'error.light',
-          }}
-        >
+      <Box sx={classes.wrapper}>
+        <Paper elevation={2} sx={[shared.paper, { backgroundColor: 'error.light' }]}>
           <Box sx={{ p: 4, textAlign: 'center' }}>
             <Typography variant="body1" color="error">
               {error}
@@ -90,18 +89,10 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
   }
 
   return (
-    <Box sx={{ mx: { xs: -2, md: 0 } }}>
-      <Paper
-        elevation={2}
-        sx={{
-          overflow: 'hidden',
-          borderRadius: { xs: 0, md: 2 },
-          height: panel.title ? 'auto' : '600px',
-          border: '1px solid grey',
-        }}
-      >
+    <Box sx={classes.wrapper}>
+      <Paper elevation={2} sx={[shared.paper, { height: panel.title ? 'auto' : '600px' }]}>
         {panel.title && (
-          <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
+          <Box sx={shared.titleBar}>
             <Typography variant="h5" component="h3" sx={{ fontWeight: 600 }}>
               {panel.title}
             </Typography>
@@ -113,69 +104,10 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
             data-config-url={panel.config}
             data-lang="en"
             className="geoview-map"
-            sx={{
-              width: '100%',
-              height: panel.title ? '500px' : '600px',
-              backgroundColor: 'grey.200',
-            }}
+            sx={[shared.container, { height: panel.title ? '500px' : '600px' }]}
           />
-          {loading && (
-            <Box
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                zIndex: 1000,
-                pointerEvents: 'none',
-              }}
-            >
-              <Box sx={{ textAlign: 'center' }}>
-                <CircularProgress />
-                <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-                  Loading GeoView map...
-                </Typography>
-              </Box>
-            </Box>
-          )}
-          {/* Scroll guard overlay */}
-          {showScrollGuard && panel.scrollguard && (
-            <Box
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                zIndex: 1001,
-                pointerEvents: 'none',
-                transition: 'opacity 0.2s',
-              }}
-            >
-              <Box
-                sx={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  px: 3,
-                  py: 2,
-                  borderRadius: 2,
-                  boxShadow: 3,
-                }}
-              >
-                <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                  Use Ctrl + scroll to zoom the map
-                </Typography>
-              </Box>
-            </Box>
-          )}
+          {loading && <MapLoadingOverlay message="Loading GeoView map..." />}
+          {showScrollGuard && panel.scrollguard && <MapScrollGuardOverlay />}
         </Box>
       </Paper>
     </Box>

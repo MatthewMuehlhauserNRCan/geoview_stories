@@ -1,12 +1,13 @@
 import React from 'react';
 import { Panel, QuotePanelConfig } from '@/types/StoryConfig';
-import { TextPanel } from './TextPanel';
-import { ImagePanel } from './ImagePanel';
-import { MapPanel } from './MapPanel';
-import { VideoPanel } from './VideoPanel';
-import { InteractiveMapPanel } from './InteractiveMapPanel';
-import { QuotePanel } from './QuotePanel';
-import { Box, Typography } from '@mui/material';
+import { TextPanel } from './TextPanel/TextPanel';
+import { ImagePanel } from './ImagePanel/ImagePanel';
+import { MapPanel } from './map/MapPanel';
+import { VideoPanel } from './VideoPanel/VideoPanel';
+import { InteractiveMapPanel } from './map/InteractiveMapPanel';
+import { QuotePanel } from './QuotePanel/QuotePanel';
+import { Box, Typography, useTheme } from '@mui/material';
+import { getSxClasses } from './PanelRenderer-style';
 
 interface PanelRendererProps {
   panel: Panel;
@@ -14,6 +15,8 @@ interface PanelRendererProps {
 }
 
 export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstanceId }) => {
+  const classes = getSxClasses(useTheme());
+
   switch (panel.type) {
     case 'text':
       return <TextPanel panel={panel} />;
@@ -30,20 +33,20 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstan
     case 'slideshow':
       // TODO: Implement SlideshowPanel
       return (
-        <Box sx={{ p: 4, backgroundColor: 'info.light', borderRadius: 2 }}>
+        <Box sx={classes.placeholder}>
           <Typography>Slideshow Panel (Coming Soon)</Typography>
         </Box>
       );
     case 'dynamic':
       // TODO: Implement DynamicPanel
       return (
-        <Box sx={{ p: 4, backgroundColor: 'info.light', borderRadius: 2 }}>
+        <Box sx={classes.placeholder}>
           <Typography>Dynamic Panel (Coming Soon)</Typography>
         </Box>
       );
     default:
       return (
-        <Box sx={{ p: 4, backgroundColor: 'error.light', borderRadius: 2 }}>
+        <Box sx={classes.errorPlaceholder}>
           <Typography>Unknown panel type</Typography>
         </Box>
       );

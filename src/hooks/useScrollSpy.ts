@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, RefObject } from 'react';
-import { StoryStore } from '@/core/stores/StoryStore';
+import { storyStore } from '@/core/stores/StoryStore';
 
 /**
  * Hook to track which slide is currently in the viewport
@@ -61,7 +61,7 @@ export const useScrollSpy = (
           if (index !== -1) {
             if (index !== activeIndex) {
               setActiveIndex(index);
-              StoryStore.getInstance().setActiveSlideIndex(index);
+              storyStore.getState().setActiveSlideIndex(index);
 
               // Update URL hash without scrolling
               const newHash = `#${maxId}`;

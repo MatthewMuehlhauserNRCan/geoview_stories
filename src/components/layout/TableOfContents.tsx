@@ -13,6 +13,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { TocItem } from '@/types/StoryConfig';
+import { getSxClasses } from './TableOfContents-styles';
 
 interface TableOfContentsProps {
   items: TocItem[];
@@ -32,6 +33,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
   onToggle,
 }) => {
   const theme = useTheme();
+  const classes = getSxClasses(theme);
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -59,38 +61,14 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
     <>
       {/* Menu button - shows when TOC is collapsed */}
       {collapsed && isDesktop && (
-        <IconButton
-          onClick={handleToggle}
-          sx={{
-            position: 'fixed',
-            top: 16,
-            left: 16,
-            zIndex: 1300,
-            backgroundColor: 'background.paper',
-            boxShadow: 2,
-            '&:hover': { backgroundColor: 'action.hover' },
-          }}
-          aria-label="Open table of contents"
-        >
+        <IconButton onClick={handleToggle} sx={classes.menuButton} aria-label="Open table of contents">
           <MenuIcon />
         </IconButton>
       )}
 
       {/* Mobile menu button */}
       {!isDesktop && (
-        <IconButton
-          onClick={handleToggle}
-          sx={{
-            position: 'fixed',
-            top: 16,
-            left: 16,
-            zIndex: 1300,
-            backgroundColor: 'background.paper',
-            boxShadow: 2,
-            '&:hover': { backgroundColor: 'action.hover' },
-          }}
-          aria-label="Toggle table of contents"
-        >
+        <IconButton onClick={handleToggle} sx={classes.menuButton} aria-label="Toggle table of contents">
           <MenuIcon />
         </IconButton>
       )}
@@ -101,26 +79,12 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
         anchor="left"
         open={isOpen}
         onClose={() => setMobileOpen(false)}
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          transition: 'width 0.3s',
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-            top: 0,
-            height: '100%',
-            borderRight: '1px solid',
-            borderColor: 'divider',
-            transition: 'width 0.3s',
-            overflowX: 'hidden',
-          },
-        }}
+        sx={classes.drawer(drawerWidth)}
       >
-        <Box sx={{ overflow: 'auto', p: 2, pt: 1 }}>
+        <Box sx={classes.drawerBody}>
           {/* Collapse button inside TOC */}
           {!collapsed && isDesktop && (
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+            <Box sx={classes.collapseRow}>
               <IconButton
                 onClick={handleToggle}
                 size="small"
@@ -131,7 +95,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
             </Box>
           )}
           
-          <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: 'primary.main' }}>
+          <Typography variant="h6" sx={classes.heading}>
             Chapters
           </Typography>
           <List>
@@ -140,17 +104,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
                 key={item.slideIndex}
                 selected={activeIndex === item.slideIndex}
                 onClick={() => handleItemClick(item)}
-                sx={{
-                  borderRadius: 1,
-                  mb: 0.5,
-                  '&.Mui-selected': {
-                    backgroundColor: 'primary.main',
-                    color: 'primary.contrastText',
-                    '&:hover': {
-                      backgroundColor: 'primary.dark',
-                    },
-                  },
-                }}
+                sx={classes.listItem}
               >
                 <ListItemText
                   primary={item.title || 'Untitled'}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Fade } from '@mui/material';
+import { Box, Fade, useTheme } from '@mui/material';
 import { TocItem } from '@/types/StoryConfig';
 import { TableOfContents } from '../layout/TableOfContents';
 import { IntroSlide } from './IntroSlide';
@@ -9,12 +9,15 @@ import { useScrollToSlide } from '@/hooks/useScrollToSlide';
 import { useStoryInit } from '@/hooks/useGeoViewInit';
 import { useStoryStore } from '@/hooks/useStoryStore';
 import { generateSlideId } from '@/utils/configLoader';
+import { getSxClasses } from './story-styles';
 
 interface StoryViewerProps {
   configPath: string;
 }
 
 export const StoryViewer: React.FC<StoryViewerProps> = ({ configPath }) => {
+  const classes = getSxClasses(useTheme()).storyViewer;
+
   // Initialize story viewer using controller - loads config and initializes maps
   const containerRef = useStoryInit(configPath);
   
@@ -84,60 +87,30 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({ configPath }) => {
     <>
       {/* Full-page background with MUI Fade crossfade - Layer 1 */}
       <Fade in={activeLayer === 1} timeout={800}>
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundImage: bgLayer1 ? `url(${bgLayer1})` : 'none',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundColor: 'background.default',
-            pointerEvents: 'none',
-            zIndex: activeLayer === 1 ? -1 : -2,
-          }}
-        />
+        <Box sx={classes.backgroundLayer(bgLayer1, activeLayer === 1)} />
       </Fade>
 
       {/* Full-page background with MUI Fade crossfade - Layer 2 */}
       <Fade in={activeLayer === 2} timeout={800}>
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundImage: bgLayer2 ? `url(${bgLayer2})` : 'none',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundColor: 'background.default',
-            pointerEvents: 'none',
-            zIndex: activeLayer === 2 ? -1 : -2,
-          }}
-        />
+        <Box sx={classes.backgroundLayer(bgLayer2, activeLayer === 2)} />
       </Fade>
 
       {/* containerRef stays mounted across loading/error/ready states so useStoryInit can always find it */}
-      <Box ref={containerRef} sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box ref={containerRef} sx={classes.root}>
         {loading && (
-          <Box sx={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Box sx={classes.centeredMessage}>
             Loading story...
           </Box>
         )}
 
         {!loading && (error || !config) && (
-          <Box sx={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Box sx={classes.centeredMessage}>
             {error || 'Story not found'}
           </Box>
         )}
 
         {!loading && !error && config && (
-          <Box sx={{ display: 'flex', flex: 1 }}>
+          <Box sx={classes.contentRow}>
             <TableOfContents
               items={tocItems}
               activeIndex={activeIndex}
@@ -147,12 +120,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({ configPath }) => {
               onToggle={() => setTocCollapsed(!tocCollapsed)}
             />
 
-            <Box
-              component="main"
-              sx={{
-                flex: 1,
-              }}
-            >
+            <Box component="main" sx={classes.main}>
               {config.introSlide && (
                 <IntroSlide intro={config.introSlide} onEnter={handleEnterStory} />
               )}
