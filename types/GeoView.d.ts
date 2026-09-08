@@ -6,8 +6,8 @@ declare global {
     interface Window {
         cgpv: {
             init: (callback?: () => void) => Promise<void>;
-            onMapInit: (callback: (mapViewer: any) => void) => () => void;
-            onMapReady: (callback: (mapViewer: any) => void) => () => void;
+            onMapInit: (callback: (mapViewer: any) => void) => (() => void) | void;
+            onMapReady: (callback: (mapViewer: any) => void) => (() => void) | void;
             onceMapViewerSet: (filter?: (event: any) => boolean) => Promise<GeoviewMapViewer>;
             api: {
                 getMapViewerIds: () => string[];

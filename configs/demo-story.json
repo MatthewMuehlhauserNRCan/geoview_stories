@@ -56,7 +56,7 @@
         {
           "type": "map",
           "title": "Canada Basemap",
-          "config": "configs/default-map.json",
+          "config": "./configs/default-map.json",
           "scrollguard": true
         }
       ]
@@ -67,7 +67,7 @@
         {
           "type": "interactive-map",
           "title": "Example Interactive Map",
-          "config": "configs/interactive-map.json",
+          "config": "./configs/interactive-map.json",
           "points": [
             {
               "title": "Point of Interest A",
