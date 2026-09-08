@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef, RefObject } from 'react';
+import { StoryStore } from '@/core/stores/StoryStore';
 
 /**
  * Hook to track which slide is currently in the viewport
- * and update URL hash accordingly
+ * and update URL hash accordingly. Also mirrors the active index into
+ * StoryStore so it's available as shared state outside this component.
  */
 export const useScrollSpy = (
   slideRefs: RefObject<HTMLElement | null>[],
@@ -26,11 +28,7 @@ export const useScrollSpy = (
     // Reset intersection map
     intersectionMapRef.current = new Map();
 
-    // Check which refs are actually populated
-    const populatedRefs = slideRefs.filter(ref => ref.current !== null);
-    
-    if (populatedRefs.length === 0) {
-      console.warn('[ScrollSpy] No populated refs found!');
+    if (slideRefs.every(ref => ref.current === null)) {
       return;
     }
 
@@ -63,7 +61,8 @@ export const useScrollSpy = (
           if (index !== -1) {
             if (index !== activeIndex) {
               setActiveIndex(index);
-              
+              StoryStore.getInstance().setActiveSlideIndex(index);
+
               // Update URL hash without scrolling
               const newHash = `#${maxId}`;
               if (window.location.hash !== newHash) {
@@ -81,11 +80,9 @@ export const useScrollSpy = (
     );
 
     // Observe all slide elements
-    slideRefs.forEach((ref, index) => {
+    slideRefs.forEach((ref) => {
       if (ref.current) {
         observerRef.current?.observe(ref.current);
-      } else {
-        console.warn(`[ScrollSpy] Ref ${index} has no current element`);
       }
     });
 

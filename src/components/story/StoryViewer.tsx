@@ -1,23 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Fade } from '@mui/material';
-import { StoryConfig, TocItem } from '@/types/StoryConfig';
-import { Header } from '../layout/Header';
-import { Footer } from '../layout/Footer';
+import { TocItem } from '@/types/StoryConfig';
 import { TableOfContents } from '../layout/TableOfContents';
 import { IntroSlide } from './IntroSlide';
 import { Slide } from './Slide';
 import { useScrollSpy } from '@/hooks/useScrollSpy';
 import { useScrollToSlide } from '@/hooks/useScrollToSlide';
-import { loadStoryConfig, generateSlideId, validateStoryConfig } from '@/utils/configLoader';
+import { useStoryInit } from '@/hooks/useGeoViewInit';
+import { useStoryStore } from '@/hooks/useStoryStore';
+import { generateSlideId } from '@/utils/configLoader';
 
 interface StoryViewerProps {
   configPath: string;
 }
 
 export const StoryViewer: React.FC<StoryViewerProps> = ({ configPath }) => {
-  const [config, setConfig] = useState<StoryConfig | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // Initialize story viewer using controller - loads config and initializes maps
+  const containerRef = useStoryInit(configPath);
+  
+  // Subscribe to store for config and loading state
+  const { config, loading, error } = useStoryStore();
 
   const slideRefs = useRef<React.RefObject<HTMLElement | null>[]>([]);
   const scrollToSlide = useScrollToSlide(64);
@@ -58,31 +60,6 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({ configPath }) => {
     }
   }, [activeBackgroundImage, activeLayer, bgLayer1, bgLayer2]);
 
-  // Load configuration
-  useEffect(() => {
-    const loadConfig = async () => {
-      try {
-        setLoading(true);
-        
-        const loadedConfig = await loadStoryConfig(configPath);
-        
-        if (!validateStoryConfig(loadedConfig)) {
-          throw new Error('Invalid story configuration');
-        }
-        
-        setConfig(loadedConfig);
-        setError(null);
-      } catch (err) {
-        console.error('Failed to load story:', err);
-        setError('Failed to load story configuration. Please check that the config file exists.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadConfig();
-  }, [configPath]);
-
   const handleEnterStory = () => {
     if (slideIds.length > 0) {
       scrollToSlide(slideIds[0]);
@@ -93,43 +70,15 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({ configPath }) => {
     scrollToSlide(slideId);
   };
 
-  if (loading) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100vh',
-        }}
-      >
-        Loading story...
-      </Box>
-    );
-  }
-
-  if (error || !config) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100vh',
-        }}
-      >
-        {error || 'Story not found'}
-      </Box>
-    );
-  }
-
-  // Build TOC items
-  const tocItems: TocItem[] = config.slides
-    .map((slide, index) => ({
-      title: slide.title,
-      slideIndex: index,
-    }))
-    .filter((item, index) => config.slides[index].includeInToc !== false);
+  // Build TOC items (only meaningful once config has loaded)
+  const tocItems: TocItem[] = config
+    ? config.slides
+        .map((slide, index) => ({
+          title: slide.title,
+          slideIndex: index,
+        }))
+        .filter((item, index) => config.slides[index].includeInToc !== false)
+    : [];
 
   return (
     <>
@@ -173,42 +122,53 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({ configPath }) => {
         />
       </Fade>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <Header title={config.title} logo={config.introSlide?.logo} />
-      
-      <Box sx={{ display: 'flex', flex: 1 }}>
-        <TableOfContents
-          items={tocItems}
-          activeIndex={activeIndex}
-          onItemClick={handleTocItemClick}
-          orientation={config.tocOrientation}
-          collapsed={tocCollapsed}
-          onToggle={() => setTocCollapsed(!tocCollapsed)}
-        />
+      {/* containerRef stays mounted across loading/error/ready states so useStoryInit can always find it */}
+      <Box ref={containerRef} sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        {loading && (
+          <Box sx={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            Loading story...
+          </Box>
+        )}
 
-        <Box
-          component="main"
-          sx={{
-            flex: 1,
-          }}
-        >
-          {config.introSlide && (
-            <IntroSlide intro={config.introSlide} onEnter={handleEnterStory} />
-          )}
+        {!loading && (error || !config) && (
+          <Box sx={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            {error || 'Story not found'}
+          </Box>
+        )}
 
-          {config.slides.map((slide, index) => (
-            <Slide
-              key={index}
-              ref={slideRefs.current[index]}
-              slide={slide}
-              slideId={slideIds[index]}
-              index={index}
+        {!loading && !error && config && (
+          <Box sx={{ display: 'flex', flex: 1 }}>
+            <TableOfContents
+              items={tocItems}
+              activeIndex={activeIndex}
+              onItemClick={handleTocItemClick}
+              orientation={config.tocOrientation}
+              collapsed={tocCollapsed}
+              onToggle={() => setTocCollapsed(!tocCollapsed)}
             />
-          ))}
 
-          <Footer contextLink={config.contextLink} contextLabel={config.contextLabel} />
-        </Box>
-      </Box>
+            <Box
+              component="main"
+              sx={{
+                flex: 1,
+              }}
+            >
+              {config.introSlide && (
+                <IntroSlide intro={config.introSlide} onEnter={handleEnterStory} />
+              )}
+
+              {config.slides.map((slide, index) => (
+                <Slide
+                  key={index}
+                  ref={slideRefs.current[index]}
+                  slide={slide}
+                  slideId={slideIds[index]}
+                  index={index}
+                />
+              ))}
+            </Box>
+          </Box>
+        )}
       </Box>
     </>
   );

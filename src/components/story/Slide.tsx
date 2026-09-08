@@ -54,9 +54,10 @@ export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideI
             if (hasTextAndImage) {
               // Text takes 1/3, media takes 2/3
               panelSx.maxWidth = isTextPanel ? { xs: '100%', md: '33.333%' } : { xs: '100%', md: '66.667%' };
-              
-              // Make media sticky when paired with text
+
               if (isMediaPanel) {
+                // Pin the media in place while the text scrolls past it; text stays
+                // in normal flow so it can grow to any length without its own scrollbar.
                 panelSx.position = { md: 'sticky' };
                 panelSx.top = { md: '80px' };
                 panelSx.alignSelf = { md: 'flex-start' };
@@ -73,7 +74,7 @@ export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideI
                 key={panelIndex}
                 sx={panelSx}
               >
-                <PanelRenderer panel={panel} />
+                <PanelRenderer panel={panel} panelInstanceId={`${slideId}-panel-${panelIndex}`} />
               </Box>
             );
           })}

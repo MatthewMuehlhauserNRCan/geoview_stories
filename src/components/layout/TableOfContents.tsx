@@ -63,7 +63,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
           onClick={handleToggle}
           sx={{
             position: 'fixed',
-            top: 80,
+            top: 16,
             left: 16,
             zIndex: 1300,
             backgroundColor: 'background.paper',
@@ -82,7 +82,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
           onClick={handleToggle}
           sx={{
             position: 'fixed',
-            top: 80,
+            top: 16,
             left: 16,
             zIndex: 1300,
             backgroundColor: 'background.paper',
@@ -108,8 +108,8 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
-            top: 64,
-            height: 'calc(100% - 64px)',
+            top: 0,
+            height: '100%',
             borderRight: '1px solid',
             borderColor: 'divider',
             transition: 'width 0.3s',

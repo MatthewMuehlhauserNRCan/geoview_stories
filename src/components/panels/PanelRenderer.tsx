@@ -1,28 +1,32 @@
 import React from 'react';
-import { Panel } from '@/types/StoryConfig';
+import { Panel, QuotePanelConfig } from '@/types/StoryConfig';
 import { TextPanel } from './TextPanel';
 import { ImagePanel } from './ImagePanel';
 import { MapPanel } from './MapPanel';
 import { VideoPanel } from './VideoPanel';
 import { InteractiveMapPanel } from './InteractiveMapPanel';
+import { QuotePanel } from './QuotePanel';
 import { Box, Typography } from '@mui/material';
 
 interface PanelRendererProps {
   panel: Panel;
+  panelInstanceId?: string;
 }
 
-export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel }) => {
+export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstanceId }) => {
   switch (panel.type) {
     case 'text':
       return <TextPanel panel={panel} />;
     case 'image':
       return <ImagePanel panel={panel} />;
     case 'map':
-      return <MapPanel panel={panel} />;
+      return <MapPanel panel={panel} panelInstanceId={panelInstanceId} />;
     case 'interactive-map':
-      return <InteractiveMapPanel panel={panel} />;
+      return <InteractiveMapPanel panel={panel} panelInstanceId={panelInstanceId} />;
     case 'video':
       return <VideoPanel panel={panel} />;
+    case 'quote':
+      return <QuotePanel {...(panel as QuotePanelConfig)} />;
     case 'slideshow':
       // TODO: Implement SlideshowPanel
       return (

@@ -32,7 +32,7 @@ export interface Slide {
 
 export interface BasePanel {
   title?: string;
-  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'dynamic' | 'interactive-map';
+  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'dynamic' | 'interactive-map' | 'quote';
 }
 
 export interface TextPanel extends BasePanel {
@@ -108,6 +108,14 @@ export interface DynamicPanel extends BasePanel {
   }>;
 }
 
+export interface QuotePanelConfig extends BasePanel {
+  type: 'quote';
+  quote: string;
+  author?: string;
+  role?: string;
+  organization?: string;
+}
+
 export type Panel =
   | TextPanel
   | ImagePanel
@@ -115,7 +123,8 @@ export type Panel =
   | InteractiveMapPanel
   | VideoPanel
   | SlideshowPanel
-  | DynamicPanel;
+  | DynamicPanel
+  | QuotePanelConfig;
 
 export interface TocItem {
   title: string;

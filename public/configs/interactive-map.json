@@ -3,7 +3,13 @@
     "interaction": "dynamic",
     "viewSettings": {
       "initialView": {
-        "zoomAndCenter": [4, [-100, 60]]
+        "zoomAndCenter": [
+          4,
+          [
+            -100,
+            60
+          ]
+        ]
       },
       "projection": 3978
     },
@@ -26,6 +32,9 @@
       }
     ]
   },
-  "components": ["north-arrow", "overview-map"],
+  "components": [
+    "north-arrow",
+    "overview-map"
+  ],
   "theme": "geo.ca"
 }

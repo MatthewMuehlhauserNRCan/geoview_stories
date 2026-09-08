@@ -24,8 +24,7 @@
     "@mui/system": "^9.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-markdown": "^9.0.1",
-    "react-router-dom": "^7.1.1"
+    "react-markdown": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^19.0.6",
@@ -39,6 +38,7 @@
     "html-webpack-plugin": "^5.6.3",
     "prettier": "^3.4.2",
     "style-loader": "^4.0.0",
+    "terser-webpack-plugin": "^5.6.1",
     "ts-loader": "^9.5.1",
     "typescript": "^5.7.2",
     "webpack": "^5.97.1",

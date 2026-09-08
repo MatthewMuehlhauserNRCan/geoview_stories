@@ -4,17 +4,11 @@ import { StoryConfig } from '@/types/StoryConfig';
  * Load and parse story configuration from JSON file
  */
 export const loadStoryConfig = async (configPath: string): Promise<StoryConfig> => {
-  try {
-    const response = await fetch(configPath);
-    if (!response.ok) {
-      throw new Error(`Failed to load config: ${response.statusText}`);
-    }
-    const config: StoryConfig = await response.json();
-    return config;
-  } catch (error) {
-    console.error('Error loading story configuration:', error);
-    throw error;
+  const response = await fetch(configPath);
+  if (!response.ok) {
+    throw new Error(`Failed to load config: ${response.statusText}`);
   }
+  return response.json();
 };
 
 /**
@@ -35,3 +29,12 @@ export const validateStoryConfig = (config: StoryConfig): boolean => {
   }
   return true;
 };
+
+/**
+ * Whether any slide panel needs a GeoView map, so callers can skip
+ * cgpv setup entirely for map-free stories. Only checks top-level panels
+ * since slideshow/dynamic panel types don't support maps yet.
+ */
+export const configHasMaps = (config: StoryConfig): boolean =>
+  config.slides.some(slide => slide.panel.some(panel => panel.type === 'map' || panel.type === 'interactive-map'));
+
