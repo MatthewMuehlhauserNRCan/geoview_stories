@@ -34,6 +34,22 @@ export declare const getSxClasses: (theme: Theme) => {
             height: string;
             borderRadius: number;
         };
+        '& blockquote p:before': {
+            content: string;
+            display: string;
+            fontSize: string;
+            fontStyle: string;
+        };
+        '& blockquote p:after': {
+            content: string;
+            display: string;
+            fontSize: string;
+            fontStyle: string;
+        };
+        '& blockquote p': {
+            fontSize: string;
+            fontStyle: string;
+        };
     };
 };
 //# sourceMappingURL=TextPanel-style.d.ts.map

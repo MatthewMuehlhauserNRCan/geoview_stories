@@ -2,10 +2,6 @@ import type { Theme } from '@mui/material/styles';
 export declare const getSxClasses: (theme: Theme) => {
     paper: {
         p: number;
-        backgroundColor: string;
-        borderLeft: string;
-        borderColor: string;
-        borderRadius: number;
         position: string;
     };
     quoteIcon: {

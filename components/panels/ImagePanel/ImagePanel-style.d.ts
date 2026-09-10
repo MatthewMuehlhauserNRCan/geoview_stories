@@ -5,6 +5,7 @@ export declare const getSxClasses: (theme: Theme) => {
             xs: number;
             md: number;
         };
+        width: string;
     };
     paper: {
         overflow: string;
@@ -20,9 +21,14 @@ export declare const getSxClasses: (theme: Theme) => {
         fontWeight: number;
     };
     image: {
+        display: string;
+        maxWidth: string;
+        maxHeight: {
+            md: string;
+        };
         width: string;
         height: string;
-        display: string;
+        mx: string;
     };
     caption: {
         p: number;

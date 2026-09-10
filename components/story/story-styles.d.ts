@@ -5,6 +5,9 @@ export declare const getSxClasses: (theme: Theme) => {
     introSlide: {
         root: {
             minHeight: string;
+            '@supports (height: 50dvh)': {
+                minHeight: string;
+            };
             display: string;
             alignItems: string;
             justifyContent: string;
@@ -52,6 +55,9 @@ export declare const getSxClasses: (theme: Theme) => {
     slide: {
         section: {
             minHeight: string;
+            '@supports (height: 80dvh)': {
+                minHeight: string;
+            };
             py: number;
             position: string;
             width: string;
@@ -77,6 +83,9 @@ export declare const getSxClasses: (theme: Theme) => {
             alignItems: string;
             justifyContent: string;
             minHeight: string;
+            '@supports (height: 80dvh)': {
+                minHeight: string;
+            };
         };
     };
     storyViewer: {
@@ -98,6 +107,9 @@ export declare const getSxClasses: (theme: Theme) => {
             display: string;
             flexDirection: string;
             minHeight: string;
+            '@supports (height: 100dvh)': {
+                minHeight: string;
+            };
         };
         centeredMessage: {
             display: string;
@@ -114,6 +126,6 @@ export declare const getSxClasses: (theme: Theme) => {
         };
     };
 };
-/** Per-panel sizing/sticky behavior within a Slide, depends on panel type and slide layout */
-export declare const getPanelSx: (panel: Panel, hasTextAndImage: boolean, hasMultiplePanels: boolean) => any;
+/** Per-panel sizing within a Slide, depends on panel type and slide layout */
+export declare const getPanelSx: (panel: Panel, hasTextAndImage: boolean, hasMultiplePanels: boolean, theme: Theme) => any;
 //# sourceMappingURL=story-styles.d.ts.map

@@ -5,6 +5,7 @@ export declare const getSxClasses: (theme: Theme) => {
             xs: number;
             md: number;
         };
+        width: string;
     };
 };
 //# sourceMappingURL=MapPanel-style.d.ts.map
