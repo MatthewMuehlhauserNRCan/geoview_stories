@@ -23,7 +23,7 @@ export const generateSlideId = (index: number, title: string): string => {
  * Validate story configuration
  */
 export const validateStoryConfig = (config: StoryConfig): boolean => {
-  if (!config.title || !config.slides || config.slides.length === 0) {
+  if (!config.slides || config.slides.length === 0) {
     console.error('Invalid story config: missing required fields');
     return false;
   }

@@ -6,7 +6,7 @@ import { MapPanel } from './map/MapPanel';
 import { VideoPanel } from './VideoPanel/VideoPanel';
 import { InteractiveMapPanel } from './map/InteractiveMapPanel';
 import { QuotePanel } from './QuotePanel/QuotePanel';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { getSxClasses } from './PanelRenderer-style';
 
 interface PanelRendererProps {
@@ -15,7 +15,7 @@ interface PanelRendererProps {
 }
 
 export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstanceId }) => {
-  const classes = getSxClasses(useTheme());
+  const classes = getSxClasses();
 
   switch (panel.type) {
     case 'text':

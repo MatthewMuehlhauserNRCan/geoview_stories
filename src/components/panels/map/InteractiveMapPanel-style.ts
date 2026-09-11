@@ -1,6 +1,4 @@
-import type { Theme } from '@mui/material/styles';
-
-export const getSxClasses = (theme: Theme) => ({
+export const getSxClasses = () => ({
   root: {
     display: 'flex',
     flexDirection: { xs: 'column', md: 'row' },
@@ -41,6 +39,12 @@ export const getSxClasses = (theme: Theme) => ({
   poiStack: {
     pt: { xs: 3, md: 30 }, // Less top padding on mobile since map is sticky above
     pb: 30,
+    // Gap is viewport-relative (not a fixed px value) so it stays proportional
+    // to the IntersectionObserver's percentage-based rootMargin trigger band
+    // below, regardless of screen size - otherwise a fixed gap can end up
+    // smaller than the band on some viewports, letting two POIs both intersect
+    // it at once (or a fast scroll skip a card's threshold crossing entirely).
+    gap: { xs: '25vh', md: '35vh' },
   },
   poiCard: (isActive: boolean) => ({
     overflow: 'hidden',
@@ -50,27 +54,26 @@ export const getSxClasses = (theme: Theme) => ({
     backgroundColor: 'background.paper',
     transition: 'all 0.3s ease',
     transform: isActive ? 'scale(1.02)' : 'scale(1)',
-    minHeight: { xs: 'auto', md: '400px' }, // Auto height on mobile, tall cards on desktop
+    textAlign: 'center',
   }),
-  poiImageWrapper: {
+  poiIconWrapper: {
     position: 'relative',
-    width: '100%',
-    paddingTop: '56.25%', // 16:9 aspect ratio
-    overflow: 'hidden',
-    backgroundColor: 'grey.200',
+    display: 'flex',
+    justifyContent: 'center',
+    pt: 3,
   },
   poiImage: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
+    width: 96,
+    height: 96,
+    borderRadius: '50%',
     objectFit: 'cover',
+    border: '2px solid',
+    borderColor: 'divider',
   },
-  poiPinBadge: {
-    position: 'absolute',
-    top: 16,
-    left: 16,
+  // Overlaps the bottom-right of the photo when one is present, otherwise stands alone
+  poiPinBadge: (hasImage: boolean) => ({
+    position: hasImage ? 'absolute' : 'static',
+    ...(hasImage && { bottom: 0, right: 0 }),
     width: 40,
     height: 40,
     backgroundColor: 'white',
@@ -81,9 +84,12 @@ export const getSxClasses = (theme: Theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: 2,
-  },
+  }),
   poiContent: {
     p: 3,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   poiTitle: {
     fontWeight: 600,
@@ -92,14 +98,14 @@ export const getSxClasses = (theme: Theme) => ({
   },
   poiFieldValue: {
     fontWeight: 500,
-    mb: 1,
     color: 'primary.main',
   },
-  poiText: {
-    mb: 2,
-    lineHeight: 1.6,
+  poiStyleIcon: {
+    width: 20,
+    height: 20,
+    objectFit: 'contain',
   },
-  poiChips: {
-    flexWrap: 'wrap',
+  poiText: {
+    lineHeight: 1.6,
   },
 });

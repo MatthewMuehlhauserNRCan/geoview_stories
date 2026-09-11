@@ -1,9 +1,9 @@
 import React from 'react';
-import { Box, Typography, CircularProgress, useTheme } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import { getSxClasses } from './map-shared-style';
 
 export const MapLoadingOverlay: React.FC<{ message: string }> = ({ message }) => {
-  const classes = getSxClasses(useTheme());
+  const classes = getSxClasses();
   return (
     <Box sx={[classes.overlay, classes.loadingOverlay]}>
       <Box sx={{ textAlign: 'center' }}>
@@ -17,7 +17,7 @@ export const MapLoadingOverlay: React.FC<{ message: string }> = ({ message }) =>
 };
 
 export const MapScrollGuardOverlay: React.FC = () => {
-  const classes = getSxClasses(useTheme());
+  const classes = getSxClasses();
   return (
     <Box sx={[classes.overlay, classes.scrollGuardOverlay]}>
       <Box sx={classes.scrollGuardMessage}>

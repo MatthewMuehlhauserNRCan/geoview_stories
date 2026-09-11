@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Paper, useTheme } from '@mui/material';
+import { Box, Typography, Paper } from '@mui/material';
 import { VideoPanel as VideoPanelType } from '@/types/StoryConfig';
 import { getSxClasses } from './VideoPanel-style';
 
@@ -8,7 +8,7 @@ interface VideoPanelProps {
 }
 
 export const VideoPanel: React.FC<VideoPanelProps> = ({ panel }) => {
-  const classes = getSxClasses(useTheme());
+  const classes = getSxClasses();
 
   const renderVideo = () => {
     if (panel.videoType === 'YouTube') {

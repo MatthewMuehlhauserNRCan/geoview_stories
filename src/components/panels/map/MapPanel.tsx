@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Paper, useTheme } from '@mui/material';
+import { Box, Typography, Paper } from '@mui/material';
 import { MapPanel as MapPanelType } from '@/types/StoryConfig';
 import { useMapReady } from '@/hooks/useMapReady';
 import { MapLoadingOverlay, MapScrollGuardOverlay } from './MapOverlays';
@@ -13,14 +13,15 @@ interface MapPanelProps {
 }
 
 export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) => {
-  const mapId = `map-${(panelInstanceId || 'panel').replace(/[^a-zA-Z0-9]/g, '-')}-${panel.config.replace(/[^a-zA-Z0-9]/g, '-')}`;
+  // No hyphens: GeoView's legacy keyboard-focus code derives the map ID by
+  // splitting the shell element's DOM id on '-', so a hyphen here breaks it.
+  const mapId = `map_${(panelInstanceId || 'panel').replace(/[^a-zA-Z0-9]/g, '_')}_${panel.config.replace(/[^a-zA-Z0-9]/g, '_')}`;
   const [error, setError] = useState<string | null>(null);
   const [showScrollGuard, setShowScrollGuard] = useState(false);
   const mapReady = useMapReady(mapId);
   const loading = !error && !mapReady;
-  const theme = useTheme();
-  const shared = getSharedSxClasses(theme);
-  const classes = getSxClasses(theme);
+  const shared = getSharedSxClasses();
+  const classes = getSxClasses();
 
   // cgpv.onMapReady is a single global callback slot owned by StoryController;
   // this only checks that the library itself loaded.

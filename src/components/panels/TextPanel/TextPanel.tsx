@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Paper, useTheme } from '@mui/material';
+import { Box, Typography, Paper } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import { TextPanel as TextPanelType } from '@/types/StoryConfig';
 import { getSxClasses } from './TextPanel-style';
@@ -9,7 +9,7 @@ interface TextPanelProps {
 }
 
 export const TextPanel: React.FC<TextPanelProps> = ({ panel }) => {
-  const classes = getSxClasses(useTheme());
+  const classes = getSxClasses();
   return (
     <Paper elevation={0} sx={classes.paper} className={panel.cssClasses}>
       {panel.title && (

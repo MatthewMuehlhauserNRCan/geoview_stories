@@ -1,12 +1,6 @@
-import type { Theme } from '@mui/material/styles';
-
-export const getSxClasses = (theme: Theme) => ({
+export const getSxClasses = () => ({
   paper: {
     p: 4,
-    backgroundColor: 'primary.light',
-    borderLeft: '4px solid',
-    borderColor: 'primary.main',
-    borderRadius: 2,
     position: 'relative',
   },
   quoteIcon: {

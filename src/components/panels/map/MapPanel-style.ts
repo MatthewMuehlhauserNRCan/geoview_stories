@@ -1,7 +1,6 @@
-import type { Theme } from '@mui/material/styles';
-
-export const getSxClasses = (theme: Theme) => ({
+export const getSxClasses = () => ({
   wrapper: {
     mx: { xs: -2, md: 0 },
+    width: '100%',
   },
 });

@@ -17,6 +17,10 @@ export const useScrollToSlide = (headerHeight: number = 64) => {
         top: targetPosition,
         behavior: 'smooth',
       });
+
+      // Move focus so keyboard/screen-reader users land on the slide instead
+      // of staying on the TOC link; preventScroll avoids fighting the smooth scroll above.
+      element.focus({ preventScroll: true });
     },
     [headerHeight]
   );

@@ -1,6 +1,4 @@
-import type { Theme } from '@mui/material/styles';
-
-export const getSxClasses = (theme: Theme) => ({
+export const getSxClasses = () => ({
   menuButton: {
     position: 'fixed',
     top: 16,

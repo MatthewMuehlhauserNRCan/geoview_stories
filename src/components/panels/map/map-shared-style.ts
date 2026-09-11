@@ -1,12 +1,9 @@
-import type { Theme } from '@mui/material/styles';
-
 /** Shared classes so MapPanel and InteractiveMapPanel look consistent with each other */
-export const getSxClasses = (theme: Theme) => ({
+export const getSxClasses = () => ({
   paper: {
     overflow: 'hidden',
     borderRadius: { xs: 0, md: 2 },
-    // Explicit border so separation from the page doesn't rely on the elevation
-    // shadow alone, which reads very differently for a sticky vs. in-flow panel.
+    // Explicit border so separation from the page doesn't rely on elevation shadow alone.
     border: '1px solid',
     borderColor: 'divider',
   },

@@ -3,8 +3,8 @@
 A React-based storytelling library for creating interactive stories with GeoView maps, inspired by RAMP Storylines.
 
 **📦 CDN Link:** `https://matthewmuehlhausernrcan.github.io/geoview_stories/geoview-story.js`  
-**🌐 Demo:** [https://matthewmuehlhausernrcan.github.io/geoview_stories/demo/demo-story.html](https://matthewmuehlhausernrcan.github.io/geoview_stories/demo/demo-story.html)  
-**📄 Template:** [demo/demo-story.html](demo/demo-story.html)
+**🌐 Demo:** [https://matthewmuehlhausernrcan.github.io/geoview_stories/demo/](https://matthewmuehlhausernrcan.github.io/geoview_stories/demo/)  
+**📄 Template:** [demo/index.html](demo/index.html)
 
 ## Features
 
@@ -20,7 +20,7 @@ A React-based storytelling library for creating interactive stories with GeoView
 
 ### Using the Template
 
-The easiest way to get started is to copy [`demo/demo-story.html`](demo/demo-story.html) as a starting template. It includes all the necessary setup with comments explaining each step.
+The easiest way to get started is to copy the [`demo/`](demo/) folder (`index.html`, `configs/`, `images/`) as a starting template — it's self-contained and can be dropped onto any static host as-is. `demo/index.html` includes all the necessary setup with comments explaining each step.
 
 ### Option 1: Auto-Init (Recommended)
 

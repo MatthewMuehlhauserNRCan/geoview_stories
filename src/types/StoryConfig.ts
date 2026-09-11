@@ -3,13 +3,9 @@
  */
 
 export interface StoryConfig {
-  title: string;
   introSlide?: IntroSlide;
   slides: Slide[];
   tocOrientation?: 'vertical' | 'horizontal';
-  contextLink?: string;
-  contextLabel?: string;
-  lang?: string;
 }
 
 export interface IntroSlide {
@@ -25,7 +21,6 @@ export interface IntroSlide {
 export interface Slide {
   title: string;
   backgroundImage?: string;
-  backgroundAltText?: string;
   panel: Panel[];
   includeInToc?: boolean;
 }
@@ -40,6 +35,7 @@ export interface TextPanel extends BasePanel {
   content: string;
   cssClasses?: string;
 }
+
 
 export interface ImagePanel extends BasePanel {
   type: 'image';
@@ -73,10 +69,10 @@ export interface PointOfInterest {
     layerId?: string;
     oid?: string | number;
     value?: number | string;
-    scale?: number;
+    scale?: number; // Target map scale denominator (e.g. 50000 for 1:50,000)
+    zoom?: number; // Target zoom level; takes precedence over scale if both are set
     returnHome?: boolean;
   };
-  hideLayers?: string[];
 }
 
 export interface VideoPanel extends BasePanel {
@@ -129,5 +125,4 @@ export type Panel =
 export interface TocItem {
   title: string;
   slideIndex: number;
-  children?: TocItem[];
 }

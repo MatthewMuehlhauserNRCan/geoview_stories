@@ -11,22 +11,33 @@ interface SlideProps {
 }
 
 export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideId, index }, ref) => {
-  const classes = getSxClasses(useTheme()).slide;
+  const theme = useTheme();
+  const classes = getSxClasses(theme).slide;
 
   // Determine layout: horizontal if text + image/map, vertical otherwise
   const hasMultiplePanels = slide.panel.length > 1;
+  const hasMedia = slide.panel.some(p => ['image', 'map', 'video'].includes(p.type));
   const hasTextAndImage = hasMultiplePanels && 
     slide.panel.some(p => p.type === 'text') && 
-    slide.panel.some(p => ['image', 'map', 'video'].includes(p.type));
-  
+    hasMedia;
   const flexDirection = hasTextAndImage ? { xs: 'column', md: 'row' } : 'column';
 
   return (
-    <Box ref={ref} component="section" id={slideId} data-slide-index={index} sx={classes.section}>
+    <Box
+      ref={ref}
+      component="section"
+      id={slideId}
+      data-slide-index={index}
+      // Not in the normal Tab order; focused programmatically when TOC
+      // navigation jumps here, so keyboard/screen-reader users land on the slide.
+      tabIndex={-1}
+      aria-label={slide.title}
+      sx={classes.section(hasMedia)}
+    >
       <Box sx={classes.inner}>
-        <Box sx={classes.row(flexDirection, hasTextAndImage)}>
+        <Box sx={classes.row(flexDirection, hasTextAndImage, hasMedia)}>
           {slide.panel.map((panel, panelIndex) => (
-            <Box key={panelIndex} sx={getPanelSx(panel, hasTextAndImage, hasMultiplePanels)}>
+            <Box key={panelIndex} sx={getPanelSx(panel, hasTextAndImage, hasMultiplePanels, theme)}>
               <PanelRenderer panel={panel} panelInstanceId={`${slideId}-panel-${panelIndex}`} />
             </Box>
           ))}

@@ -23,6 +23,8 @@ declare global {
 
   interface GeoviewMapViewer {
     mapId: string;
+    getZoomFromScale: (scale: number) => number | undefined;
+    getMapScaleFromZoom: (zoom: number) => number | undefined;
     controllers: {
         mapController: {
             zoomToInitialExtent: () => void;
@@ -49,6 +51,10 @@ declare global {
 
   interface GeoviewLayer {
     getOLSource: () => any;
+    // Shape varies by layer type: a single canvas for raster/WMS/WMTS, or an
+    // object keyed by geometry type (Point/LineString/Polygon) with canvases
+    // for vector layers - kept loose since exact structure is internal to GeoView.
+    getLegend: () => { legend?: unknown } | undefined;
   }
 
   type Extent = [number, number, number, number]; // [minX, minY, maxX, maxY]

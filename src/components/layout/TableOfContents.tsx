@@ -33,7 +33,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
   onToggle,
 }) => {
   const theme = useTheme();
-  const classes = getSxClasses(theme);
+  const classes = getSxClasses();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [mobileOpen, setMobileOpen] = React.useState(false);
 

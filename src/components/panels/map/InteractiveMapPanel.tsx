@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Typography, Paper, Chip, Stack, useTheme } from '@mui/material';
+import { Box, Typography, Paper, Stack } from '@mui/material';
 import { InteractiveMapPanel as InteractiveMapPanelType } from '@/types/StoryConfig';
 import { useMapReady } from '@/hooks/useMapReady';
 import { MapLoadingOverlay, MapScrollGuardOverlay } from './MapOverlays';
@@ -12,22 +12,50 @@ interface InteractiveMapPanelProps {
   panelInstanceId?: string;
 }
 
+// Best-effort layer style swatch: exact per-feature class matching (for
+// uniqueValue/classBreaks styles) needs GeoView's internal renderer logic,
+// which isn't exposed externally, so this just takes the layer's default/first icon.
+const getLayerLegendIconDataUrl = (layer: GeoviewLayer): string | undefined => {
+  try {
+    const legend = layer.getLegend?.()?.legend;
+    if (!legend) return undefined;
+
+    if (legend instanceof HTMLCanvasElement) {
+      return legend.toDataURL();
+    }
+
+    for (const geometryStyle of Object.values(legend as Record<string, any>)) {
+      const canvas = geometryStyle?.defaultCanvas ?? geometryStyle?.arrayOfCanvas?.[0];
+      if (canvas instanceof HTMLCanvasElement) return canvas.toDataURL();
+    }
+  } catch (err) {
+    console.warn('[InteractiveMap] Could not read layer legend:', err);
+  }
+  return undefined;
+};
+
 export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel, panelInstanceId }) => {
   const poiRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [activePoiIndex, setActivePoiIndex] = useState<number | null>(null);
   const [showScrollGuard, setShowScrollGuard] = useState(false);
   
-  // Use stable ID based on config path
-  const mapId = `interactive-map-${(panelInstanceId || 'panel').replace(/[^a-zA-Z0-9]/g, '-')}-${panel.config.replace(/[^a-zA-Z0-9]/g, '-')}`;
+  // Use stable ID based on config path. No hyphens: GeoView's legacy
+  // keyboard-focus code derives the map ID by splitting the shell element's
+  // DOM id on '-', so a hyphen here breaks it.
+  const mapId = `interactivemap_${(panelInstanceId || 'panel').replace(/[^a-zA-Z0-9]/g, '_')}_${panel.config.replace(/[^a-zA-Z0-9]/g, '_')}`;
   
   const mapInstanceRef = useRef<any>(null);
-  const featureDataRef = useRef<Map<number, { extent: [number, number, number, number]; fieldValue?: string }>>(new Map());
+  const featureDataRef = useRef<Map<number, { extent: [number, number, number, number]; fieldValue?: string; iconDataUrl?: string }>>(
+    new Map()
+  );
+  // Mutating featureDataRef alone doesn't trigger a re-render; bump this after
+  // populating it so the POI cards actually pick up the fetched field values/icons.
+  const [featureDataVersion, setFeatureDataVersion] = useState(0);
   const mapReady = useMapReady(mapId);
   const loading = !error && !mapReady;
-  const theme = useTheme();
-  const shared = getSharedSxClasses(theme);
-  const ownClasses = getSxClasses(theme);
+  const shared = getSharedSxClasses();
+  const ownClasses = getSxClasses();
 
   // cgpv.onMapReady is a single global callback slot owned by StoryController;
   // this only checks that the library itself loaded.
@@ -193,6 +221,7 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
             featureDataRef.current.set(i, {
               extent: extent,
               fieldValue: fieldValue?.toString(),
+              iconDataUrl: getLayerLegendIconDataUrl(layer),
             });
           }
         } catch (err) {
@@ -202,6 +231,9 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
     } catch (err) {
       console.error('Error in fetchFeatureData:', err);
     }
+
+    // Force a re-render so the POI cards pick up the freshly fetched data
+    setFeatureDataVersion((v) => v + 1);
   };
 
   const zoomToPoiOnMap = (index: number) => {
@@ -226,11 +258,12 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
         // Check if we have cached feature data
         const featureData = featureDataRef.current.get(index);
         if (featureData?.extent) {
-          // Zoom to the feature's extent
+          // Zoom is either explicit, derived from scale, or falls back to the previous fixed default
+          const targetZoom = poi.target.zoom ?? (poi.target.scale ? mapViewer.getZoomFromScale(poi.target.scale) : undefined);
           const fitOptions = {
             padding: [100, 100, 100, 100] as [number, number, number, number],
-            maxZoom: 10,
-            duration: 500,
+            maxZoom: targetZoom ?? 10,
+            duration: panel.duration ?? 500,
           };
           mapViewer.controllers.mapController.zoomToExtent(featureData.extent, true, fitOptions);
         } else {
@@ -286,7 +319,7 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
           <Typography variant="h6" sx={ownClasses.poiSectionHeading}>
             Scroll through locations
           </Typography>
-          <Stack spacing={30} sx={ownClasses.poiStack}>
+          <Stack sx={ownClasses.poiStack}>
             {panel.points.map((poi, index) => (
               <Paper
                 key={index}
@@ -296,23 +329,25 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
                 elevation={activePoiIndex === index ? 4 : 1}
                 sx={ownClasses.poiCard(activePoiIndex === index)}
               >
-                {/* POI Image */}
-                {poi.image && (
-                  <Box sx={ownClasses.poiImageWrapper}>
-                    <Box
-                      component="img"
-                      src={poi.image}
-                      alt={poi.altText || poi.title}
-                      sx={ownClasses.poiImage}
-                    />
-                    {/* Location Pin Icon Overlay */}
-                    <Box sx={ownClasses.poiPinBadge}>
+                {/* Icon: POI photo with a numbered pin badge, or just the pin badge on its own */}
+                <Box sx={ownClasses.poiIconWrapper}>
+                  {poi.image ? (
+                    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                      <Box component="img" src={poi.image} alt={poi.altText || poi.title || ''} sx={ownClasses.poiImage} />
+                      <Box sx={ownClasses.poiPinBadge(true)}>
+                        <Typography variant="body2" color="primary.main" sx={{ fontWeight: 700 }}>
+                          {index + 1}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  ) : (
+                    <Box sx={ownClasses.poiPinBadge(false)}>
                       <Typography variant="h6" color="primary.main" sx={{ fontWeight: 700 }}>
                         {index + 1}
                       </Typography>
                     </Box>
-                  </Box>
-                )}
+                  )}
+                </Box>
 
                 {/* POI Content */}
                 <Box sx={ownClasses.poiContent}>
@@ -321,49 +356,28 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
                       {poi.title}
                     </Typography>
                   )}
-                  {/* Show field value if available */}
+                  {/* Live field value takes precedence; falls back to the author-provided label. */}
                   {(() => {
                     const featureData = featureDataRef.current.get(index);
-                    if (featureData?.fieldValue) {
-                      return (
-                        <Typography variant="subtitle1" sx={ownClasses.poiFieldValue}>
-                          {featureData.fieldValue}
-                        </Typography>
-                      );
-                    }
-                    return null;
+                    const displayValue = featureData?.fieldValue ?? (poi.target.value !== undefined ? String(poi.target.value) : undefined);
+                    if (!displayValue && !featureData?.iconDataUrl) return null;
+                    return (
+                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'center', mb: 1 }}>
+                        {featureData?.iconDataUrl && (
+                          <Box component="img" src={featureData.iconDataUrl} alt="" sx={ownClasses.poiStyleIcon} />
+                        )}
+                        {displayValue && (
+                          <Typography variant="subtitle1" sx={ownClasses.poiFieldValue}>
+                            {displayValue}
+                          </Typography>
+                        )}
+                      </Stack>
+                    );
                   })()}
                   {poi.text && (
                     <Typography variant="body2" color="text.secondary" sx={ownClasses.poiText}>
                       {poi.text}
                     </Typography>
-                  )}
-                  {poi.target && (
-                    <Stack direction="row" spacing={1} sx={ownClasses.poiChips}>
-                      {poi.target.layerId && (
-                        <Chip
-                          label={`Layer: ${poi.target.layerId}`}
-                          size="small"
-                          color="primary"
-                          variant="outlined"
-                        />
-                      )}
-                      {poi.target.scale && (
-                        <Chip
-                          label={`Scale: 1:${poi.target.scale.toLocaleString()}`}
-                          size="small"
-                          color="secondary"
-                          variant="outlined"
-                        />
-                      )}
-                      {poi.target.value !== undefined && (
-                        <Chip
-                          label={`Feature ID: ${poi.target.value}`}
-                          size="small"
-                          variant="outlined"
-                        />
-                      )}
-                    </Stack>
                   )}
                 </Box>
               </Paper>
