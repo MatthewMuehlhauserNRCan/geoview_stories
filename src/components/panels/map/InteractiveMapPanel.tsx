@@ -49,6 +49,10 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
   const featureDataRef = useRef<Map<number, { extent: [number, number, number, number]; fieldValue?: string; iconDataUrl?: string }>>(
     new Map()
   );
+  // Mirrors activePoiIndex for the IntersectionObserver callback, which reads
+  // it via ref (not the closured state) so the observer never needs to be
+  // torn down and recreated when the active POI changes.
+  const activePoiIndexRef = useRef<number | null>(null);
   // Mutating featureDataRef alone doesn't trigger a re-render; bump this after
   // populating it so the POI cards actually pick up the fetched field values/icons.
   const [featureDataVersion, setFeatureDataVersion] = useState(0);
@@ -100,9 +104,12 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
         if (entry.isIntersecting) {
           // Find which POI is intersecting
           const index = poiRefs.current.findIndex((ref) => ref === entry.target);
-          if (index !== -1 && index !== activePoiIndex) {
+          if (index !== -1 && index !== activePoiIndexRef.current) {
+            // Update the ref immediately so a second entry in this same batch
+            // (e.g. one POI exiting as another enters) sees the fresh value.
+            activePoiIndexRef.current = index;
             setActivePoiIndex(index);
-            zoomToPoiOnMap(index);
+            zoomToPoiOnMap(index).catch((err) => console.error('[InteractiveMap] Zoom failed:', err));
           }
         }
       });
@@ -118,7 +125,7 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
     return () => {
       observer.disconnect();
     };
-  }, [loading, panel.points, activePoiIndex]);
+  }, [loading, panel.points]);
 
   // Scroll guard to prevent accidental zooming
   useEffect(() => {
@@ -236,42 +243,49 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
     setFeatureDataVersion((v) => v + 1);
   };
 
-  const zoomToPoiOnMap = (index: number) => {
+  const zoomToPoiOnMap = (index: number): Promise<void> => {
     const poi = panel.points[index];
-    
+
     if (!mapInstanceRef.current) {
       console.warn('Map instance not ready');
-      return;
+      return Promise.resolve();
     }
 
     try {
       const mapViewer = window.cgpv.api.getMapViewer(mapId);
       if (!mapViewer) {
         console.warn('Map viewer not found');
-        return;
+        return Promise.resolve();
       }
+
+      // Cancel whatever fit/animation is still in-flight from the previous POI
+      // first - back-to-back zoomToExtent/zoomToInitialExtent calls otherwise
+      // fight each other instead of the latest one cleanly winning.
+      mapViewer.getView().cancelAnimations();
 
       if (poi.target.returnHome) {
         // Return to home extent
-        mapViewer.controllers.mapController.zoomToInitialExtent();
-      } else {
-        // Check if we have cached feature data
-        const featureData = featureDataRef.current.get(index);
-        if (featureData?.extent) {
-          // Zoom is either explicit, derived from scale, or falls back to the previous fixed default
-          const targetZoom = poi.target.zoom ?? (poi.target.scale ? mapViewer.getZoomFromScale(poi.target.scale) : undefined);
-          const fitOptions = {
-            padding: [100, 100, 100, 100] as [number, number, number, number],
-            maxZoom: targetZoom ?? 10,
-            duration: panel.duration ?? 500,
-          };
-          mapViewer.controllers.mapController.zoomToExtent(featureData.extent, true, fitOptions);
-        } else {
-          console.warn('No feature data available for POI', index);
-        }
+        return mapViewer.controllers.mapController.zoomToInitialExtent();
       }
+
+      // Check if we have cached feature data
+      const featureData = featureDataRef.current.get(index);
+      if (featureData?.extent) {
+        // Zoom is either explicit, derived from scale, or falls back to the previous fixed default
+        const targetZoom = poi.target.zoom ?? (poi.target.scale ? mapViewer.getZoomFromScale(poi.target.scale) : undefined);
+        const fitOptions = {
+          padding: [100, 100, 100, 100] as [number, number, number, number],
+          maxZoom: targetZoom ?? 10,
+          duration: panel.duration ?? 500,
+        };
+        return mapViewer.controllers.mapController.zoomToExtent(featureData.extent, true, fitOptions);
+      }
+
+      console.warn('No feature data available for POI', index);
+      return Promise.resolve();
     } catch (err) {
       console.error('Error zooming to POI:', err);
+      return Promise.resolve();
     }
   };
 

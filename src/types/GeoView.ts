@@ -25,10 +25,13 @@ declare global {
     mapId: string;
     getZoomFromScale: (scale: number) => number | undefined;
     getMapScaleFromZoom: (zoom: number) => number | undefined;
+    // OpenLayers View; only what we need to cancel an in-progress fit/animate
+    // before starting a new one, so back-to-back zoom requests don't fight each other.
+    getView: () => { cancelAnimations: () => void };
     controllers: {
         mapController: {
-            zoomToInitialExtent: () => void;
-            zoomToExtent: (extent: Extent, animate?: boolean, options?: FitOptions) => void;
+            zoomToInitialExtent: () => Promise<void>;
+            zoomToExtent: (extent: Extent, animate?: boolean, options?: FitOptions) => Promise<void>;
         };
         layerController: {
             getGeoviewLayerPaths: () => string[];
