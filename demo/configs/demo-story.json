@@ -119,12 +119,40 @@
       ]
     },
     {
+      "title": "Image Gallery Example",
+      "panel": [
+        {
+          "type": "slideshow",
+          "title": "Image Gallery Example",
+          "loop": true,
+          "items": [
+            {
+              "src": "images/banner_draft_4-rapids.jpg",
+              "altText": "Rapids on a river surrounded by forest",
+              "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Text placed on the left leaves the right side of the photo uncovered.",
+              "textPosition": "left"
+            },
+            {
+              "src": "images/BackgroundImageTest.jpg",
+              "altText": "Background test image",
+              "text": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Text placed on the right leaves the left side of the photo uncovered.",
+              "textPosition": "right"
+            },
+            {
+              "src": "images/Guiding Principles-v02.png",
+              "altText": "Guiding Principles diagram with seven surrounding principles"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "title": "Next Steps",
       "panel": [
         {
           "type": "text",
           "title": "Continue Development",
-          "content": "**Implemented Features:**\n- ✅ Video panels (local, external, YouTube)\n- ✅ Quote panels with attribution\n- ✅ Persistent vertical navigation (desktop)\n- ✅ Basic GeoView map integration\n- ✅ Interactive map with POI system (placeholder)\n\n**Coming Soon:**\n1. Scroll-triggered map animations for POIs\n2. Custom map configurations\n3. Image galleries and slideshows\n4. Dynamic content panels\n5. Chart integration"
+          "content": "**Implemented Features:**\n- ✅ Video panels (local, external, YouTube)\n- ✅ Quote panels with attribution\n- ✅ Persistent vertical navigation (desktop)\n- ✅ Basic GeoView map integration\n- ✅ Interactive map with POI system (placeholder)\n- ✅ Image gallery/slideshow panels\n\n**Coming Soon:**\n1. Scroll-triggered map animations for POIs\n2. Custom map configurations\n3. Dynamic content panels\n4. Chart integration"
         }
       ]
     }
