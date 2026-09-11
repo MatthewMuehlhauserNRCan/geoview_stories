@@ -16,7 +16,7 @@ export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideI
 
   // Determine layout: horizontal if text + image/map, vertical otherwise
   const hasMultiplePanels = slide.panel.length > 1;
-  const hasMedia = slide.panel.some(p => ['image', 'map', 'video'].includes(p.type));
+  const hasMedia = slide.panel.some(p => ['image', 'map', 'video', 'slideshow'].includes(p.type));
   const hasTextAndImage = hasMultiplePanels && 
     slide.panel.some(p => p.type === 'text') && 
     hasMedia;

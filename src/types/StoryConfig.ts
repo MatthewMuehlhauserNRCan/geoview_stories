@@ -86,11 +86,17 @@ export interface VideoPanel extends BasePanel {
   autoplay?: boolean;
 }
 
+export interface SlideshowItem {
+  src: string;
+  altText?: string;
+  text?: string; // Optional overlay text shown beside the image
+  textPosition?: 'left' | 'right'; // Which side the text sits on; defaults to 'left'
+}
+
 export interface SlideshowPanel extends BasePanel {
   type: 'slideshow';
-  items: Array<ImagePanel | MapPanel>;
+  items: SlideshowItem[];
   loop?: boolean;
-  caption?: string;
 }
 
 export interface DynamicPanel extends BasePanel {

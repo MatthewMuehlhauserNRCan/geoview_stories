@@ -6,6 +6,7 @@ import { MapPanel } from './map/MapPanel';
 import { VideoPanel } from './VideoPanel/VideoPanel';
 import { InteractiveMapPanel } from './map/InteractiveMapPanel';
 import { QuotePanel } from './QuotePanel/QuotePanel';
+import { SlideshowPanel } from './SlideshowPanel/SlideshowPanel';
 import { Box, Typography } from '@mui/material';
 import { getSxClasses } from './PanelRenderer-style';
 
@@ -31,12 +32,7 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstan
     case 'quote':
       return <QuotePanel {...(panel as QuotePanelConfig)} />;
     case 'slideshow':
-      // TODO: Implement SlideshowPanel
-      return (
-        <Box sx={classes.placeholder}>
-          <Typography>Slideshow Panel (Coming Soon)</Typography>
-        </Box>
-      );
+      return <SlideshowPanel panel={panel} />;
     case 'dynamic':
       // TODO: Implement DynamicPanel
       return (

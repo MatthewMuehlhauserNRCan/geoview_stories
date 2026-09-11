@@ -107,7 +107,7 @@ const QUOTE_WIDTH_STANDALONE = '66.666%'; // pull-quotes read better wide, but n
 
 export const getPanelSx = (panel: Panel, hasTextAndImage: boolean, hasMultiplePanels: boolean, theme: Theme) => {
   const isTextPanel = panel.type === 'text';
-  const isMediaPanel = ['image', 'map', 'video'].includes(panel.type);
+  const isMediaPanel = ['image', 'map', 'video', 'slideshow'].includes(panel.type);
 
   const sx: any = {
     flex: hasTextAndImage ? '1 1 auto' : '0 1 auto',
