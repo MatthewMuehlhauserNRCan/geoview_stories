@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, Typography, Button, useTheme } from '@mui/material';
+import { Box, Container, Typography, IconButton, useTheme } from '@mui/material';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { IntroSlide as IntroSlideType } from '@/types/StoryConfig';
 import { getSxClasses } from './story-styles';
@@ -16,6 +16,7 @@ export const IntroSlide: React.FC<IntroSlideProps> = ({ intro, onEnter }) => {
       {intro.backgroundImage && (
         <Box component="img" src={intro.backgroundImage} sx={classes.backgroundImage} />
       )}
+      {intro.backgroundImage && <Box sx={classes.scrim} />}
       <Container maxWidth="md" sx={classes.container}>
         {intro.logo && (
           <Box sx={classes.logoWrapper}>
@@ -30,10 +31,10 @@ export const IntroSlide: React.FC<IntroSlideProps> = ({ intro, onEnter }) => {
             {intro.subtitle}
           </Typography>
         )}
-        <Button variant="contained" size="large" onClick={onEnter} endIcon={<ArrowDownwardIcon />} sx={classes.enterButton}>
-          Begin Story
-        </Button>
       </Container>
+      <IconButton onClick={onEnter} sx={classes.scrollCue} aria-label="Scroll to begin the story">
+        <ArrowDownwardIcon sx={classes.scrollCueIcon} />
+      </IconButton>
     </Box>
   );
 };

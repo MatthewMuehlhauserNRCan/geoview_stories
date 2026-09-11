@@ -33,12 +33,39 @@ export const getSxClasses = (theme: Theme) => ({
       objectPosition: 'center',
       zIndex: 0,
     },
+    // Guarantees text contrast regardless of the background image's own
+    // colors (WCAG) - a flat scrim alone can't cover every possible photo,
+    // so it's paired with a text/icon shadow below for a local contrast halo.
+    scrim: {
+      position: 'absolute',
+      inset: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      zIndex: 1,
+    },
     container: { position: 'relative', zIndex: 2, textAlign: 'center' },
     logoWrapper: { mb: 4 },
     logo: { maxHeight: 120, maxWidth: '100%' },
-    title: { color: 'white', fontWeight: 700, mb: 2 },
-    subtitle: { color: 'white', mb: 4 },
-    enterButton: { px: 4, py: 1.5, fontSize: '1.1rem' },
+    title: { color: 'white', fontWeight: 700, mb: 2, textShadow: '0 1px 3px rgba(0, 0, 0, 0.85)' },
+    subtitle: { color: 'white', mb: 4, textShadow: '0 1px 3px rgba(0, 0, 0, 0.85)' },
+    // Minimal icon-only scroll cue (not a labeled CTA) since it's just
+    // indicating more content is right below, not navigating anywhere new.
+    scrollCue: {
+      position: 'absolute',
+      bottom: { xs: 16, md: 32 },
+      left: '50%',
+      transform: 'translateX(-50%)',
+      zIndex: 2,
+      color: 'white',
+      filter: 'drop-shadow(0 1px 3px rgba(0, 0, 0, 0.85))',
+      '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.15)' },
+    },
+    scrollCueIcon: {
+      animation: 'geoview-story-scroll-cue-bounce 3s infinite',
+      '@keyframes geoview-story-scroll-cue-bounce': {
+        '0%, 100%': { transform: 'translateY(0)' },
+        '50%': { transform: 'translateY(6px)' },
+      },
+    },
   },
 
   slide: {
