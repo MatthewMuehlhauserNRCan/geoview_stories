@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoView Story Library - Configuration Reference</title>
+  <link rel="icon" href="favicon.ico">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .info-box {
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 30px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .info-box h1 {
+      color: #1976d2;
+      margin-top: 0;
+    }
+
+    .info-box h2 {
+      color: #1976d2;
+      margin-top: 40px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 8px;
+    }
+
+    .info-box h3 {
+      margin-top: 28px;
+    }
+
+    .info-box pre {
+      background: #fff;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      border: 1px solid #ddd;
+    }
+
+    .info-box code {
+      color: #d32f2f;
+    }
+
+    .info-box pre code {
+      color: inherit;
+    }
+
+    .info-box a {
+      color: #1976d2;
+      text-decoration: none;
+    }
+
+    .info-box a:hover {
+      text-decoration: underline;
+    }
+
+    .info-box table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 24px;
+      font-size: 14px;
+    }
+
+    .info-box th, .info-box td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid #ddd;
+      vertical-align: top;
+    }
+
+    .info-box th {
+      background: #eaeaea;
+    }
+
+    .demo-note {
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-size: 14px;
+      margin: 12px 0 24px;
+    }
+
+    .toc {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 16px 24px;
+    }
+
+    .toc ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="info-box">
+    <h1>Configuration Reference</h1>
+    <p>
+      Full field-by-field reference for story config JSON files. See
+      <a href="index.html">the library overview</a> for setup instructions, and
+      <a href="demo/">the demo</a> for a working example. Fields marked
+      <strong>not shown in demo</strong> below aren't exercised by
+      <code>demo/configs/demo-story.json</code>, so this page is the only place they're documented.
+    </p>
+
+    <div class="toc">
+      <strong>Contents</strong>
+      <ul>
+        <li><a href="#story-config">Story config</a></li>
+        <li><a href="#theming">Theming</a></li>
+        <li><a href="#intro-slide">Intro slide</a></li>
+        <li><a href="#slide">Slides</a></li>
+        <li><a href="#panels">Panel types</a>
+          <ul>
+            <li><a href="#panel-text">text</a></li>
+            <li><a href="#panel-image">image</a></li>
+            <li><a href="#panel-video">video</a></li>
+            <li><a href="#panel-map">map</a></li>
+            <li><a href="#panel-quote">quote</a></li>
+            <li><a href="#panel-slideshow">slideshow</a></li>
+            <li><a href="#panel-interactive-map">interactive-map</a></li>
+            <li><a href="#panel-dynamic">dynamic (reserved)</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <h2 id="story-config">Story config (top level)</h2>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>introSlide</code></td><td>object</td><td>Optional. See <a href="#intro-slide">Intro slide</a>.</td></tr>
+      <tr><td><code>slides</code></td><td>array</td><td>Required. See <a href="#slide">Slides</a>.</td></tr>
+      <tr><td><code>tocOrientation</code></td><td>"vertical" | "horizontal"</td><td>Optional, default "vertical". Controls the table of contents layout.</td></tr>
+      <tr><td><code>theme</code></td><td>string | object</td><td>Optional. Built-in theme name, or a custom theme object. See <a href="#theming">Theming</a>. <strong>Custom theme objects and <code>geoviewTheme</code> not shown in demo config</strong> (the demo instead uses the <code>data-theme</code> HTML attribute).</td></tr>
+    </table>
+
+    <h2 id="theming">Theming</h2>
+    <p>Select a built-in theme by name:</p>
+    <pre><code>{ "theme": "dark" }</code></pre>
+    <p>Or fully customize (optionally based on a named theme via <code>name</code>):</p>
+    <pre><code>{
+  "theme": {
+    "name": "dark",
+    "mode": "dark",
+    "primaryColor": "#ff6b35",
+    "secondaryColor": "#00bcd4",
+    "backgroundColor": "#121212",
+    "paperColor": "#1e1e1e",
+    "textColor": "#ffffff",
+    "fontFamily": "'Georgia', serif",
+    "geoviewTheme": "canada.ca"
+  }
+}</code></pre>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>name</code></td><td>string</td><td>Built-in theme to use as a base ("light" or "dark"); other fields here override it.</td></tr>
+      <tr><td><code>mode</code></td><td>"light" | "dark"</td><td>MUI light/dark mode.</td></tr>
+      <tr><td><code>primaryColor</code> / <code>secondaryColor</code></td><td>string (CSS color)</td><td>Accent colors.</td></tr>
+      <tr><td><code>backgroundColor</code> / <code>paperColor</code></td><td>string (CSS color)</td><td>Page background / card background.</td></tr>
+      <tr><td><code>textColor</code></td><td>string (CSS color)</td><td>Primary text color.</td></tr>
+      <tr><td><code>fontFamily</code></td><td>string</td><td>CSS font-family stack.</td></tr>
+      <tr><td><code>geoviewTheme</code></td><td>"dark" | "light" | "geo.ca" | "canada.ca"</td><td>Which GeoView map theme to sync to. GeoView only understands these 4 fixed names, so a custom app theme's look can't always be inferred automatically - set this explicitly if the auto-guess (based on <code>mode</code>) isn't what you want.</td></tr>
+    </table>
+
+    <h3>Reusing one config with a different theme</h3>
+    <p>
+      Rather than duplicating a config file just to get a themed variant of a page, add a
+      <code>data-theme</code> attribute to the story container. It overrides whatever
+      <code>theme</code> (if any) is set in the JSON:
+    </p>
+    <pre><code>&lt;div class="geoview-story" data-config="configs/my-story.json" data-theme="dark"&gt;&lt;/div&gt;</code></pre>
+    <p>See <code>demo/index_dark.html</code>, which reuses <code>demo/configs/demo-story.json</code> unmodified.</p>
+
+    <h2 id="intro-slide">Intro slide</h2>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>title</code></td><td>string</td><td>Required.</td></tr>
+      <tr><td><code>subtitle</code></td><td>string</td><td>Optional.</td></tr>
+      <tr><td><code>backgroundImage</code></td><td>string</td><td>Optional.</td></tr>
+      <tr><td><code>logo</code></td><td>{ src, altText }</td><td>Optional.</td></tr>
+    </table>
+
+    <h2 id="slide">Slides</h2>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>title</code></td><td>string</td><td>Required. Used for the slide heading, generated slide ID, and TOC entry.</td></tr>
+      <tr><td><code>backgroundImage</code></td><td>string</td><td>Optional full-page crossfade background while this slide is active.</td></tr>
+      <tr><td><code>panel</code></td><td>array</td><td>Required. One or more panels; see <a href="#panels">Panel types</a>. A text panel paired with one media panel (image/video/map/slideshow) gets a side-by-side layout.</td></tr>
+      <tr><td><code>includeInToc</code></td><td>boolean</td><td>Optional, default true. Set false to hide this slide from the table of contents.</td></tr>
+    </table>
+
+    <h2 id="panels">Panel types</h2>
+    <p>Every panel has an optional <code>title</code> in addition to its type-specific fields below.</p>
+
+    <h3 id="panel-text">text</h3>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>content</code></td><td>string</td><td>Required. Markdown.</td></tr>
+      <tr><td><code>cssClasses</code></td><td>string</td><td>Optional extra CSS class(es) on the panel.</td></tr>
+    </table>
+
+    <h3 id="panel-image">image</h3>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>src</code></td><td>string</td><td>Required.</td></tr>
+      <tr><td><code>altText</code></td><td>string</td><td>Optional.</td></tr>
+      <tr><td><code>caption</code></td><td>string</td><td>Optional caption shown below the image.</td></tr>
+      <tr><td><code>fullscreen</code></td><td>boolean</td><td>Optional, default true. Click (or Enter/Space) opens a full-screen view. <strong>Set to false, not shown in demo.</strong></td></tr>
+    </table>
+
+    <h3 id="panel-video">video</h3>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>src</code></td><td>string</td><td>Required.</td></tr>
+      <tr><td><code>videoType</code></td><td>"local" | "external" | "YouTube"</td><td>Required. <strong>"local"/"external" not shown in demo</strong> (only YouTube is).</td></tr>
+      <tr><td><code>caption</code></td><td>string</td><td>Optional, used as the captions track source for local video.</td></tr>
+      <tr><td><code>transcript</code></td><td>string</td><td>Optional link to a transcript, shown below the video. <strong>Not shown in demo.</strong></td></tr>
+      <tr><td><code>width</code></td><td>string | number</td><td>Optional, local/external video width. <strong>Not shown in demo.</strong></td></tr>
+      <tr><td><code>height</code></td><td>number</td><td>Optional, iframe height for YouTube.</td></tr>
+      <tr><td><code>autoplay</code></td><td>boolean</td><td>Optional, local/external video autoplay. <strong>Not shown in demo.</strong></td></tr>
+    </table>
+
+    <h3 id="panel-map">map</h3>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>config</code></td><td>string</td><td>Required. Path to a GeoView map config JSON.</td></tr>
+      <tr><td><code>scrollguard</code></td><td>boolean</td><td>Optional. Requires Ctrl/Cmd + scroll to zoom, so page scrolling isn't hijacked by the map.</td></tr>
+    </table>
+
+    <h3 id="panel-quote">quote</h3>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>quote</code></td><td>string</td><td>Required.</td></tr>
+      <tr><td><code>author</code></td><td>string</td><td>Optional.</td></tr>
+      <tr><td><code>role</code></td><td>string</td><td>Optional.</td></tr>
+      <tr><td><code>organization</code></td><td>string</td><td>Optional.</td></tr>
+    </table>
+
+    <h3 id="panel-slideshow">slideshow</h3>
+    <p>Image gallery carousel with dot navigation, back/forward arrows, and a full-screen viewer.</p>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>items</code></td><td>array</td><td>Required. See below.</td></tr>
+      <tr><td><code>loop</code></td><td>boolean</td><td>Optional, default false. Wrap around at the first/last image instead of disabling the arrow.</td></tr>
+      <tr><td><code>objectFit</code></td><td>"cover" | "contain" | "fill" | "none" | "scale-down"</td><td>Optional, default "cover". How each image fills the carousel frame. <strong>Only "contain" shown in demo.</strong></td></tr>
+    </table>
+    <p><code>items[]</code>:</p>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>src</code></td><td>string</td><td>Required.</td></tr>
+      <tr><td><code>altText</code></td><td>string</td><td>Optional.</td></tr>
+      <tr><td><code>text</code></td><td>string</td><td>Optional overlay caption shown beside the image, on a semi-transparent backdrop.</td></tr>
+      <tr><td><code>textPosition</code></td><td>"left" | "right"</td><td>Optional, default "left". Which side the caption sits on - choose whichever side doesn't cover the important part of the photo.</td></tr>
+    </table>
+
+    <h3 id="panel-interactive-map">interactive-map</h3>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>config</code></td><td>string</td><td>Required. Path to a GeoView map config JSON.</td></tr>
+      <tr><td><code>points</code></td><td>array</td><td>Required. See below.</td></tr>
+      <tr><td><code>duration</code></td><td>number</td><td>Optional, ms. Zoom animation duration for every point in this panel.</td></tr>
+      <tr><td><code>scrollguard</code></td><td>boolean</td><td>Optional. Same as the map panel's.</td></tr>
+    </table>
+    <p><code>points[]</code> (points of interest):</p>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+      <tr><td><code>title</code></td><td>string</td><td>Optional.</td></tr>
+      <tr><td><code>text</code></td><td>string</td><td>Optional description shown on the POI card.</td></tr>
+      <tr><td><code>image</code> / <code>altText</code></td><td>string</td><td>Optional photo shown at the top of the card.</td></tr>
+      <tr><td><code>field</code></td><td>string</td><td>Optional feature attribute name to read and display live from the map service. <strong>Not shown in demo</strong> (the demo uses <code>target.value</code> instead, a static author-provided label).</td></tr>
+      <tr><td><code>target.layerId</code></td><td>string</td><td>Layer path, e.g. <code>"geoviewLayerId/layerId"</code>.</td></tr>
+      <tr><td><code>target.oid</code></td><td>string | number</td><td>Feature object ID to zoom to.</td></tr>
+      <tr><td><code>target.value</code></td><td>string | number</td><td>Optional static label for the POI (shown if <code>field</code> isn't set or the live value is unavailable).</td></tr>
+      <tr><td><code>target.scale</code></td><td>number</td><td>Target map scale denominator (e.g. 50000 for 1:50,000) to zoom to.</td></tr>
+      <tr><td><code>target.zoom</code></td><td>number</td><td>Explicit target zoom level; takes precedence over <code>scale</code> if both are set. <strong>Not shown in demo</strong> (the demo only uses <code>scale</code>).</td></tr>
+      <tr><td><code>target.returnHome</code></td><td>boolean</td><td>If true, this POI returns the map to its initial extent instead of zooming to a feature.</td></tr>
+    </table>
+
+    <h3 id="panel-dynamic">dynamic (reserved)</h3>
+    <div class="demo-note">
+      This panel type is defined in the schema (<code>content</code>, <code>contentWidth</code>, <code>reversed</code>, <code>children</code>) but
+      is <strong>not implemented yet</strong> - it's a placeholder for a future composable panel type. Avoid using it in configs for now.
+    </div>
+  </div>
+</body>
+</html>

@@ -67,10 +67,12 @@ The deployed site has the following structure:
 ```
 /                           # Root (documentation page)
 ├── index.html             # Library documentation
+├── docs.html              # Full configuration reference
 ├── dist/                  # Built library files
 │   └── geoview-story.js  # Main library file
 └── demo/                  # Demo application
     ├── index.html        # Demo page
+    ├── index_dark.html   # Same demo config, dark theme via data-theme
     ├── configs/          # Story configurations
     └── images/           # Demo assets
 ```

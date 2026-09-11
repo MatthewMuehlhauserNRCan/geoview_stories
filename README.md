@@ -11,10 +11,13 @@ A React-based storytelling library for creating interactive stories with GeoView
 - 📖 **Scroll-based storytelling** - Navigate through stories with smooth scrolling
 - 🗺️ **GeoView integration** - Embed interactive maps with OpenLayers
 - 📱 **Responsive design** - Works on desktop, tablet, and mobile
-- 🎨 **Customizable panels** - Text, images, videos, maps, quotes, and interactive maps
+- 🎨 **Customizable panels** - Text, images, videos, maps, quotes, image galleries, and interactive maps
+- 🌗 **Theming** - Built-in light/dark themes, fully custom themes, or a `data-theme` HTML attribute to reuse one config across multiple pages
 - 🔗 **Auto-initialization** - Simple data-attribute-based setup
 - 🎭 **Background images** - Full-page backgrounds with smooth crossfade transitions
-- 📍 **Point of Interest navigation** - Automatic map zooming on scroll
+- 🖼️ **Image galleries** - Carousel with optional side-positioned captions and a full-screen lightbox
+- 📍 **Point of interest navigation** - Automatic map zooming/panning on scroll, by scale or explicit zoom level
+- ♿ **Accessibility** - Keyboard-navigable focus management, ARIA labeling, and WCAG-conscious layout choices throughout
 
 ## Quick Start
 
@@ -123,13 +126,12 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
 
 ## Configuration
 
-Story configurations are JSON files that define the structure and content. See `demo/configs/demo-story.json` for a complete example.
+Story configurations are JSON files that define the structure and content. See `demo/configs/demo-story.json` for a complete example, and [public/docs.html](public/docs.html) (or the [live reference page](https://matthewmuehlhausernrcan.github.io/geoview_stories/docs.html)) for the full field-by-field reference, including options not shown in the demo (custom themes, POI `field`/`zoom` overrides, video `autoplay`/`transcript`, gallery `objectFit`, etc.).
 
 ### Basic Structure
 
 ```json
 {
-  "title": "My Story",
   "introSlide": {
     "title": "Welcome",
     "subtitle": "Scroll to begin",
@@ -155,29 +157,64 @@ Story configurations are JSON files that define the structure and content. See `
 ### Panel Types
 
 - **text** - Markdown content with optional CSS classes
-- **image** - Display images with captions
-- **video** - Embed YouTube or local videos
+- **image** - Displays images with captions; click (or Enter/Space) opens a full-screen view unless `fullscreen: false` is set
+- **video** - Embed YouTube, local, or external videos, with optional autoplay, caption, and transcript link
 - **map** - Basic GeoView map
-- **quote** - Styled quotations
-- **interactive-map** - Map with scrollable points of interest
+- **quote** - Styled quotations with attribution
+- **slideshow** - Image gallery carousel with dot navigation, optional side-positioned caption text per image, a full-screen viewer, and a configurable `objectFit`
+- **interactive-map** - Map with scrollable points of interest; each POI can zoom to a feature's extent by scale or explicit zoom level, or return to the map's home view
+- **dynamic** - Reserved in the schema for a future composable panel type; not yet implemented
+
+### Theming
+
+A story can select a built-in theme by name, or define its own:
+
+```json
+{
+  "theme": "dark",
+  "slides": [ /* ... */ ]
+}
+```
+
+```json
+{
+  "theme": {
+    "name": "dark",
+    "primaryColor": "#ff6b35",
+    "geoviewTheme": "canada.ca"
+  }
+}
+```
+
+Built-in themes are `light` (default) and `dark`. A custom theme object can set `mode`, `primaryColor`, `secondaryColor`, `backgroundColor`, `paperColor`, `textColor`, `fontFamily`, and `geoviewTheme` (which GeoView map theme to sync to - GeoView only understands `dark`/`light`/`geo.ca`/`canada.ca`, so it's inferred from `mode` unless set explicitly).
+
+To reuse the exact same config file with a different theme (e.g. a `_dark` variant of a page) without duplicating it, add a `data-theme` attribute to the container element instead of touching the JSON - see `demo/index_dark.html` for a working example that reuses `demo/configs/demo-story.json` as-is:
+
+```html
+<div class="geoview-story" data-config="configs/demo-story.json" data-theme="dark"></div>
+```
 
 ## Folder Structure
 
 ```
 ├── demo/               # Demo story files
 │   ├── index.html     # Demo page
+│   ├── index_dark.html # Same demo config, dark theme via data-theme
 │   ├── configs/       # Story configurations
 │   └── images/        # Story assets
 ├── dist/              # Built library (generated)
 │   └── geoview-story.js
 ├── public/            # Static public files
-│   └── index.html     # Library documentation
+│   ├── index.html     # Library landing/documentation page
+│   └── docs.html      # Full configuration reference
 ├── src/               # Source code
-│   ├── components/    # React components
+│   ├── components/    # React components (layout/, panels/, story/)
+│   ├── core/          # Non-React controllers and stores
 │   ├── hooks/         # Custom hooks
+│   ├── theme/         # Theme dictionary and builder
 │   ├── types/         # TypeScript types
 │   ├── utils/         # Utilities
-│   └── library.tsx    # Library entry point
+│   └── index.tsx      # Library entry point
 └── webpack.*.js       # Build configuration
 ```
 
