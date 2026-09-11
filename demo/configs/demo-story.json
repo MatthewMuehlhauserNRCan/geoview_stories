@@ -125,6 +125,7 @@
           "type": "slideshow",
           "title": "Image Gallery Example",
           "loop": true,
+          "objectFit": "contain",
           "items": [
             {
               "src": "images/banner_draft_4-rapids.jpg",
@@ -152,7 +153,7 @@
         {
           "type": "text",
           "title": "Continue Development",
-          "content": "**Implemented Features:**\n- ✅ Video panels (local, external, YouTube)\n- ✅ Quote panels with attribution\n- ✅ Persistent vertical navigation (desktop)\n- ✅ Basic GeoView map integration\n- ✅ Interactive map with POI system (placeholder)\n- ✅ Image gallery/slideshow panels\n\n**Coming Soon:**\n1. Scroll-triggered map animations for POIs\n2. Custom map configurations\n3. Dynamic content panels\n4. Chart integration"
+          "content": "**Implemented Features:**\n- ✅ Video panels (local, external, YouTube)\n- ✅ Quote panels with attribution\n- ✅ Persistent vertical navigation (desktop)\n- ✅ Basic GeoView map integration\n- ✅ Interactive map with POI system (placeholder)\n- ✅ Image gallery/slideshow panels\n\n**Future Enhancements:**\n1. Dynamic POI panels\n2. Chart integration"
         }
       ]
     }
