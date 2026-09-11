@@ -70,7 +70,7 @@
           "points": [
             {
               "title": "Point of Interest A",
-              "text": "This is an example point of interest. Click to see more details and zoom to this location on the map.",
+              "text": "This is an example point of interest.",
               "target": {
                 "layerId": "Project_Summaries/1",
                 "oid": 1,
@@ -90,13 +90,13 @@
             },
             {
               "title": "Return to Overview",
-              "text": "Click here to return to the full map extent.",
+              "text": "This POI returns to the full map extent.",
               "target": {
                 "returnHome": true
               }
             }
           ],
-          "duration": 1500,
+          "duration": 500,
           "scrollguard": true
         }
       ]
