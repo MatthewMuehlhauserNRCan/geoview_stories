@@ -1,5 +1,4 @@
 {
-  "title": "GeoView Stories Demo",
   "introSlide": {
     "title": "Welcome to GeoView Stories",
     "subtitle": "An interactive storytelling platform for geospatial data",
@@ -130,8 +129,5 @@
       ]
     }
   ],
-  "tocOrientation": "vertical",
-  "contextLabel": "Learn more about GeoView",
-  "contextLink": "https://github.com/Canadian-Geospatial-Platform/geoview",
-  "lang": "en"
+  "tocOrientation": "vertical"
 }
