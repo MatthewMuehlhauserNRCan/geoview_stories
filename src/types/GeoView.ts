@@ -25,6 +25,9 @@ declare global {
     mapId: string;
     getZoomFromScale: (scale: number) => number | undefined;
     getMapScaleFromZoom: (zoom: number) => number | undefined;
+    // GeoView has no data-theme div attribute, only a config field (default
+    // 'geo.ca'); this lets us sync the map to our own story-level theme at runtime.
+    setTheme: (theme: 'dark' | 'light' | 'geo.ca' | 'canada.ca') => void;
     // OpenLayers View; only what we need to cancel an in-progress fit/animate
     // before starting a new one, so back-to-back zoom requests don't fight each other.
     getView: () => { cancelAnimations: () => void };

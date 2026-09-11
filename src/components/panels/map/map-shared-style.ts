@@ -28,7 +28,7 @@ export const getSxClasses = () => ({
     pointerEvents: 'none',
   },
   loadingOverlay: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'background.paper',
     zIndex: 1000,
   },
   scrollGuardOverlay: {
@@ -37,7 +37,7 @@ export const getSxClasses = () => ({
     transition: 'opacity 0.2s',
   },
   scrollGuardMessage: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    backgroundColor: 'background.paper',
     px: 3,
     py: 2,
     borderRadius: 2,

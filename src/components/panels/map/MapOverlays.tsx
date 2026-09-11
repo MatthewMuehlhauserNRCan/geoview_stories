@@ -21,7 +21,7 @@ export const MapScrollGuardOverlay: React.FC = () => {
   return (
     <Box sx={[classes.overlay, classes.scrollGuardOverlay]}>
       <Box sx={classes.scrollGuardMessage}>
-        <Typography variant="body1" sx={{ fontWeight: 600 }}>
+        <Typography variant="body1" sx={{ fontWeight: 600, color: 'text.primary' }}>
           Use Ctrl + scroll to zoom the map
         </Typography>
       </Box>

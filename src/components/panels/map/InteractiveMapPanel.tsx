@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Typography, Paper, Stack } from '@mui/material';
+import { Box, Typography, Paper, Stack, useTheme } from '@mui/material';
 import { InteractiveMapPanel as InteractiveMapPanelType } from '@/types/StoryConfig';
 import { useMapReady } from '@/hooks/useMapReady';
 import { MapLoadingOverlay, MapScrollGuardOverlay } from './MapOverlays';
@@ -60,6 +60,7 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
   const loading = !error && !mapReady;
   const shared = getSharedSxClasses();
   const ownClasses = getSxClasses();
+  const geoviewTheme = useTheme().geoviewTheme;
 
   // cgpv.onMapReady is a single global callback slot owned by StoryController;
   // this only checks that the library itself loaded.
@@ -68,6 +69,13 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
       setError('GeoView library not loaded');
     }
   }, []);
+
+  // GeoView has no data-theme attribute of its own, so sync it to our story's
+  // theme here instead of duplicating the map config just to flip dark/light.
+  useEffect(() => {
+    if (!mapReady) return;
+    window.cgpv.api.getMapViewer(mapId)?.setTheme(geoviewTheme);
+  }, [mapReady, geoviewTheme, mapId]);
 
   // Once the map is ready, grab the viewer instance and fetch POI feature data
   useEffect(() => {
@@ -349,14 +357,14 @@ export const InteractiveMapPanel: React.FC<InteractiveMapPanelProps> = ({ panel,
                     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
                       <Box component="img" src={poi.image} alt={poi.altText || poi.title || ''} sx={ownClasses.poiImage} />
                       <Box sx={ownClasses.poiPinBadge(true)}>
-                        <Typography variant="body2" color="primary.main" sx={{ fontWeight: 700 }}>
+                        <Typography variant="body2" color="primary" sx={{ fontWeight: 700 }}>
                           {index + 1}
                         </Typography>
                       </Box>
                     </Box>
                   ) : (
                     <Box sx={ownClasses.poiPinBadge(false)}>
-                      <Typography variant="h6" color="primary.main" sx={{ fontWeight: 700 }}>
+                      <Typography variant="h6" color="primary" sx={{ fontWeight: 700 }}>
                         {index + 1}
                       </Typography>
                     </Box>

@@ -6,6 +6,22 @@ export interface StoryConfig {
   introSlide?: IntroSlide;
   slides: Slide[];
   tocOrientation?: 'vertical' | 'horizontal';
+  theme?: string | StoryThemeConfig; // Name of a built-in theme (e.g. 'light', 'dark'), or a custom theme definition
+}
+
+export interface StoryThemeConfig {
+  name?: string; // Base built-in theme to start from; other fields here override it
+  mode?: 'light' | 'dark';
+  primaryColor?: string;
+  secondaryColor?: string;
+  backgroundColor?: string; // Page background
+  paperColor?: string; // Card/panel background
+  textColor?: string; // Primary text color
+  fontFamily?: string;
+  // Which GeoView map theme to use ('dark' | 'light' | 'geo.ca' | 'canada.ca').
+  // GeoView only understands its own 4 values, so this can't always be inferred
+  // from a custom app theme's mode - set explicitly if the auto-guess is wrong.
+  geoviewTheme?: 'dark' | 'light' | 'geo.ca' | 'canada.ca';
 }
 
 export interface IntroSlide {

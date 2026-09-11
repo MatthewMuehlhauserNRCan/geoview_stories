@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Paper } from '@mui/material';
+import { Box, Typography, Paper, useTheme } from '@mui/material';
 import { MapPanel as MapPanelType } from '@/types/StoryConfig';
 import { useMapReady } from '@/hooks/useMapReady';
 import { MapLoadingOverlay, MapScrollGuardOverlay } from './MapOverlays';
@@ -22,6 +22,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
   const loading = !error && !mapReady;
   const shared = getSharedSxClasses();
   const classes = getSxClasses();
+  const geoviewTheme = useTheme().geoviewTheme;
 
   // cgpv.onMapReady is a single global callback slot owned by StoryController;
   // this only checks that the library itself loaded.
@@ -30,6 +31,13 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
       setError('GeoView library not loaded');
     }
   }, []);
+
+  // GeoView has no data-theme attribute of its own, so sync it to our story's
+  // theme here instead of duplicating the map config just to flip dark/light.
+  useEffect(() => {
+    if (!mapReady) return;
+    window.cgpv.api.getMapViewer(mapId)?.setTheme(geoviewTheme);
+  }, [mapReady, geoviewTheme, mapId]);
 
   // Scroll guard to prevent accidental zooming
   useEffect(() => {

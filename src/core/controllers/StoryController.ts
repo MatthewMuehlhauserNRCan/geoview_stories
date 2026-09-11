@@ -33,6 +33,17 @@ export class StoryController {
 
     try {
       const config = await loadStoryConfig(configPath);
+
+      // A `data-theme` attribute on the story's outer container overrides the
+      // config's own theme, so multiple HTML entry points can reuse one config
+      // file with different themes instead of duplicating it. containerEl is
+      // the React-rendered root React mounts inside the original element, so
+      // its parent is that original container.
+      const themeOverride = containerEl.parentElement?.dataset.theme;
+      if (themeOverride) {
+        config.theme = themeOverride;
+      }
+
       setConfig(config);
 
       // Reveal the story now so slides (and any map elements) actually mount.

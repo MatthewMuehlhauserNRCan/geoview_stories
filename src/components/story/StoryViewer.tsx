@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Box, Fade, useTheme } from '@mui/material';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Box, CssBaseline, Fade, ThemeProvider, useTheme } from '@mui/material';
 import { TocItem } from '@/types/StoryConfig';
 import { TableOfContents } from '../layout/TableOfContents';
 import { IntroSlide } from './IntroSlide';
@@ -9,13 +9,27 @@ import { useScrollToSlide } from '@/hooks/useScrollToSlide';
 import { useStoryInit } from '@/hooks/useGeoViewInit';
 import { useStoryStore } from '@/hooks/useStoryStore';
 import { generateSlideId } from '@/utils/configLoader';
+import { buildStoryTheme } from '@/theme/buildTheme';
 import { getSxClasses } from './story-styles';
 
 interface StoryViewerProps {
   configPath: string;
 }
 
+/** Builds the story's theme from its config (falls back to the default while loading) and provides it to the actual viewer. */
 export const StoryViewer: React.FC<StoryViewerProps> = ({ configPath }) => {
+  const { config } = useStoryStore();
+  const theme = useMemo(() => buildStoryTheme(config?.theme), [config?.theme]);
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <StoryViewerContent configPath={configPath} />
+    </ThemeProvider>
+  );
+};
+
+const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
   const classes = getSxClasses(useTheme()).storyViewer;
 
   // Initialize story viewer using controller - loads config and initializes maps

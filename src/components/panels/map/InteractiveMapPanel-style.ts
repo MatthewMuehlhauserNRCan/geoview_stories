@@ -76,7 +76,7 @@ export const getSxClasses = () => ({
     ...(hasImage && { bottom: 0, right: 0 }),
     width: 40,
     height: 40,
-    backgroundColor: 'white',
+    backgroundColor: 'background.paper',
     border: '2px solid',
     borderColor: 'primary.main',
     borderRadius: '50%',
@@ -100,10 +100,18 @@ export const getSxClasses = () => ({
     fontWeight: 500,
     color: 'primary.main',
   },
+  // Fixed light backing (not theme-aware) since the swatch's own colors are
+  // rendered by GeoView assuming a light legend background, regardless of app theme
   poiStyleIcon: {
     width: 20,
     height: 20,
     objectFit: 'contain',
+    backgroundColor: 'common.white',
+    border: '1px solid',
+    borderColor: 'divider',
+    borderRadius: '50%',
+    p: '2px',
+    boxSizing: 'content-box',
   },
   poiText: {
     lineHeight: 1.6,
