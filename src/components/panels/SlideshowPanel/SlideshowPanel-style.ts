@@ -10,12 +10,20 @@ export const getSxClasses = () => ({
     backgroundColor: 'grey.900',
     outline: 'none',
   },
-  image: {
+  image: (objectFit: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down') => ({
     position: 'absolute',
     inset: 0,
     width: '100%',
     height: '100%',
-    objectFit: 'cover',
+    objectFit,
+  }),
+  expandButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    color: 'common.white',
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.55)' },
   },
   // Positioned on whichever side leaves the important part of the photo uncovered
   textOverlay: (position: 'left' | 'right') => ({
@@ -72,5 +80,32 @@ export const getSxClasses = () => ({
     clip: 'rect(0, 0, 0, 0)',
     whiteSpace: 'nowrap',
     border: 0,
+  },
+  lightboxModal: { display: 'flex' },
+  lightboxBackdrop: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+    outline: 'none',
+  },
+  lightboxCloseButton: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    color: 'common.white',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.7)' },
+  },
+  lightboxImage: {
+    display: 'block',
+    maxWidth: '90vw',
+    maxHeight: '90vh',
+    width: 'auto',
+    height: 'auto',
+    // Always shows the whole image uncropped, regardless of the carousel's own objectFit setting
+    objectFit: 'contain',
   },
 });

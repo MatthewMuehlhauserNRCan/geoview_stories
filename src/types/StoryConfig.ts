@@ -97,6 +97,7 @@ export interface SlideshowPanel extends BasePanel {
   type: 'slideshow';
   items: SlideshowItem[];
   loop?: boolean;
+  objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'; // How each image fits its frame; defaults to 'cover'
 }
 
 export interface DynamicPanel extends BasePanel {

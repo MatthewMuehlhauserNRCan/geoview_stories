@@ -125,6 +125,7 @@
           "type": "slideshow",
           "title": "Image Gallery Example",
           "loop": true,
+          "objectFit": "contain",
           "items": [
             {
               "src": "images/banner_draft_4-rapids.jpg",

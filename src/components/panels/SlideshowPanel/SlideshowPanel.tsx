@@ -1,7 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, IconButton, Modal, Typography } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import CloseIcon from '@mui/icons-material/Close';
 import { SlideshowPanel as SlideshowPanelType } from '@/types/StoryConfig';
 import { getSxClasses } from './SlideshowPanel-style';
 
@@ -12,7 +14,8 @@ interface SlideshowPanelProps {
 export const SlideshowPanel: React.FC<SlideshowPanelProps> = ({ panel }) => {
   const classes = getSxClasses();
   const [activeIndex, setActiveIndex] = useState(0);
-  const { items, loop = false } = panel;
+  const [fullscreenOpen, setFullscreenOpen] = useState(false);
+  const { items, loop = false, objectFit = 'cover' } = panel;
   const count = items.length;
 
   const goTo = useCallback(
@@ -25,6 +28,9 @@ export const SlideshowPanel: React.FC<SlideshowPanelProps> = ({ panel }) => {
 
   const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
   const goNext = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
+
+  const openFullscreen = () => setFullscreenOpen(true);
+  const closeFullscreen = () => setFullscreenOpen(false);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowLeft') {
@@ -57,7 +63,11 @@ export const SlideshowPanel: React.FC<SlideshowPanelProps> = ({ panel }) => {
         tabIndex={0}
         onKeyDown={handleKeyDown}
       >
-        <Box component="img" src={activeItem.src} alt={activeItem.altText || ''} sx={classes.image} />
+        <Box component="img" src={activeItem.src} alt={activeItem.altText || ''} sx={classes.image(objectFit)} />
+
+        <IconButton onClick={openFullscreen} sx={classes.expandButton} aria-label="View image full screen">
+          <FullscreenIcon />
+        </IconButton>
 
         {activeItem.text && (
           <Box sx={classes.textOverlay(activeItem.textPosition || 'left')}>
@@ -97,6 +107,38 @@ export const SlideshowPanel: React.FC<SlideshowPanelProps> = ({ panel }) => {
           {`Image ${activeIndex + 1} of ${count}`}
         </Box>
       </Box>
+
+      {/* Full screen view: shows the whole image uncropped, with the same nav controls */}
+      <Modal open={fullscreenOpen} onClose={closeFullscreen} sx={classes.lightboxModal}>
+        <Box sx={classes.lightboxBackdrop} onClick={closeFullscreen} onKeyDown={handleKeyDown} tabIndex={-1}>
+          <IconButton onClick={closeFullscreen} sx={classes.lightboxCloseButton} aria-label="Close full screen image">
+            <CloseIcon />
+          </IconButton>
+
+          <Box component="img" src={activeItem.src} alt={activeItem.altText || ''} sx={classes.lightboxImage} onClick={(e) => e.stopPropagation()} />
+
+          {count > 1 && (
+            <>
+              <IconButton
+                onClick={(e) => { e.stopPropagation(); goPrev(); }}
+                disabled={!canGoPrev}
+                sx={classes.navButton('left')}
+                aria-label="Previous image"
+              >
+                <ChevronLeftIcon fontSize="large" />
+              </IconButton>
+              <IconButton
+                onClick={(e) => { e.stopPropagation(); goNext(); }}
+                disabled={!canGoNext}
+                sx={classes.navButton('right')}
+                aria-label="Next image"
+              >
+                <ChevronRightIcon fontSize="large" />
+              </IconButton>
+            </>
+          )}
+        </Box>
+      </Modal>
     </Box>
   );
 };
