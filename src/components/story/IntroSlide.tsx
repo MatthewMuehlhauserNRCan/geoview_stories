@@ -16,7 +16,7 @@ export const IntroSlide: React.FC<IntroSlideProps> = ({ intro, onEnter }) => {
       {intro.backgroundImage && (
         <Box component="img" src={intro.backgroundImage} sx={classes.backgroundImage} />
       )}
-      {intro.backgroundImage && <Box sx={classes.scrim} />}
+      {intro.backgroundImage && <Box sx={classes.scrim(intro.scrimOpacity)} />}
       <Container maxWidth="md" sx={classes.container}>
         {intro.logo && (
           <Box sx={classes.logoWrapper}>

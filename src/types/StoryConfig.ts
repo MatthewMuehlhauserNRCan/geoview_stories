@@ -32,6 +32,7 @@ export interface IntroSlide {
   title: string;
   subtitle?: string;
   backgroundImage?: string;
+  scrimOpacity?: number; // 0-1 darkening over backgroundImage for text contrast (WCAG); defaults to 0.4
 }
 
 export interface Slide {

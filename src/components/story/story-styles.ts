@@ -36,12 +36,13 @@ export const getSxClasses = (theme: Theme) => ({
     // Guarantees text contrast regardless of the background image's own
     // colors (WCAG) - a flat scrim alone can't cover every possible photo,
     // so it's paired with a text/icon shadow below for a local contrast halo.
-    scrim: {
+    // Opacity is configurable per-story since how dark it needs to be depends on the image.
+    scrim: (opacity: number = 0.4) => ({
       position: 'absolute',
       inset: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      backgroundColor: `rgba(0, 0, 0, ${opacity})`,
       zIndex: 1,
-    },
+    }),
     container: { position: 'relative', zIndex: 2, textAlign: 'center' },
     logoWrapper: { mb: 4 },
     logo: { maxHeight: 120, maxWidth: '100%' },
