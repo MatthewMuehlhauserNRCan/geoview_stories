@@ -130,13 +130,13 @@
             {
               "src": "images/banner_draft_4-rapids.jpg",
               "altText": "Rapids on a river surrounded by forest",
-              "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Text placed on the left leaves the right side of the photo uncovered.",
+              "text": "Text placed on the left leaves the right side of the photo uncovered. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
               "textPosition": "left"
             },
             {
               "src": "images/BackgroundImageTest.jpg",
               "altText": "Background test image",
-              "text": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Text placed on the right leaves the left side of the photo uncovered.",
+              "text": "Text placed on the right leaves the left side of the photo uncovered. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
               "textPosition": "right"
             },
             {
