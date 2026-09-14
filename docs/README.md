@@ -43,11 +43,13 @@ interface StoryConfig {
 
 interface TocItem {
   title: string;
-  slideIndex?: number;   // Local entry that scrolls to this slide. Omit for an external link.
+  slideIndex?: number;   // Local entry that scrolls to this slide. Omit for an external link or group label.
   href?: string;          // External entry that navigates to another page. Mutually exclusive with slideIndex.
-  sublist?: Array<{ title: string; slideIndex: number }>; // One level of grouping under a local entry.
+  sublist?: Array<{ title: string; slideIndex: number }>; // One level of grouping under this entry.
 }
 ```
+
+An entry with neither `slideIndex` nor `href` (just a `title` and a `sublist`) renders as a plain, non-clickable group label - useful for grouping a whole page's entries under one heading (e.g. a language name) alongside sibling `href` links to other pages.
 
 ### Properties
 
