@@ -59,6 +59,30 @@ interface TocItem {
 - **`tocHeading`** (Optional): TOC panel heading. Default `"Chapters"` - override for other languages (e.g. `"Chapitres"`).
 - **`lang`** (Optional): Drives the GeoView map viewer's own UI language (`data-lang` on each map element). Default `"en"`. GeoView map configs are already bilingual internally, so a single `config` JSON works for both languages - no need for separate French map configs.
 
+### Example: `tableOfContents`
+
+```json
+{
+  "tocHeading": "Chapters",
+  "tableOfContents": [
+    { "title": "Introduction", "slideIndex": 0 },
+    {
+      "title": "Project Summaries",
+      "slideIndex": 3,
+      "sublist": [
+        { "title": "Community A", "slideIndex": 4 },
+        { "title": "Community B", "slideIndex": 5 }
+      ]
+    },
+    { "title": "Français", "href": "index_fr.html" }
+  ]
+}
+```
+
+Each entry is either local (`slideIndex`, scrolls within the page - optionally with one level of `sublist`) or external (`href`, navigates to another page, rendered with an external-link icon and never highlighted as active). Both kinds can be freely mixed in the same array, in whatever order matches your site's overall navigation - this is what makes a cross-page link (a language switch, a link to a sibling "theme" page, etc.) sit at the right position relative to the current page's own entries.
+
+> See the [French demo](../demo/index_fr.html) for this pattern working end-to-end: `demo/configs/demo-story.json` and `demo/configs/demo-story-fr.json` each end their `tableOfContents` with a link to the other language, and share the same `Slide.id` per slide so deep links (e.g. `#3-basic-map`) resolve correctly after following the link.
+
 ## Theming
 
 Select a built-in theme by name:
@@ -168,10 +192,13 @@ Every panel has an optional `title` in addition to its type-specific fields belo
 ```ts
 interface TextPanel {
   type: "text";
-  content: string;     // Required, Markdown
-  cssClasses?: string;  // Optional extra CSS class(es)
+  content?: string;      // Inline Markdown. Provide this or contentFile (contentFile wins if both are set).
+  contentFile?: string;  // Path to an external .md file, fetched at runtime
+  cssClasses?: string;   // Optional extra CSS class(es)
 }
 ```
+
+Long-form content can be kept out of the JSON entirely with `contentFile` - useful for slides with a lot of prose (see the [French demo](../demo/configs/demo-story-fr.json)'s "Guiding Principles" slide, which loads [content/guiding-principles-fr.md](../demo/content/guiding-principles-fr.md)). The path is resolved like any other relative path in a config (e.g. an image `src`) - relative to the HTML page, not to the config JSON's own location.
 
 ### image
 

@@ -17,6 +17,7 @@ A React-based storytelling library for creating interactive stories with GeoView
 - 🎭 **Background images** - Full-page backgrounds with smooth crossfade transitions
 - 🖼️ **Image galleries** - Carousel with optional side-positioned captions and a full-screen lightbox
 - 📍 **Point of interest navigation** - Automatic map zooming/panning on scroll, by scale or explicit zoom level
+- 🧭 **Configurable table of contents** - Auto-derived from slides by default, or an explicit override with grouped sub-items and links to other pages (e.g. a language switcher)
 - ♿ **Accessibility** - Keyboard-navigable focus management, ARIA labeling, and WCAG-conscious layout choices throughout
 
 ## Quick Start
@@ -193,6 +194,34 @@ To reuse the exact same config file with a different theme (e.g. a `_dark` varia
 ```html
 <div class="geoview-story" data-config="configs/demo-story.json" data-theme="dark"></div>
 ```
+
+### Table of Contents
+
+By default, the TOC is auto-derived from `slides` (one entry per slide, in order), skipping any slide with `includeInToc: false`.
+
+For more control - custom labels, grouping several slides under one heading, or links out to other pages - provide an explicit `tableOfContents` array, which replaces the auto-derived list entirely:
+
+```json
+{
+  "tocHeading": "Chapters",
+  "tableOfContents": [
+    { "title": "Introduction", "slideIndex": 0 },
+    {
+      "title": "Project Summaries",
+      "slideIndex": 3,
+      "sublist": [
+        { "title": "Community A", "slideIndex": 4 },
+        { "title": "Community B", "slideIndex": 5 }
+      ]
+    },
+    { "title": "Français", "href": "index_fr.html" }
+  ]
+}
+```
+
+Each entry is either local (`slideIndex`, scrolls within the page, optionally with one level of `sublist`) or external (`href`, navigates to another page - shown with an external-link icon, never highlighted as active). Both kinds can be freely mixed in the same array, in whatever order matches your site's navigation - this is what makes a cross-page "switch language/theme" link possible without leaving the TOC. `tocHeading` overrides the panel's heading text (default `"Chapters"`).
+
+See the [French demo](demo/index_fr.html) for a complete working example: `demo/configs/demo-story.json` and `demo/configs/demo-story-fr.json` each end their `tableOfContents` with a link to the other language's page, and share the same `Slide.id` per slide so deep links (`#3-basic-map`) resolve correctly in both.
 
 ## Folder Structure
 

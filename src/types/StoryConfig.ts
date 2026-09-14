@@ -59,7 +59,8 @@ export interface BasePanel {
 
 export interface TextPanel extends BasePanel {
   type: 'text';
-  content: string;
+  content?: string; // Inline markdown. Provide this or contentFile (contentFile wins if both are set).
+  contentFile?: string; // Path to an external .md file, fetched at runtime - keeps long-form content out of the JSON.
   cssClasses?: string;
 }
 
