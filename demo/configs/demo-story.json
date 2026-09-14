@@ -130,13 +130,13 @@
             {
               "src": "images/banner_draft_4-rapids.jpg",
               "altText": "Rapids on a river surrounded by forest",
-              "text": "Text placed on the left leaves the right side of the photo uncovered. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+              "text": "Text placed on the left leaves the right side of the photo uncovered.  Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
               "textPosition": "left"
             },
             {
               "src": "images/BackgroundImageTest.jpg",
               "altText": "Background test image",
-              "text": "Text placed on the right leaves the left side of the photo uncovered. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              "text": "Text placed on the right leaves the left side of the photo uncovered.  Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
               "textPosition": "right"
             },
             {
@@ -148,12 +148,58 @@
       ]
     },
     {
+      "title": "Additional Resources Example",
+      "panel": [
+        {
+          "type": "doormat",
+          "title": "Additional resources",
+          "items": [
+            {
+              "title": "Open Science and Data Platform",
+              "href": "https://osdp-psdo.canada.ca/dp/en",
+              "description": "Search federal, provincial, and territorial publications and datasets, explore topic and region-based cumulative effects (CE) content collections, learn about cumulative effects and development activities, create and export your own maps."
+            },
+            {
+              "title": "Assessing Cumulative Effects under the Impact Assessment Act",
+              "href": "https://www.canada.ca/en/impact-assessment-agency/services/policy-guidance/practitioners-guide-impact-assessment-act/policy-framework-assessing-cumulative-effects-under-impact-assessment-act.html",
+              "description": "Explore the general requirements and approach for assessing the cumulative effects of designated projects under the Impact Assessment Act (IAA)."
+            },
+            {
+              "title": "Indigenous Centre for Cumulative Effects",
+              "href": "https://www.icce-caec.ca/",
+              "description": "Learn about and find resources relating to Indigenous cumulative effects work."
+            },
+            {
+              "title": "Cumulative Effects Framework - British Columbia",
+              "href": "https://www2.gov.bc.ca/gov/content/environment/natural-resource-stewardship/cumulative-effects-framework",
+              "description": "Learn about B.C.'s Cumulative Effects Framework, including policy, guidance, values assessments and protocols, assessments by region, cumulative effects data, case studies, and engagement."
+            },
+            {
+              "title": "Resources | CCME",
+              "href": "https://ccme.ca/en/resources",
+              "description": "Click here for cumulative effects resources developed by the Canadian Council of Ministers of the Environment (CCME)."
+            },
+            {
+              "title": "Overview of Cumulative Effects Research at NRCan",
+              "href": "https://storymaps.arcgis.com/stories/77e97ee6eb944a62811153c47924627c",
+              "description": "Explore cumulative effects research by the Canada Centre for Mapping and Earth Observation, the Canadian Forest Service, and the Geological Survey of Canada from 2018-2023."
+            },
+            {
+              "title": "Alberta Cumulative Effects Management",
+              "href": "https://landuse.alberta.ca/CumulativeEffects/CumulativeEffectsManagement/Pages/default.aspx",
+              "description": "Learn about the Government of Alberta's management plan for cumulative effects."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "title": "Next Steps",
       "panel": [
         {
           "type": "text",
           "title": "Continue Development",
-          "content": "**Implemented Features:**\n- ✅ Video panels (local, external, YouTube)\n- ✅ Quote panels with attribution\n- ✅ Persistent vertical navigation (desktop)\n- ✅ Basic GeoView map integration\n- ✅ Interactive map with POI system (placeholder)\n- ✅ Image gallery/slideshow panels\n\n**Future Enhancements:**\n1. Dynamic POI panels\n2. Chart integration"
+          "content": "**Implemented Features:**\n- ✅ Video panels (local, external, YouTube)\n- ✅ Quote panels with attribution\n- ✅ Persistent vertical navigation (desktop)\n- ✅ Basic GeoView map integration\n- ✅ Interactive map with POI system (placeholder)\n- ✅ Image gallery/slideshow panels\n- ✅ Doormat/resource link panels\n\n**Future Enhancements:**\n1. Dynamic POI panels\n2. Chart integration"
         }
       ]
     }
