@@ -149,6 +149,10 @@
             {
               "src": "images/Guiding Principles-v02.png",
               "altText": "Diagramme des principes directeurs avec sept principes environnants"
+            },
+            {
+              "src": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/images/first-frost.jpg",
+              "altText": "Une autre image avec un lien externe"
             }
           ]
         }

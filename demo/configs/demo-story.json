@@ -149,6 +149,10 @@
             {
               "src": "images/Guiding Principles-v02.png",
               "altText": "Guiding Principles diagram with seven surrounding principles"
+            },
+            {
+              "src": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/images/first-frost.jpg",
+              "altText": "Another example image with external link"
             }
           ]
         }
