@@ -7,6 +7,7 @@
   "slides": [
     {
       "title": "Introduction",
+      "id": "introduction",
       "panel": [
         {
           "type": "text",
@@ -17,6 +18,7 @@
     },
     {
       "title": "Guiding Principles for Collaboration",
+      "id": "guiding-principles",
       "backgroundImage": "images/BackgroundImageTest.jpg",
       "panel": [
         {
@@ -34,6 +36,7 @@
     },
     {
       "title": "Standalone Quote Example",
+      "id": "quote-example",
       "panel": [
         {
           "type": "quote",
@@ -46,6 +49,7 @@
     },
     {
       "title": "Basic Map",
+      "id": "basic-map",
       "panel": [
         {
           "type": "text",
@@ -62,6 +66,7 @@
     },
     {
       "title": "Interactive Map Example",
+      "id": "interactive-map-example",
       "panel": [
         {
           "type": "interactive-map",
@@ -103,6 +108,7 @@
     },
     {
       "title": "Video Example",
+      "id": "video-example",
       "panel": [
         {
           "type": "text",
@@ -120,6 +126,7 @@
     },
     {
       "title": "Image Gallery Example",
+      "id": "image-gallery-example",
       "panel": [
         {
           "type": "slideshow",
@@ -149,6 +156,7 @@
     },
     {
       "title": "Additional Resources Example",
+      "id": "additional-resources-example",
       "panel": [
         {
           "type": "doormat",
@@ -195,6 +203,7 @@
     },
     {
       "title": "Next Steps",
+      "id": "next-steps",
       "panel": [
         {
           "type": "text",
@@ -204,5 +213,18 @@
       ]
     }
   ],
-  "tocOrientation": "vertical"
+  "tocOrientation": "vertical",
+  "lang": "en",
+  "tableOfContents": [
+    { "title": "Introduction", "slideIndex": 0 },
+    { "title": "Guiding Principles for Collaboration", "slideIndex": 1 },
+    { "title": "Standalone Quote Example", "slideIndex": 2 },
+    { "title": "Basic Map", "slideIndex": 3 },
+    { "title": "Interactive Map Example", "slideIndex": 4 },
+    { "title": "Video Example", "slideIndex": 5 },
+    { "title": "Image Gallery Example", "slideIndex": 6 },
+    { "title": "Additional Resources Example", "slideIndex": 7 },
+    { "title": "Next Steps", "slideIndex": 8 },
+    { "title": "Français", "href": "index_fr.html" }
+  ]
 }

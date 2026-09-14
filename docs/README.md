@@ -33,9 +33,19 @@ interface StoryConfig {
   introSlide?: IntroSlide;
   tocOrientation?: "vertical" | "horizontal"; // default "vertical"
   theme?: string | StoryThemeConfig;
+  tableOfContents?: TocItem[];
+  tocHeading?: string; // default "Chapters"
+  lang?: "en" | "fr"; // default "en"
 
   // Required
   slides: Slide[];
+}
+
+interface TocItem {
+  title: string;
+  slideIndex?: number;   // Local entry that scrolls to this slide. Omit for an external link.
+  href?: string;          // External entry that navigates to another page. Mutually exclusive with slideIndex.
+  sublist?: Array<{ title: string; slideIndex: number }>; // One level of grouping under a local entry.
 }
 ```
 
@@ -45,6 +55,9 @@ interface StoryConfig {
 - **`slides`** (Required): Array of slides that make up the story. See [Slides](#slides).
 - **`tocOrientation`** (Optional): Table of contents layout. Default `"vertical"`.
 - **`theme`** (Optional): Built-in theme name, or a custom theme object. See [Theming](#theming). **Custom theme objects and `geoviewTheme` not shown in demo config** (the demo instead uses the `data-theme` HTML attribute).
+- **`tableOfContents`** (Optional): Explicit override of the auto-derived TOC (which otherwise lists one entry per slide, skipping any with `includeInToc: false`). Lets you relabel entries independently of the slide's own title, group several slides under one heading via `sublist`, and mix in links to other pages (`href`) at whatever position matches your site's overall navigation order - useful for a shared TOC across multiple themed story pages, where the current page's section is expanded (`sublist`) and sibling pages are plain links. See the [French demo](../demo/index_fr.html) for a working example (each language links to the other via `href`).
+- **`tocHeading`** (Optional): TOC panel heading. Default `"Chapters"` - override for other languages (e.g. `"Chapitres"`).
+- **`lang`** (Optional): Drives the GeoView map viewer's own UI language (`data-lang` on each map element). Default `"en"`. GeoView map configs are already bilingual internally, so a single `config` JSON works for both languages - no need for separate French map configs.
 
 ## Theming
 
@@ -132,6 +145,7 @@ interface Slide {
   panel: Panel[];
 
   // Optional
+  id?: string;
   backgroundImage?: string;
   includeInToc?: boolean; // default true
 }
@@ -139,8 +153,9 @@ interface Slide {
 
 ### Properties
 
-- **`title`** (Required): Used for the slide heading, generated slide ID, and TOC entry.
+- **`title`** (Required): Used for the slide heading and TOC entry (unless overridden by `tableOfContents`).
 - **`panel`** (Required): One or more panels; see [Panel Types](#panel-types). A text panel paired with one media panel (image/video/map/slideshow) gets a side-by-side layout.
+- **`id`** (Optional): Stable, language-independent id used for the slide's URL hash/DOM id. Falls back to a slugified `title` when omitted - since the title is what gets translated, set matching `id`s across a story's different-language configs (see the [French demo](../demo/configs/demo-story-fr.json)) so deep links keep working after a language switch.
 - **`backgroundImage`** (Optional): Full-page crossfade background while this slide is active.
 - **`includeInToc`** (Optional): Set `false` to hide this slide from the table of contents. Default `true`.
 

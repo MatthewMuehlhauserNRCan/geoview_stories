@@ -1,0 +1,231 @@
+{
+  "introSlide": {
+    "title": "Bienvenue dans GeoView Stories",
+    "subtitle": "Une plateforme de narration interactive pour les données géospatiales",
+    "backgroundImage": "images/banner_draft_4-rapids.jpg"
+  },
+  "slides": [
+    {
+      "title": "Introduction",
+      "id": "introduction",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Pour commencer",
+          "content": "Bienvenue dans **GeoView Stories**! Il s'agit d'une preuve de concept pour la création d'histoires interactives avec des cartes.\n\nCette démonstration présente les fonctionnalités de base, notamment :\n- Navigation par défilement\n- Table des matières persistante (ordinateur de bureau)\n- Routage par ancre URL\n- Panneaux de texte, d'image et de vidéo\n- Carte interactive avec points d'intérêt\n- Panneaux de citation"
+        }
+      ]
+    },
+    {
+      "title": "Principes directeurs de collaboration",
+      "id": "guiding-principles",
+      "backgroundImage": "images/BackgroundImageTest.jpg",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Principes directeurs de collaboration",
+          "content": "Pour guider l'élaboration de la Trousse, les groupes autochtones de l'ITCE et le gouvernement du Canada ont défini sept principes comme fondement de la collaboration sur le processus, la forme et le contenu de la Trousse ITCE. \n\nLa citation suivante a été partagée par Eddie Gardner, aîné de la Première Nation de Skwah \n> Lorsque nous établissons des relations avec nos voisins, nous devons apprendre à vivre ensemble dans le respect et à nous efforcer de nous comprendre les uns les autres. On ne peut pas séparer le milieu aquatique du milieu terrestre - tout est interconnecté. La spiritualité et la science occidentale doivent être tissées ensemble pour produire un changement significatif et durable pour le bien commun."
+        },
+        {
+          "type": "image",
+          "altText": "Un cercle avec le texte « Principes directeurs » est entouré de sept lignes. Chaque ligne se termine par un texte. Le texte est le suivant : Respect des savoirs et des cultures autochtones. Respecter les systèmes de connaissances et les récits oraux dirigés par les Autochtones, et faire preuve de reconnaissance et de considération pour les protocoles, la gouvernance et les processus décisionnels autochtones, les cérémonies, les lois, la spiritualité, la langue et les valeurs. Souveraineté des données et de l'information : respecter la propriété et le contrôle des nations autochtones sur leurs données et leur information afin de protéger et d'autonomiser les communautés. Collaboration et relations : travailler à une compréhension mutuelle et favoriser de meilleures relations entre les nations et gouvernements autochtones. Intégrité et transparence : faire preuve d'intégrité et de transparence pour promouvoir l'équité et la confiance. Bien-être intergénérationnel : reconnaître l'importance du transfert des connaissances intergénérationnelles, en assurant l'accessibilité et la pertinence culturelle pour les jeunes et les générations futures. Faire valoir et soutenir la continuité de la sagesse autochtone concernant les effets cumulatifs et le bien-être intergénérationnel. Intendance environnementale : promouvoir des approches durables et holistiques qui protègent la terre, l'air, l'eau et les espèces. Intégrer les enseignements autochtones et les apprentissages tirés de la terre, et comprendre les rôles des Autochtones en tant que gardiens et intendants. Interconnexion : reconnaître et adopter l'interconnexion de tous les êtres vivants et écosystèmes, en tissant ensemble les connaissances autochtones et occidentales dans une approche holistique et inclusive.",
+          "caption": "",
+          "src": "images/Guiding Principles-v02.png"
+        }
+      ]
+    },
+    {
+      "title": "Exemple de citation autonome",
+      "id": "quote-example",
+      "panel": [
+        {
+          "type": "quote",
+          "quote": "Lorsque nous établissons des relations avec nos voisins, nous devons apprendre à vivre ensemble dans le respect et à nous efforcer de nous comprendre les uns les autres. On ne peut pas séparer le milieu aquatique du milieu terrestre - tout est interconnecté. La spiritualité et la science occidentale doivent être tissées ensemble pour produire un changement significatif et durable pour le bien commun.",
+          "author": "Eddie Gardner",
+          "role": "Aîné",
+          "organization": "Première Nation de Skwah"
+        }
+      ]
+    },
+    {
+      "title": "Carte de base",
+      "id": "basic-map",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Intégration de GeoView",
+          "content": "Voici une carte GeoView de base montrant le Canada en projection conique conforme de Lambert (EPSG:3978). Cela démontre les fonctionnalités cartographiques de base."
+        },
+        {
+          "type": "map",
+          "title": "Fond de carte du Canada",
+          "config": "./configs/default-map.json",
+          "scrollguard": true
+        }
+      ]
+    },
+    {
+      "title": "Exemple de carte interactive",
+      "id": "interactive-map-example",
+      "panel": [
+        {
+          "type": "interactive-map",
+          "title": "Exemple de carte interactive",
+          "config": "./configs/interactive-map.json",
+          "points": [
+            {
+              "title": "Point d'intérêt A",
+              "text": "Ceci est un exemple de point d'intérêt.",
+              "target": {
+                "layerId": "Project_Summaries/1",
+                "oid": 1,
+                "value": "Kapawe'no First Nation",
+                "scale": 50000
+              }
+            },
+            {
+              "title": "Point d'intérêt B",
+              "text": "Un autre exemple d'emplacement montrant les interactions cartographiques déclenchées par le défilement.",
+              "target": {
+                "layerId": "Project_Summaries/1",
+                "oid": 2,
+                "value": "Adams Lake First Nation",
+                "scale": 75000
+              }
+            },
+            {
+              "title": "Retour à la vue d'ensemble",
+              "text": "Ce point d'intérêt revient à l'étendue complète de la carte.",
+              "target": {
+                "returnHome": true
+              }
+            }
+          ],
+          "duration": 500,
+          "scrollguard": true
+        }
+      ]
+    },
+    {
+      "title": "Exemple de vidéo",
+      "id": "video-example",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Prise en charge multimédia",
+          "content": "Storylines prend en charge divers formats multimédias, y compris les vidéos provenant de YouTube et de sources locales."
+        },
+        {
+          "type": "video",
+          "title": "Exemple de vidéo",
+          "videoType": "YouTube",
+          "src": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          "height": 400
+        }
+      ]
+    },
+    {
+      "title": "Exemple de galerie d'images",
+      "id": "image-gallery-example",
+      "panel": [
+        {
+          "type": "slideshow",
+          "title": "Exemple de galerie d'images",
+          "loop": true,
+          "objectFit": "contain",
+          "items": [
+            {
+              "src": "images/banner_draft_4-rapids.jpg",
+              "altText": "Rapides sur une rivière entourée de forêt",
+              "text": "Le texte placé à gauche laisse le côté droit de la photo dégagé. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+              "textPosition": "left"
+            },
+            {
+              "src": "images/BackgroundImageTest.jpg",
+              "altText": "Image de test d'arrière-plan",
+              "text": "Le texte placé à droite laisse le côté gauche de la photo dégagé. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              "textPosition": "right"
+            },
+            {
+              "src": "images/Guiding Principles-v02.png",
+              "altText": "Diagramme des principes directeurs avec sept principes environnants"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Exemple de ressources supplémentaires",
+      "id": "additional-resources-example",
+      "panel": [
+        {
+          "type": "doormat",
+          "title": "Ressources supplémentaires",
+          "items": [
+            {
+              "title": "Plateforme scientifique et de données ouvertes",
+              "href": "https://osdp-psdo.canada.ca/dp/en",
+              "description": "Recherchez des publications et des ensembles de données fédéraux, provinciaux et territoriaux, explorez des collections de contenu sur les effets cumulatifs (EC) par sujet et par région, apprenez-en davantage sur les effets cumulatifs et les activités de développement, créez et exportez vos propres cartes."
+            },
+            {
+              "title": "Évaluation des effets cumulatifs en vertu de la Loi sur l'évaluation d'impact",
+              "href": "https://www.canada.ca/en/impact-assessment-agency/services/policy-guidance/practitioners-guide-impact-assessment-act/policy-framework-assessing-cumulative-effects-under-impact-assessment-act.html",
+              "description": "Explorez les exigences générales et l'approche pour évaluer les effets cumulatifs des projets désignés en vertu de la Loi sur l'évaluation d'impact (LEI)."
+            },
+            {
+              "title": "Centre autochtone des effets cumulatifs",
+              "href": "https://www.icce-caec.ca/",
+              "description": "Apprenez-en davantage et trouvez des ressources relatives au travail autochtone sur les effets cumulatifs."
+            },
+            {
+              "title": "Cadre des effets cumulatifs - Colombie-Britannique",
+              "href": "https://www2.gov.bc.ca/gov/content/environment/natural-resource-stewardship/cumulative-effects-framework",
+              "description": "Apprenez-en davantage sur le Cadre des effets cumulatifs de la C.-B., y compris les politiques, les orientations, les évaluations et protocoles de valeurs, les évaluations par région, les données sur les effets cumulatifs, les études de cas et la mobilisation."
+            },
+            {
+              "title": "Ressources | CCME",
+              "href": "https://ccme.ca/en/resources",
+              "description": "Cliquez ici pour les ressources sur les effets cumulatifs élaborées par le Conseil canadien des ministres de l'environnement (CCME)."
+            },
+            {
+              "title": "Aperçu de la recherche sur les effets cumulatifs à RNCan",
+              "href": "https://storymaps.arcgis.com/stories/77e97ee6eb944a62811153c47924627c",
+              "description": "Découvrez les recherches sur les effets cumulatifs menées par le Centre canadien de cartographie et d'observation de la Terre, le Service canadien des forêts et la Commission géologique du Canada, de 2018 à 2023."
+            },
+            {
+              "title": "Gestion des effets cumulatifs de l'Alberta",
+              "href": "https://landuse.alberta.ca/CumulativeEffects/CumulativeEffectsManagement/Pages/default.aspx",
+              "description": "Apprenez-en davantage sur le plan de gestion des effets cumulatifs du gouvernement de l'Alberta."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Prochaines étapes",
+      "id": "next-steps",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Poursuivre le développement",
+          "content": "**Fonctionnalités implémentées :**\n- ✅ Panneaux vidéo (locaux, externes, YouTube)\n- ✅ Panneaux de citation avec attribution\n- ✅ Navigation verticale persistante (ordinateur de bureau)\n- ✅ Intégration de base de GeoView\n- ✅ Carte interactive avec système de PI (provisoire)\n- ✅ Panneaux de galerie d'images/diaporama\n- ✅ Panneaux de type « doormat » (liens de ressources)\n\n**Améliorations futures :**\n1. Panneaux de PI dynamiques\n2. Intégration de graphiques"
+        }
+      ]
+    }
+  ],
+  "tocOrientation": "vertical",
+  "tocHeading": "Chapitres",
+  "lang": "fr",
+  "tableOfContents": [
+    { "title": "Introduction", "slideIndex": 0 },
+    { "title": "Principes directeurs de collaboration", "slideIndex": 1 },
+    { "title": "Exemple de citation autonome", "slideIndex": 2 },
+    { "title": "Carte de base", "slideIndex": 3 },
+    { "title": "Exemple de carte interactive", "slideIndex": 4 },
+    { "title": "Exemple de vidéo", "slideIndex": 5 },
+    { "title": "Exemple de galerie d'images", "slideIndex": 6 },
+    { "title": "Exemple de ressources supplémentaires", "slideIndex": 7 },
+    { "title": "Prochaines étapes", "slideIndex": 8 },
+    { "title": "English", "href": "index.html" }
+  ]
+}
