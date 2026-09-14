@@ -26,25 +26,28 @@ export const getSxClasses = () => ({
   drawerBody: { overflow: 'auto', p: 2, pt: 1 },
   collapseRow: { display: 'flex', justifyContent: 'flex-end', mb: 1 },
   heading: { mb: 2, fontWeight: 600, color: 'primary.main' },
-  listItem: {
+  listItem: (depth: number = 0) => ({
     borderRadius: 1,
     mb: 0.5,
+    ...(depth > 0 && { pl: 2 + depth * 1.5 }),
     '&.Mui-selected': {
       backgroundColor: 'primary.main',
       color: 'primary.contrastText',
       '&:hover': { backgroundColor: 'primary.dark' },
     },
-  },
-  sublistItem: {
-    borderRadius: 1,
+  }),
+  groupLabel: (depth: number = 0) => ({
     mb: 0.5,
-    pl: 3,
-    '&.Mui-selected': {
-      backgroundColor: 'primary.main',
-      color: 'primary.contrastText',
-      '&:hover': { backgroundColor: 'primary.dark' },
-    },
-  },
+    color: 'text.secondary',
+    ...(depth > 0 && { pl: 2 + depth * 1.5 }),
+  }),
+  // Same look as groupLabel (muted, never "active") since it's a different kind of
+  // entry - a navigation escape hatch, not a slide in this page - just still clickable.
+  externalItem: (depth: number = 0) => ({
+    mb: 0.5,
+    color: 'text.secondary',
+    ...(depth > 0 && { pl: 2 + depth * 1.5 }),
+  }),
   externalIcon: {
     ml: 1,
     color: 'text.secondary',

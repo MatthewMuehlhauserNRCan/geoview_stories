@@ -172,7 +172,9 @@ export type Panel =
 
 export interface TocItem {
   title: string;
-  slideIndex?: number; // Local entry that scrolls to this slide. Omit for an external link (set href instead).
+  slideIndex?: number; // Local entry that scrolls to this slide. Omit for an external link or group label.
   href?: string; // External entry that navigates to another page instead of scrolling. Mutually exclusive with slideIndex.
-  sublist?: Array<{ title: string; slideIndex: number }>; // One level of grouping under a local entry.
+  // Nested entries, fully recursive - a sublist item can itself have a slideIndex, an href, and/or
+  // its own sublist (e.g. a "theme"/language group containing sections that each group their own items).
+  sublist?: TocItem[];
 }

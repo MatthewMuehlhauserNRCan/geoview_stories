@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Drawer,
   List,
+  ListItem,
   ListItemButton,
   ListItemText,
   Typography,
@@ -28,6 +29,72 @@ interface TableOfContentsProps {
   collapsed?: boolean;
   onToggle?: () => void;
 }
+
+interface TocEntryProps {
+  item: TocItem;
+  depth: number;
+  activeIndex: number;
+  onLocalClick: (slideIndex: number) => void;
+}
+
+/** Renders one TOC entry (local, external, or a non-clickable group label) plus its sublist, recursively. */
+const TocEntry: React.FC<TocEntryProps> = ({ item, depth, activeIndex, onLocalClick }) => {
+  const classes = getSxClasses();
+  const isExternal = item.href !== undefined;
+  // A group label - no slideIndex to scroll to and no href to navigate to - is just
+  // heading text for its sublist, not a real action, so it shouldn't look clickable.
+  const isGroupLabel = !isExternal && item.slideIndex === undefined;
+
+  return (
+    <>
+      {isExternal ? (
+        <ListItemButton component="a" href={item.href} sx={classes.externalItem(depth)}>
+          <ListItemText
+            primary={item.title || 'Untitled'}
+            slotProps={{ primary: { style: { fontSize: 14, fontWeight: 600 } } }}
+          />
+          <OpenInNewIcon fontSize="small" sx={classes.externalIcon} />
+        </ListItemButton>
+      ) : isGroupLabel ? (
+        <ListItem sx={classes.groupLabel(depth)}>
+          <ListItemText
+            primary={item.title || 'Untitled'}
+            slotProps={{ primary: { style: { fontSize: 14, fontWeight: 600 } } }}
+          />
+        </ListItem>
+      ) : (
+        <ListItemButton
+          selected={activeIndex === item.slideIndex}
+          onClick={() => onLocalClick(item.slideIndex!)}
+          sx={classes.listItem(depth)}
+        >
+          <ListItemText
+            primary={item.title || 'Untitled'}
+            slotProps={{
+              primary: {
+                style: { fontSize: 14, fontWeight: activeIndex === item.slideIndex ? 600 : 400 },
+              },
+            }}
+          />
+        </ListItemButton>
+      )}
+
+      {item.sublist && (
+        <List disablePadding>
+          {item.sublist.map((child, index) => (
+            <TocEntry
+              key={child.href ?? child.slideIndex ?? index}
+              item={child}
+              depth={depth + 1}
+              activeIndex={activeIndex}
+              onLocalClick={onLocalClick}
+            />
+          ))}
+        </List>
+      )}
+    </>
+  );
+};
 
 export const TableOfContents: React.FC<TableOfContentsProps> = ({
   items,
@@ -105,65 +172,15 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
             {heading}
           </Typography>
           <List>
-            {items.map((item, index) => {
-              const isExternal = item.href !== undefined;
-              return (
-                <React.Fragment key={item.href ?? item.slideIndex ?? index}>
-                  {isExternal ? (
-                    <ListItemButton component="a" href={item.href} sx={classes.listItem}>
-                      <ListItemText
-                        primary={item.title || 'Untitled'}
-                        slotProps={{ primary: { style: { fontSize: 14 } } }}
-                      />
-                      <OpenInNewIcon fontSize="small" sx={classes.externalIcon} />
-                    </ListItemButton>
-                  ) : (
-                    <ListItemButton
-                      selected={activeIndex === item.slideIndex}
-                      onClick={() => handleLocalItemClick(item.slideIndex!)}
-                      sx={classes.listItem}
-                    >
-                      <ListItemText
-                        primary={item.title || 'Untitled'}
-                        slotProps={{
-                          primary: {
-                            style: {
-                              fontSize: 14,
-                              fontWeight: activeIndex === item.slideIndex ? 600 : 400,
-                            },
-                          },
-                        }}
-                      />
-                    </ListItemButton>
-                  )}
-
-                  {item.sublist && (
-                    <List disablePadding>
-                      {item.sublist.map((subItem) => (
-                        <ListItemButton
-                          key={subItem.slideIndex}
-                          selected={activeIndex === subItem.slideIndex}
-                          onClick={() => handleLocalItemClick(subItem.slideIndex)}
-                          sx={classes.sublistItem}
-                        >
-                          <ListItemText
-                            primary={subItem.title || 'Untitled'}
-                            slotProps={{
-                              primary: {
-                                style: {
-                                  fontSize: 13,
-                                  fontWeight: activeIndex === subItem.slideIndex ? 600 : 400,
-                                },
-                              },
-                            }}
-                          />
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  )}
-                </React.Fragment>
-              );
-            })}
+            {items.map((item, index) => (
+              <TocEntry
+                key={item.href ?? item.slideIndex ?? index}
+                item={item}
+                depth={0}
+                activeIndex={activeIndex}
+                onLocalClick={handleLocalItemClick}
+              />
+            ))}
           </List>
         </Box>
       </Drawer>
