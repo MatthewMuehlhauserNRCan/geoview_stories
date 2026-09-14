@@ -45,11 +45,11 @@ interface TocItem {
   title: string;
   slideIndex?: number;   // Local entry that scrolls to this slide. Omit for an external link or group label.
   href?: string;          // External entry that navigates to another page. Mutually exclusive with slideIndex.
-  sublist?: Array<{ title: string; slideIndex: number }>; // One level of grouping under this entry.
+  sublist?: TocItem[];    // Nested entries, fully recursive - a sublist item can itself have a sublist.
 }
 ```
 
-An entry with neither `slideIndex` nor `href` (just a `title` and a `sublist`) renders as a plain, non-clickable group label - useful for grouping a whole page's entries under one heading (e.g. a language name) alongside sibling `href` links to other pages.
+An entry with neither `slideIndex` nor `href` (just a `title` and a `sublist`) renders as a plain, non-clickable group label - useful for grouping a whole page's entries under one heading (e.g. a language name), with individual sections further down still able to have their own `sublist` (e.g. a group of project summaries within that language).
 
 ### Properties
 
@@ -67,13 +67,17 @@ An entry with neither `slideIndex` nor `href` (just a `title` and a `sublist`) r
 {
   "tocHeading": "Chapters",
   "tableOfContents": [
-    { "title": "Introduction", "slideIndex": 0 },
     {
-      "title": "Project Summaries",
-      "slideIndex": 3,
+      "title": "English",
       "sublist": [
-        { "title": "Community A", "slideIndex": 4 },
-        { "title": "Community B", "slideIndex": 5 }
+        { "title": "Introduction", "slideIndex": 0 },
+        {
+          "title": "Project Summaries",
+          "sublist": [
+            { "title": "Community A", "slideIndex": 4 },
+            { "title": "Community B", "slideIndex": 5 }
+          ]
+        }
       ]
     },
     { "title": "Français", "href": "index_fr.html" }
@@ -81,7 +85,7 @@ An entry with neither `slideIndex` nor `href` (just a `title` and a `sublist`) r
 }
 ```
 
-Each entry is either local (`slideIndex`, scrolls within the page - optionally with one level of `sublist`) or external (`href`, navigates to another page, rendered with an external-link icon and never highlighted as active). Both kinds can be freely mixed in the same array, in whatever order matches your site's overall navigation - this is what makes a cross-page link (a language switch, a link to a sibling "theme" page, etc.) sit at the right position relative to the current page's own entries.
+Each entry is either local (`slideIndex`, scrolls within the page), external (`href`, navigates to another page, rendered with an external-link icon and never highlighted as active), or a plain group label (neither field set - just a heading for its own `sublist`). `sublist` nesting is recursive, so a "theme"/language group can contain sections that each group their own items, to whatever depth you need. Local and external entries can be freely mixed at any level, in whatever order matches your site's overall navigation - this is what makes a cross-page link (a language switch, a link to a sibling "theme" page, etc.) sit at the right position relative to the current page's own entries.
 
 > See the [French demo](../demo/index_fr.html) for this pattern working end-to-end: `demo/configs/demo-story.json` and `demo/configs/demo-story-fr.json` each end their `tableOfContents` with a link to the other language, and share the same `Slide.id` per slide so deep links (e.g. `#3-basic-map`) resolve correctly after following the link.
 

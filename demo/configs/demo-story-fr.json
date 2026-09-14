@@ -223,8 +223,13 @@
         { "title": "Introduction", "slideIndex": 0 },
         { "title": "Principes directeurs de collaboration", "slideIndex": 1 },
         { "title": "Exemple de citation autonome", "slideIndex": 2 },
-        { "title": "Carte de base", "slideIndex": 3 },
-        { "title": "Exemple de carte interactive", "slideIndex": 4 },
+        {
+          "title": "Cartes",
+          "sublist": [
+            { "title": "Carte de base", "slideIndex": 3 },
+            { "title": "Exemple de carte interactive", "slideIndex": 4 }
+          ]
+        },
         { "title": "Exemple de vidéo", "slideIndex": 5 },
         { "title": "Exemple de galerie d'images", "slideIndex": 6 },
         { "title": "Exemple de ressources supplémentaires", "slideIndex": 7 },
