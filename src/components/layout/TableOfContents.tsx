@@ -25,7 +25,6 @@ interface TableOfContentsProps {
   heading?: string;
   activeIndex: number;
   onItemClick: (slideId: string) => void;
-  orientation?: 'vertical' | 'horizontal';
   collapsed?: boolean;
   onToggle?: () => void;
 }
@@ -102,7 +101,6 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
   heading = 'Chapters',
   activeIndex,
   onItemClick,
-  orientation = 'vertical',
   collapsed = false,
   onToggle,
 }) => {

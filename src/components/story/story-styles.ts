@@ -122,6 +122,8 @@ export const getSxClasses = (theme: Theme) => ({
     },
     centeredMessage: { display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center' },
     contentRow: { display: 'flex', flex: 1 },
+    // Used instead of contentRow when the TOC is a horizontal top bar rather than a side Drawer.
+    stackedColumn: { display: 'flex', flexDirection: 'column', flex: 1 },
     main: { flex: 1 },
   },
 });

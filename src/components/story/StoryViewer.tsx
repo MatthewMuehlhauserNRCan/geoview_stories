@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Box, CssBaseline, Fade, ThemeProvider, useTheme } from '@mui/material';
+import { Box, CssBaseline, Fade, ThemeProvider, useMediaQuery, useTheme } from '@mui/material';
 import { TocItem } from '@/types/StoryConfig';
 import { TableOfContents } from '../layout/TableOfContents';
+import { HorizontalToc } from '../layout/HorizontalToc';
 import { IntroSlide } from './IntroSlide';
 import { Slide } from './Slide';
 import { useScrollSpy } from '@/hooks/useScrollSpy';
@@ -30,7 +31,11 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({ configPath }) => {
 };
 
 const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
-  const classes = getSxClasses(useTheme()).storyViewer;
+  const theme = useTheme();
+  const classes = getSxClasses(theme).storyViewer;
+  // A horizontal TOC only makes sense as a slim top bar with a one-level dropdown - below this
+  // width it falls back to the vertical TableOfContents, which already has its own mobile drawer.
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
   // Initialize story viewer using controller - loads config and initializes maps
   const containerRef = useStoryInit(configPath);
@@ -41,6 +46,8 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
   const slideRefs = useRef<React.RefObject<HTMLElement | null>[]>([]);
   const scrollToSlide = useScrollToSlide(64);
   const [tocCollapsed, setTocCollapsed] = React.useState(false);
+
+  const isHorizontalToc = config?.tocOrientation === 'horizontal' && isDesktop;
 
   // Generate slide IDs and refs
   const slideIds = config?.slides.map((slide, index) => generateSlideId(index, slide.title, slide.id)) || [];
@@ -139,17 +146,20 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
         )}
 
         {!loading && !error && config && (
-          <Box sx={classes.contentRow}>
-            <TableOfContents
-              items={tocItems}
-              slideIds={slideIds}
-              heading={config.tocHeading}
-              activeIndex={activeIndex}
-              onItemClick={handleTocItemClick}
-              orientation={config.tocOrientation}
-              collapsed={tocCollapsed}
-              onToggle={() => setTocCollapsed(!tocCollapsed)}
-            />
+          <Box sx={isHorizontalToc ? classes.stackedColumn : classes.contentRow}>
+            {isHorizontalToc ? (
+              <HorizontalToc items={tocItems} slideIds={slideIds} activeIndex={activeIndex} onItemClick={handleTocItemClick} />
+            ) : (
+              <TableOfContents
+                items={tocItems}
+                slideIds={slideIds}
+                heading={config.tocHeading}
+                activeIndex={activeIndex}
+                onItemClick={handleTocItemClick}
+                collapsed={tocCollapsed}
+                onToggle={() => setTocCollapsed(!tocCollapsed)}
+              />
+            )}
 
             <Box component="main" sx={classes.main}>
               {config.introSlide && (

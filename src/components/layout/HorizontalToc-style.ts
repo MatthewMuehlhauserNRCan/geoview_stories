@@ -1,0 +1,36 @@
+export const getSxClasses = () => ({
+  bar: {
+    position: 'sticky',
+    top: 0,
+    zIndex: 1200,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 0.5,
+    px: 2,
+    minHeight: 48,
+    backgroundColor: 'background.paper',
+    borderBottom: '1px solid',
+    borderColor: 'divider',
+    overflowX: 'auto',
+  },
+  navButton: (active: boolean) => ({
+    flexShrink: 0,
+    maxWidth: 200,
+    textTransform: 'none',
+    fontSize: 14,
+    fontWeight: active ? 600 : 400,
+    color: active ? 'primary.main' : 'text.primary',
+  }),
+  navLabel: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  externalLabel: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontWeight: 600,
+    color: 'text.secondary',
+  },
+});
