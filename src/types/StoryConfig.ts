@@ -7,6 +7,12 @@ export interface StoryConfig {
   slides: Slide[];
   tocOrientation?: 'vertical' | 'horizontal';
   theme?: string | StoryThemeConfig; // Name of a built-in theme (e.g. 'light', 'dark'), or a custom theme definition
+  // Explicit override of the auto-derived TOC (one entry per non-excluded slide). Lets a
+  // page reorder/relabel entries, group slides under one heading via `sublist`, and mix in
+  // links to other theme pages (href) at whatever position matches the site's overall order.
+  tableOfContents?: TocItem[];
+  tocHeading?: string; // TOC panel heading; default "Chapters" (e.g. "Chapitres" for a French story)
+  lang?: 'en' | 'fr'; // Drives the GeoView map viewer's own UI language (data-lang); default 'en'
 }
 
 export interface StoryThemeConfig {
@@ -37,6 +43,10 @@ export interface IntroSlide {
 
 export interface Slide {
   title: string;
+  // Stable, language-independent id used for the slide's URL hash/DOM id. Falls back to a
+  // slugified `title` when omitted, so give matching stories in different languages the same
+  // `id` per slide to keep deep links working when the title text itself is translated.
+  id?: string;
   backgroundImage?: string;
   panel: Panel[];
   includeInToc?: boolean;
@@ -161,5 +171,7 @@ export type Panel =
 
 export interface TocItem {
   title: string;
-  slideIndex: number;
+  slideIndex?: number; // Local entry that scrolls to this slide. Omit for an external link (set href instead).
+  href?: string; // External entry that navigates to another page instead of scrolling. Mutually exclusive with slideIndex.
+  sublist?: Array<{ title: string; slideIndex: number }>; // One level of grouping under a local entry.
 }

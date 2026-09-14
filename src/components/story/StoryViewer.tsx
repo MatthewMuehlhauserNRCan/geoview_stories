@@ -43,7 +43,7 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
   const [tocCollapsed, setTocCollapsed] = React.useState(false);
 
   // Generate slide IDs and refs
-  const slideIds = config?.slides.map((slide, index) => generateSlideId(index, slide.title)) || [];
+  const slideIds = config?.slides.map((slide, index) => generateSlideId(index, slide.title, slide.id)) || [];
   
   useEffect(() => {
     if (config) {
@@ -52,6 +52,19 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
   }, [config]);
 
   const activeIndex = useScrollSpy(slideRefs.current, slideIds, !loading);
+
+  // The browser's native "scroll to #hash on load" races the async config
+  // fetch/render - slides don't exist in the DOM yet when it fires, so it
+  // silently no-ops. Do it ourselves once slides have actually mounted.
+  const initialHashHandledRef = useRef(false);
+  useEffect(() => {
+    if (loading || initialHashHandledRef.current || slideIds.length === 0) return;
+    initialHashHandledRef.current = true;
+    const hash = window.location.hash.slice(1);
+    if (hash && slideIds.includes(hash)) {
+      scrollToSlide(hash);
+    }
+  }, [loading, slideIds, scrollToSlide]);
 
   // Background image state management for true crossfade
   const [bgLayer1, setBgLayer1] = useState<string>('');
@@ -87,9 +100,11 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
     scrollToSlide(slideId);
   };
 
-  // Build TOC items (only meaningful once config has loaded)
+  // Build TOC items (only meaningful once config has loaded). An explicit `tableOfContents`
+  // (custom labels, sublist grouping, theme-page links) overrides the auto-derived list.
   const tocItems: TocItem[] = config
-    ? config.slides
+    ? config.tableOfContents ??
+      config.slides
         .map((slide, index) => ({
           title: slide.title,
           slideIndex: index,
@@ -127,6 +142,8 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
           <Box sx={classes.contentRow}>
             <TableOfContents
               items={tocItems}
+              slideIds={slideIds}
+              heading={config.tocHeading}
               activeIndex={activeIndex}
               onItemClick={handleTocItemClick}
               orientation={config.tocOrientation}

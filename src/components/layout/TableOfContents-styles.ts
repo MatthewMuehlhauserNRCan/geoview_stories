@@ -35,4 +35,19 @@ export const getSxClasses = () => ({
       '&:hover': { backgroundColor: 'primary.dark' },
     },
   },
+  sublistItem: {
+    borderRadius: 1,
+    mb: 0.5,
+    pl: 3,
+    '&.Mui-selected': {
+      backgroundColor: 'primary.main',
+      color: 'primary.contrastText',
+      '&:hover': { backgroundColor: 'primary.dark' },
+    },
+  },
+  externalIcon: {
+    ml: 1,
+    color: 'text.secondary',
+    flexShrink: 0,
+  },
 });

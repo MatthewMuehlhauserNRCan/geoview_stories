@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histoire GeoView - Démo</title>
+  <link rel="icon" href="favicon.ico">
+
+  <!-- Step 1: Include GeoView (required for map panels) -->
+  <script src="https://canadian-geospatial-platform.github.io/geoview/public/cgpv-main.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  </style>
+</head>
+<body>
+  <!-- Step 2: Add a story container with data-config attribute -->
+  <!-- The library will automatically initialize any element with class="geoview-story" -->
+  <div
+    class="geoview-story"
+    data-config="configs/demo-story-fr.json"
+  ></div>
+
+  <!-- Step 3: Include GeoView Story Library. Tries each source in order so this
+       one file works whether it's run from the local dev server (demo/ next to
+       dist/), our own deployed dist/demo/ (next to dist/geoview-story.js), or
+       copied elsewhere on its own as a standalone template (falls back to CDN). -->
+  <script>
+    (function loadScript(sources) {
+      var src = sources.shift();
+      var el = document.createElement('script');
+      el.src = src;
+      if (sources.length) {
+        el.onerror = function () { loadScript(sources); };
+      }
+      document.body.appendChild(el);
+    })([
+      '../dist/geoview-story.js',
+      '../geoview-story.js',
+      'https://matthewmuehlhausernrcan.github.io/geoview_stories/geoview-story.js',
+    ]);
+  </script>
+</body>
+</html>

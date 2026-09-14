@@ -12,11 +12,16 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { TocItem } from '@/types/StoryConfig';
 import { getSxClasses } from './TableOfContents-styles';
 
 interface TableOfContentsProps {
   items: TocItem[];
+  // Index-aligned with the story's slides; resolves a TocItem.slideIndex to its actual scroll/DOM
+  // target id, since a TOC entry's display title may now differ from the slide's own title.
+  slideIds: string[];
+  heading?: string;
   activeIndex: number;
   onItemClick: (slideId: string) => void;
   orientation?: 'vertical' | 'horizontal';
@@ -26,6 +31,8 @@ interface TableOfContentsProps {
 
 export const TableOfContents: React.FC<TableOfContentsProps> = ({
   items,
+  slideIds,
+  heading = 'Chapters',
   activeIndex,
   onItemClick,
   orientation = 'vertical',
@@ -49,9 +56,8 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
     }
   };
 
-  const handleItemClick = (item: TocItem) => {
-    const slideId = `${item.slideIndex}-${item.title.toLowerCase().replace(/\s+/g, '-')}`;
-    onItemClick(slideId);
+  const handleLocalItemClick = (slideIndex: number) => {
+    onItemClick(slideIds[slideIndex]);
     if (!isDesktop) {
       setMobileOpen(false);
     }
@@ -96,29 +102,68 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
           )}
           
           <Typography variant="h6" sx={classes.heading}>
-            Chapters
+            {heading}
           </Typography>
           <List>
-            {items.map((item) => (
-              <ListItemButton
-                key={item.slideIndex}
-                selected={activeIndex === item.slideIndex}
-                onClick={() => handleItemClick(item)}
-                sx={classes.listItem}
-              >
-                <ListItemText
-                  primary={item.title || 'Untitled'}
-                  slotProps={{
-                    primary: {
-                      style: {
-                        fontSize: 14,
-                        fontWeight: activeIndex === item.slideIndex ? 600 : 400,
-                      },
-                    },
-                  }}
-                />
-              </ListItemButton>
-            ))}
+            {items.map((item, index) => {
+              const isExternal = item.href !== undefined;
+              return (
+                <React.Fragment key={item.href ?? item.slideIndex ?? index}>
+                  {isExternal ? (
+                    <ListItemButton component="a" href={item.href} sx={classes.listItem}>
+                      <ListItemText
+                        primary={item.title || 'Untitled'}
+                        slotProps={{ primary: { style: { fontSize: 14 } } }}
+                      />
+                      <OpenInNewIcon fontSize="small" sx={classes.externalIcon} />
+                    </ListItemButton>
+                  ) : (
+                    <ListItemButton
+                      selected={activeIndex === item.slideIndex}
+                      onClick={() => handleLocalItemClick(item.slideIndex!)}
+                      sx={classes.listItem}
+                    >
+                      <ListItemText
+                        primary={item.title || 'Untitled'}
+                        slotProps={{
+                          primary: {
+                            style: {
+                              fontSize: 14,
+                              fontWeight: activeIndex === item.slideIndex ? 600 : 400,
+                            },
+                          },
+                        }}
+                      />
+                    </ListItemButton>
+                  )}
+
+                  {item.sublist && (
+                    <List disablePadding>
+                      {item.sublist.map((subItem) => (
+                        <ListItemButton
+                          key={subItem.slideIndex}
+                          selected={activeIndex === subItem.slideIndex}
+                          onClick={() => handleLocalItemClick(subItem.slideIndex)}
+                          sx={classes.sublistItem}
+                        >
+                          <ListItemText
+                            primary={subItem.title || 'Untitled'}
+                            slotProps={{
+                              primary: {
+                                style: {
+                                  fontSize: 13,
+                                  fontWeight: activeIndex === subItem.slideIndex ? 600 : 400,
+                                },
+                              },
+                            }}
+                          />
+                        </ListItemButton>
+                      ))}
+                    </List>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </List>
         </Box>
       </Drawer>

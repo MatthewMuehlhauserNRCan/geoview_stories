@@ -12,11 +12,12 @@ export const loadStoryConfig = async (configPath: string): Promise<StoryConfig> 
 };
 
 /**
- * Generate slide ID from index and title
+ * Generate slide ID from index and title, preferring a stable author-assigned
+ * `id` over the title itself so deep links keep working across translations.
  */
-export const generateSlideId = (index: number, title: string): string => {
+export const generateSlideId = (index: number, title: string, id?: string): string => {
   const sanitizedTitle = title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-  return `${index}-${sanitizedTitle}`;
+  return `${index}-${id ?? sanitizedTitle}`;
 };
 
 /**

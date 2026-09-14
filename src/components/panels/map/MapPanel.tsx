@@ -5,6 +5,7 @@ import { useMapReady } from '@/hooks/useMapReady';
 import { MapLoadingOverlay, MapScrollGuardOverlay } from './MapOverlays';
 import { getSxClasses as getSharedSxClasses } from './map-shared-style';
 import { getSxClasses } from './MapPanel-style';
+import { useStoryStore } from '@/hooks/useStoryStore';
 import '@/types/GeoView'; // Import GeoView global types
 
 interface MapPanelProps {
@@ -23,6 +24,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
   const shared = getSharedSxClasses();
   const classes = getSxClasses();
   const geoviewTheme = useTheme().geoviewTheme;
+  const lang = useStoryStore().config?.lang ?? 'en';
 
   // cgpv.onMapReady is a single global callback slot owned by StoryController;
   // this only checks that the library itself loaded.
@@ -111,7 +113,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
           <Box
             id={mapId}
             data-config-url={panel.config}
-            data-lang="en"
+            data-lang={lang}
             className="geoview-map"
             sx={[shared.container, { height: panel.title ? '500px' : '600px' }]}
           />
