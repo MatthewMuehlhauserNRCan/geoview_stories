@@ -44,13 +44,25 @@ export interface Slide {
 
 export interface BasePanel {
   title?: string;
-  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'dynamic' | 'interactive-map' | 'quote';
+  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'dynamic' | 'interactive-map' | 'quote' | 'doormat';
 }
 
 export interface TextPanel extends BasePanel {
   type: 'text';
   content: string;
   cssClasses?: string;
+}
+
+export interface DoormatItem {
+  title: string;
+  description?: string;
+  href: string;
+  external?: boolean; // Opens in a new tab; defaults to true
+}
+
+export interface DoormatPanel extends BasePanel {
+  type: 'doormat';
+  items: DoormatItem[];
 }
 
 
@@ -144,7 +156,8 @@ export type Panel =
   | VideoPanel
   | SlideshowPanel
   | DynamicPanel
-  | QuotePanelConfig;
+  | QuotePanelConfig
+  | DoormatPanel;
 
 export interface TocItem {
   title: string;

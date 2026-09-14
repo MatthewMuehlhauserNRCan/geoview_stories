@@ -67,7 +67,7 @@ The deployed site has the following structure:
 ```
 /                           # Root (documentation page)
 ├── index.html             # Library documentation
-├── docs.html              # Full configuration reference
+├── docs/                  # Full configuration reference (docsify)
 ├── dist/                  # Built library files
 │   └── geoview-story.js  # Main library file
 └── demo/                  # Demo application

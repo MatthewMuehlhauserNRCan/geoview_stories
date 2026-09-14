@@ -7,6 +7,7 @@ import { VideoPanel } from './VideoPanel/VideoPanel';
 import { InteractiveMapPanel } from './map/InteractiveMapPanel';
 import { QuotePanel } from './QuotePanel/QuotePanel';
 import { SlideshowPanel } from './SlideshowPanel/SlideshowPanel';
+import { DoormatPanel } from './DoormatPanel/DoormatPanel';
 import { Box, Typography } from '@mui/material';
 import { getSxClasses } from './PanelRenderer-style';
 
@@ -33,6 +34,8 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstan
       return <QuotePanel {...(panel as QuotePanelConfig)} />;
     case 'slideshow':
       return <SlideshowPanel panel={panel} />;
+    case 'doormat':
+      return <DoormatPanel panel={panel} />;
     case 'dynamic':
       // TODO: Implement DynamicPanel
       return (

@@ -126,7 +126,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
 
 ## Configuration
 
-Story configurations are JSON files that define the structure and content. See `demo/configs/demo-story.json` for a complete example, and [public/docs.html](public/docs.html) (or the [live reference page](https://matthewmuehlhausernrcan.github.io/geoview_stories/docs.html)) for the full field-by-field reference, including options not shown in the demo (custom themes, POI `field`/`zoom` overrides, video `autoplay`/`transcript`, gallery `objectFit`, etc.).
+Story configurations are JSON files that define the structure and content. See `demo/configs/demo-story.json` for a complete example, and [public/docs/](public/docs/README.md) (or the [live reference page](https://matthewmuehlhausernrcan.github.io/geoview_stories/docs/)) for the full field-by-field reference, including options not shown in the demo (custom themes, POI `field`/`zoom` overrides, video `autoplay`/`transcript`, gallery `objectFit`, etc.).
 
 ### Basic Structure
 
@@ -206,7 +206,7 @@ To reuse the exact same config file with a different theme (e.g. a `_dark` varia
 │   └── geoview-story.js
 ├── public/            # Static public files
 │   ├── index.html     # Library landing/documentation page
-│   └── docs.html      # Full configuration reference
+│   └── docs/          # Full configuration reference (docsify)
 ├── src/               # Source code
 │   ├── components/    # React components (layout/, panels/, story/)
 │   ├── core/          # Non-React controllers and stores

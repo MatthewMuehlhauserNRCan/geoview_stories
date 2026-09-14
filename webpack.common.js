@@ -53,7 +53,7 @@ module.exports = {
       patterns: [
         { from: 'demo', to: 'demo' },
         { from: 'public/index.html', to: 'index.html' },
-        { from: 'public/docs.html', to: 'docs.html' },
+        { from: 'public/docs', to: 'docs' },
         // demo/favicon.ico is already covered by the 'demo' pattern above
         { from: 'public/favicon.ico', to: 'favicon.ico', noErrorOnMissing: true },
       ],
