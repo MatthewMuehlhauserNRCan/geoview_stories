@@ -20,7 +20,10 @@ export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideI
   const hasTextAndImage = hasMultiplePanels && 
     slide.panel.some(p => p.type === 'text') && 
     hasMedia;
-  const flexDirection = hasTextAndImage ? { xs: 'column', md: 'row' } : 'column';
+  // Any multi-panel slide can lay out side by side on desktop (stacked on mobile), not just the
+  // text+media pairing - that's what lets cssClasses (grow/grow-2/no-grow) split a row between
+  // any combination of panels, not only a paired text+media one.
+  const flexDirection = hasMultiplePanels ? { xs: 'column', md: 'row' } : 'column';
 
   return (
     <Box
@@ -37,7 +40,9 @@ export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideI
       <Box sx={classes.inner}>
         <Box sx={classes.row(flexDirection, hasTextAndImage, hasMedia)}>
           {slide.panel.map((panel, panelIndex) => (
-            <Box key={panelIndex} sx={getPanelSx(panel, hasTextAndImage, hasMultiplePanels, theme)}>
+            // cssClasses goes here (the actual flex item in the row), not inside the panel's own
+            // component - flex-grow/basis classes only mean anything on a direct flex child.
+            <Box key={panelIndex} sx={getPanelSx(panel, hasTextAndImage, hasMultiplePanels, theme)} className={panel.cssClasses}>
               <PanelRenderer panel={panel} panelInstanceId={`${slideId}-panel-${panelIndex}`} />
             </Box>
           ))}

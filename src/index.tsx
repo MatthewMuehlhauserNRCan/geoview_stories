@@ -1,3 +1,5 @@
+// Public API surface: init/destroy/autoInit and the window.geoviewStory global.
+
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { StoryViewer } from './components/story/StoryViewer';

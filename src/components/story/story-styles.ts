@@ -167,6 +167,8 @@ export const getPanelSx = (panel: Panel, hasTextAndImage: boolean, hasMultiplePa
       sx.alignSelf = { md: 'flex-start' };
     }
   } else if (!hasMultiplePanels) {
+    // cssClasses (applied to this same Box in Slide.tsx) uses !important, so it reliably
+    // overrides these defaults regardless - no need to special-case it away here.
     if (isTextPanel) {
       // Single text panel: wider than the paired case since there's no media column to share with
       sx.maxWidth = { xs: '100%', md: TEXT_WIDTH_STANDALONE };

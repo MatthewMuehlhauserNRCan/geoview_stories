@@ -55,13 +55,15 @@ export interface Slide {
 export interface BasePanel {
   title?: string;
   type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'dynamic' | 'interactive-map' | 'quote' | 'doormat';
+  // Optional utility class(es) from src/styles/panels.css (e.g. "narrow right-align") for
+  // width/alignment overrides - works on every panel type, not just text.
+  cssClasses?: string;
 }
 
 export interface TextPanel extends BasePanel {
   type: 'text';
   content?: string; // Inline markdown. Provide this or contentFile (contentFile wins if both are set).
   contentFile?: string; // Path to an external .md file, fetched at runtime - keeps long-form content out of the JSON.
-  cssClasses?: string;
 }
 
 export interface DoormatItem {

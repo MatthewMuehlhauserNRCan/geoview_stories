@@ -39,7 +39,7 @@ export const TextPanel: React.FC<TextPanelProps> = ({ panel }) => {
   const content = panel.contentFile ? fileContent : panel.content;
 
   return (
-    <Paper elevation={0} sx={classes.paper} className={panel.cssClasses}>
+    <Paper elevation={0} sx={classes.paper}>
       {panel.title && (
         <Typography variant="h4" component="h2" gutterBottom sx={classes.title}>
           {panel.title}

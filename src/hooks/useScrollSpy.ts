@@ -1,17 +1,17 @@
-import { useEffect, useState, useRef, RefObject } from 'react';
-import { storyStore } from '@/core/stores/StoryStore';
+import { useEffect, useRef, RefObject } from 'react';
+import { getActiveSlideIndex, setActiveSlideIndex, useActiveSlideIndex } from '@/core/stores/StoryStore';
 
 /**
  * Hook to track which slide is currently in the viewport
- * and update URL hash accordingly. Also mirrors the active index into
- * StoryStore so it's available as shared state outside this component.
+ * and update URL hash accordingly. Active index lives in StoryStore (not local
+ * state) so it has one source of truth and comparisons never use a stale value.
  */
 export const useScrollSpy = (
   slideRefs: RefObject<HTMLElement | null>[],
   slideIds: string[],
   enabled: boolean = true
 ): number => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const activeIndex = useActiveSlideIndex();
   const observerRef = useRef<IntersectionObserver | null>(null);
   const intersectionMapRef = useRef<Map<string, number>>(new Map());
 
@@ -58,16 +58,13 @@ export const useScrollSpy = (
 
         if (maxId) {
           const index = slideIds.indexOf(maxId);
-          if (index !== -1) {
-            if (index !== activeIndex) {
-              setActiveIndex(index);
-              storyStore.getState().setActiveSlideIndex(index);
+          if (index !== -1 && index !== getActiveSlideIndex()) {
+            setActiveSlideIndex(index);
 
-              // Update URL hash without scrolling
-              const newHash = `#${maxId}`;
-              if (window.location.hash !== newHash) {
-                window.history.replaceState(null, '', newHash);
-              }
+            // Update URL hash without scrolling
+            const newHash = `#${maxId}`;
+            if (window.location.hash !== newHash) {
+              window.history.replaceState(null, '', newHash);
             }
           }
         }

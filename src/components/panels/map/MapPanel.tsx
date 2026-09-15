@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Paper, useTheme } from '@mui/material';
 import { MapPanel as MapPanelType } from '@/types/StoryConfig';
-import { useMapReady } from '@/hooks/useMapReady';
+import { useMapReady, useStoryConfig } from '@/core/stores/StoryStore';
 import { MapLoadingOverlay, MapScrollGuardOverlay } from './MapOverlays';
 import { getSxClasses as getSharedSxClasses } from './map-shared-style';
 import { getSxClasses } from './MapPanel-style';
-import { useStoryStore } from '@/hooks/useStoryStore';
 import '@/types/GeoView'; // Import GeoView global types
 
 interface MapPanelProps {
@@ -24,7 +23,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
   const shared = getSharedSxClasses();
   const classes = getSxClasses();
   const geoviewTheme = useTheme().geoviewTheme;
-  const lang = useStoryStore().config?.lang ?? 'en';
+  const lang = useStoryConfig()?.lang ?? 'en';
 
   // cgpv.onMapReady is a single global callback slot owned by StoryController;
   // this only checks that the library itself loaded.

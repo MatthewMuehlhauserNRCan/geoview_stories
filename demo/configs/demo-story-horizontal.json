@@ -17,6 +17,36 @@
       ]
     },
     {
+      "title": "Panel Layout Example",
+      "id": "layout-example",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Controlling Panel Width & Alignment",
+          "cssClasses": "right-align",
+          "content": "Every panel type - not just text - accepts an optional `cssClasses` field for extra control over its width and position, independent of the slide's usual layout:\n\n- `left-align` / `right-align` - shifts the panel to one side, capped at a moderate width\n- `center-align` - centers the panel with a moderate width cap\n- `full-width` - removes the width cap entirely, so the panel fills the available space\n- `narrow` / `wide` - a tighter or looser width cap; combine with an alignment class, e.g. `\"narrow right-align\"`\n\nThis panel itself is using `cssClasses: \"right-align\"`."
+        }
+      ]
+    },
+    {
+      "title": "Sharing a Row Between Panels",
+      "id": "row-sharing-example",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Growing Evenly",
+          "cssClasses": "grow",
+          "content": "These two panels are sharing one row using `cssClasses: \"grow\"` on both - flexbox splits the space evenly between them, however many panels end up in the row.\n\nUnlike a fixed 50/50 split, `grow` scales automatically: add a third panel with `grow` and all three share equally, with no percentages to work out by hand."
+        },
+        {
+          "type": "text",
+          "title": "Weighted & Fixed Widths",
+          "cssClasses": "grow",
+          "content": "To make one side bigger, use `grow-2` or `grow-3` instead of plain `grow` on whichever panel should be larger - it works on either side, not just the left; whichever panel gets the higher number wins, regardless of its position.\n\nUse `no-grow` on a panel that should size to its own content instead of stretching, and combine any of these with `narrow` / `wide` / `full-width` to cap how far a panel is allowed to grow."
+        }
+      ]
+    },
+    {
       "title": "Guiding Principles for Collaboration",
       "id": "guiding-principles",
       "backgroundImage": "images/BackgroundImageTest.jpg",
@@ -221,19 +251,21 @@
   "lang": "en",
   "tableOfContents": [
     { "title": "Introduction", "slideIndex": 0 },
-    { "title": "Guiding Principles for Collaboration", "slideIndex": 1 },
-    { "title": "Standalone Quote Example", "slideIndex": 2 },
+    { "title": "Panel Layout Example", "slideIndex": 1 },
+    { "title": "Sharing a Row Between Panels", "slideIndex": 2 },
+    { "title": "Guiding Principles for Collaboration", "slideIndex": 3 },
+    { "title": "Standalone Quote Example", "slideIndex": 4 },
     {
       "title": "Maps",
       "sublist": [
-        { "title": "Basic Map", "slideIndex": 3 },
-        { "title": "Interactive Map Example", "slideIndex": 4 }
+        { "title": "Basic Map", "slideIndex": 5 },
+        { "title": "Interactive Map Example", "slideIndex": 6 }
       ]
     },
-    { "title": "Video Example", "slideIndex": 5 },
-    { "title": "Image Gallery Example", "slideIndex": 6 },
-    { "title": "Additional Resources Example", "slideIndex": 7 },
-    { "title": "Next Steps", "slideIndex": 8 },
+    { "title": "Video Example", "slideIndex": 7 },
+    { "title": "Image Gallery Example", "slideIndex": 8 },
+    { "title": "Additional Resources Example", "slideIndex": 9 },
+    { "title": "Next Steps", "slideIndex": 10 },
     { "title": "Français", "href": "index_fr.html" }
   ]
 }

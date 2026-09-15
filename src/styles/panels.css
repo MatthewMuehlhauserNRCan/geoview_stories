@@ -1,34 +1,55 @@
-/* Panel alignment classes for positioning text over background images */
+/* Panel layout classes - applied to a panel's outer wrapper, which is the actual
+   flex item in its slide row (see Slide.tsx). Two independent, composable axes:
+   - Space-sharing: .grow / .grow-2 / .grow-3 / .no-grow (flex-grow weight)
+   - Width ceiling: .narrow / .wide / .full-width (max-width, layered on top of grow)
+   - Alignment: .left-align / .right-align / .center-align (margin, only visible
+     when there's free space left in the row - i.e. the panel isn't also .grow)
+   All rules use !important since they're meant to override the row's own default
+   per-panel sizing (see getPanelSx in story-styles.ts), not just add to it. */
 
+/* --- Space-sharing between multiple panels in one row --- */
+.grow {
+  flex: 1 1 0% !important;
+}
+
+.grow-2 {
+  flex: 2 1 0% !important;
+}
+
+.grow-3 {
+  flex: 3 1 0% !important;
+}
+
+.no-grow {
+  flex: 0 0 auto !important;
+}
+
+/* --- Alignment (push within whatever free space the row has left) --- */
 .left-align {
   margin-right: auto !important;
   margin-left: 0 !important;
-  max-width: 500px;
 }
 
 .right-align {
   margin-left: auto !important;
   margin-right: 0 !important;
-  max-width: 500px;
 }
 
-/* Center alignment (default) */
 .center-align {
   margin-left: auto !important;
   margin-right: auto !important;
-  max-width: 800px;
 }
 
-/* Full width for text that should span the entire slide */
-.full-width {
-  max-width: 100% !important;
-}
-
-/* Additional utility classes */
+/* --- Width ceilings - min(Xpx, 100%) shrinks to fit narrow viewports instead
+   of overflowing; combine with a grow/alignment class above as needed --- */
 .narrow {
-  max-width: 600px !important;
+  max-width: min(600px, 100%) !important;
 }
 
 .wide {
-  max-width: 1200px !important;
+  max-width: min(1200px, 100%) !important;
+}
+
+.full-width {
+  max-width: 100% !important;
 }

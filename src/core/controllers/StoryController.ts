@@ -1,4 +1,4 @@
-import { storyStore } from '../stores/StoryStore';
+import { setStoryLoading, setStoryError, setStoryConfig, setStoryInitialized, setMapReady, resetStoryStore } from '../stores/StoryStore';
 import { loadStoryConfig, configHasMaps } from '@/utils/configLoader';
 import '@/types/GeoView'; // Import GeoView global types
 
@@ -27,9 +27,8 @@ export class StoryController {
    */
   async init(containerEl: HTMLElement, configPath: string): Promise<void> {
     this.containerElement = containerEl;
-    const { setLoading, setError, setConfig, setInitialized } = storyStore.getState();
-    setLoading(true);
-    setError(null);
+    setStoryLoading(true);
+    setStoryError(null);
 
     try {
       const config = await loadStoryConfig(configPath);
@@ -44,12 +43,12 @@ export class StoryController {
         config.theme = themeOverride;
       }
 
-      setConfig(config);
+      setStoryConfig(config);
 
       // Reveal the story now so slides (and any map elements) actually mount.
       // cgpv.init() only discovers elements already in the DOM, so this must
       // happen before we wait for/initialize maps below.
-      setLoading(false);
+      setStoryLoading(false);
 
       if (configHasMaps(config)) {
         if (!window.cgpv) {
@@ -70,11 +69,11 @@ export class StoryController {
         await window.cgpv.init();
       }
 
-      setInitialized(true);
+      setStoryInitialized(true);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(errorMessage);
-      setLoading(false);
+      setStoryError(errorMessage);
+      setStoryLoading(false);
       console.error('[StoryController] Initialization failed:', err);
       throw err;
     }
@@ -112,7 +111,7 @@ export class StoryController {
    */
   private registerMapListeners(): void {
     window.cgpv.onMapReady((mapViewer) => {
-      storyStore.getState().setMapReady(mapViewer.mapId, true);
+      setMapReady(mapViewer.mapId, true);
     });
   }
 
@@ -127,7 +126,7 @@ export class StoryController {
    * Reset controller state
    */
   reset(): void {
-    storyStore.getState().reset();
+    resetStoryStore();
     this.containerElement = null;
   }
 }

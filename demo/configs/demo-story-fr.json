@@ -17,6 +17,36 @@
       ]
     },
     {
+      "title": "Exemple de mise en page des panneaux",
+      "id": "layout-example",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Contrôler la largeur et l'alignement des panneaux",
+          "cssClasses": "right-align",
+          "content": "Chaque type de panneau - pas seulement le texte - accepte un champ optionnel `cssClasses` pour contrôler sa largeur et sa position, indépendamment de la mise en page habituelle de la diapositive :\n\n- `left-align` / `right-align` - décale le panneau d'un côté, avec une largeur maximale modérée\n- `center-align` - centre le panneau avec une largeur maximale modérée\n- `full-width` - supprime complètement la limite de largeur\n- `narrow` / `wide` - une limite de largeur plus étroite ou plus large; combinable avec une classe d'alignement, par exemple `\"narrow right-align\"`\n\nCe panneau utilise lui-même `cssClasses: \"right-align\"`."
+        }
+      ]
+    },
+    {
+      "title": "Partager une rangée entre panneaux",
+      "id": "row-sharing-example",
+      "panel": [
+        {
+          "type": "text",
+          "title": "Croissance égale",
+          "cssClasses": "grow",
+          "content": "Ces deux panneaux partagent une rangée en utilisant `cssClasses: \"grow\"` sur les deux - flexbox répartit l'espace également entre eux, peu importe le nombre de panneaux dans la rangée.\n\nContrairement à une division fixe 50/50, `grow` s'adapte automatiquement : ajoutez un troisième panneau avec `grow` et les trois partagent également l'espace, sans avoir à recalculer de pourcentages."
+        },
+        {
+          "type": "text",
+          "title": "Largeurs pondérées et fixes",
+          "cssClasses": "grow",
+          "content": "Pour rendre un côté plus grand, utilisez `grow-2` ou `grow-3` au lieu de simplement `grow` sur le panneau qui doit être plus grand - cela fonctionne des deux côtés, pas seulement à gauche; c'est le panneau avec la valeur la plus élevée qui l'emporte, peu importe sa position.\n\nUtilisez `no-grow` sur un panneau qui doit s'ajuster à son propre contenu plutôt que de s'étirer, et combinez l'une de ces classes avec `narrow` / `wide` / `full-width` pour limiter la croissance d'un panneau."
+        }
+      ]
+    },
+    {
       "title": "Principes directeurs de collaboration",
       "id": "guiding-principles",
       "backgroundImage": "images/BackgroundImageTest.jpg",
@@ -225,19 +255,21 @@
       "title": "Français",
       "sublist": [
         { "title": "Introduction", "slideIndex": 0 },
-        { "title": "Principes directeurs de collaboration", "slideIndex": 1 },
-        { "title": "Exemple de citation autonome", "slideIndex": 2 },
+        { "title": "Exemple de mise en page des panneaux", "slideIndex": 1 },
+        { "title": "Partager une rangée entre panneaux", "slideIndex": 2 },
+        { "title": "Principes directeurs de collaboration", "slideIndex": 3 },
+        { "title": "Exemple de citation autonome", "slideIndex": 4 },
         {
           "title": "Cartes",
           "sublist": [
-            { "title": "Carte de base", "slideIndex": 3 },
-            { "title": "Exemple de carte interactive", "slideIndex": 4 }
+            { "title": "Carte de base", "slideIndex": 5 },
+            { "title": "Exemple de carte interactive", "slideIndex": 6 }
           ]
         },
-        { "title": "Exemple de vidéo", "slideIndex": 5 },
-        { "title": "Exemple de galerie d'images", "slideIndex": 6 },
-        { "title": "Exemple de ressources supplémentaires", "slideIndex": 7 },
-        { "title": "Prochaines étapes", "slideIndex": 8 }
+        { "title": "Exemple de vidéo", "slideIndex": 7 },
+        { "title": "Exemple de galerie d'images", "slideIndex": 8 },
+        { "title": "Exemple de ressources supplémentaires", "slideIndex": 9 },
+        { "title": "Prochaines étapes", "slideIndex": 10 }
       ]
     },
     { "title": "English", "href": "index.html" }
