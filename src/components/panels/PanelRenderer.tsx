@@ -1,5 +1,5 @@
 import React from 'react';
-import { Panel, QuotePanelConfig } from '@/types/StoryConfig';
+import { BasePanel, Panel, QuotePanelConfig } from '@/types/StoryConfig';
 import { TextPanel } from './TextPanel/TextPanel';
 import { ImagePanel } from './ImagePanel/ImagePanel';
 import { MapPanel } from './map/MapPanel';
@@ -36,17 +36,10 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstan
       return <SlideshowPanel panel={panel} />;
     case 'doormat':
       return <DoormatPanel panel={panel} />;
-    case 'dynamic':
-      // TODO: Implement DynamicPanel
-      return (
-        <Box sx={classes.placeholder}>
-          <Typography>Dynamic Panel (Coming Soon)</Typography>
-        </Box>
-      );
     default:
       return (
         <Box sx={classes.errorPlaceholder}>
-          <Typography>Unknown panel type</Typography>
+          <Typography>Unknown panel type: {(panel as BasePanel).type}</Typography>
         </Box>
       );
   }

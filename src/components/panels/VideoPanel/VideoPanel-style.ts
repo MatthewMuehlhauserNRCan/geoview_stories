@@ -7,7 +7,7 @@ export const getSxClasses = () => ({
   title: { p: 2 },
   titleText: { fontWeight: 600 },
   videoBody: { position: 'relative' },
-  youtubeFrame: (height: number | string) => ({
+  embedFrame: (height: number | string) => ({
     width: '100%',
     height,
     border: 'none',

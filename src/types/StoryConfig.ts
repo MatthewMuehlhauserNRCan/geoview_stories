@@ -54,7 +54,7 @@ export interface Slide {
 
 export interface BasePanel {
   title?: string;
-  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'dynamic' | 'interactive-map' | 'quote' | 'doormat';
+  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'interactive-map' | 'quote' | 'doormat';
   // Optional utility class(es) from src/styles/panels.css (e.g. "narrow right-align") for
   // width/alignment overrides - works on every panel type, not just text.
   cssClasses?: string;
@@ -120,7 +120,9 @@ export interface PointOfInterest {
 export interface VideoPanel extends BasePanel {
   type: 'video';
   src: string;
-  videoType: 'local' | 'external' | 'YouTube';
+  // "embed" is a generic iframe embed (YouTube, Vimeo, Dailymotion, etc.) - just point it at
+  // whatever ready-to-embed URL that platform gives you.
+  videoType: 'local' | 'external' | 'embed';
   caption?: string;
   transcript?: string;
   width?: string | number;
@@ -142,17 +144,6 @@ export interface SlideshowPanel extends BasePanel {
   objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'; // How each image fits its frame; defaults to 'cover'
 }
 
-export interface DynamicPanel extends BasePanel {
-  type: 'dynamic';
-  content: string;
-  contentWidth?: string;
-  reversed?: boolean;
-  children: Array<{
-    id: string;
-    panel: Panel;
-  }>;
-}
-
 export interface QuotePanelConfig extends BasePanel {
   type: 'quote';
   quote: string;
@@ -168,7 +159,6 @@ export type Panel =
   | InteractiveMapPanel
   | VideoPanel
   | SlideshowPanel
-  | DynamicPanel
   | QuotePanelConfig
   | DoormatPanel;
 

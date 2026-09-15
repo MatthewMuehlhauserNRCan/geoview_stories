@@ -13,6 +13,9 @@ export const TextPanel: React.FC<TextPanelProps> = ({ panel }) => {
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
 
+  /**
+   * Fetches the content of the text panel from an external file if `panel.contentFile` is specified.
+   */
   useEffect(() => {
     if (!panel.contentFile) return;
     let cancelled = false;

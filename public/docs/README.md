@@ -21,7 +21,6 @@ Complete reference for GeoView Story Library config JSON files: story structure,
   - [slideshow](#slideshow)
   - [interactive-map](#interactive-map)
   - [doormat](#doormat)
-  - [dynamic (reserved)](#dynamic-reserved)
 
 ## Story Config
 
@@ -260,17 +259,19 @@ interface ImagePanel {
 ```ts
 interface VideoPanel {
   type: "video";
-  src: string;                                 // Required
-  videoType: "local" | "external" | "YouTube";  // Required
+  src: string;                                          // Required
+  videoType: "local" | "external" | "embed"; // Required
   caption?: string;     // Local video captions track source
   transcript?: string;  // Link to a transcript, shown below the video
   width?: string | number;  // Local/external video width
-  height?: number;          // iframe height for YouTube
+  height?: number;          // iframe height for embed
   autoplay?: boolean;       // Local/external video autoplay
 }
 ```
 
-> **Not shown in demo:** `videoType: "local"` / `"external"` (only `"YouTube"` is used), `transcript`, `width`, `autoplay`.
+- **`videoType`**: `"local"`/`"external"` render a native `<video>` element (a real video file - `src` extension is used to set the correct MIME type, e.g. `.mp4`/`.webm`/`.ogg`/`.mov`). `"embed"` renders an `<iframe>` - use this for any platform with an embed URL (YouTube, Vimeo, Dailymotion, etc.); there's no platform-specific logic, `src` is used as-is, so point it at whatever ready-to-embed URL that platform gives you.
+
+> **Not shown in demo:** `videoType: "local"` / `"external"` (only `"embed"` is used), `transcript`, `width`, `autoplay`.
 
 ### map
 
@@ -369,7 +370,3 @@ interface DoormatItem {
 ```
 
 > Prefer this over embedding raw HTML/CSS in a `text` panel's `content` for link grids - it's schema-validated, themed (light/dark) automatically, and doesn't depend on external CSS classes.
-
-### dynamic (reserved)
-
-> ⚠️ This panel type is defined in the schema (`content`, `contentWidth`, `reversed`, `children`) but **is not implemented yet** - it's a placeholder for a future composable panel type. Avoid using it in configs for now.

@@ -164,7 +164,6 @@ Story configurations are JSON files that define the structure and content. See `
 - **quote** - Styled quotations with attribution
 - **slideshow** - Image gallery carousel with dot navigation, optional side-positioned caption text per image, a full-screen viewer, and a configurable `objectFit`
 - **interactive-map** - Map with scrollable points of interest; each POI can zoom to a feature's extent by scale or explicit zoom level, or return to the map's home view
-- **dynamic** - Reserved in the schema for a future composable panel type; not yet implemented
 
 ### Theming
 

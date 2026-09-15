@@ -34,7 +34,7 @@ export const validateStoryConfig = (config: StoryConfig): boolean => {
 /**
  * Whether any slide panel needs a GeoView map, so callers can skip
  * cgpv setup entirely for map-free stories. Only checks top-level panels
- * since slideshow/dynamic panel types don't support maps yet.
+ * since the slideshow panel type doesn't support maps.
  */
 export const configHasMaps = (config: StoryConfig): boolean =>
   config.slides.some(slide => slide.panel.some(panel => panel.type === 'map' || panel.type === 'interactive-map'));
