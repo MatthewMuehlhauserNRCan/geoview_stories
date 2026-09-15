@@ -39,14 +39,20 @@ export const namedThemes: Record<string, StoryThemeConfig> = {
 
 const DEFAULT_FONT_FAMILY = '"Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif';
 
+/** The visitor's OS/browser color scheme preference, read once at build time (no live switching). */
+const getSystemPreferredThemeName = (): 'light' | 'dark' =>
+  typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : DEFAULT_THEME_NAME;
+
 /**
  * Builds a MUI theme from a story config's `theme` field: a built-in theme
  * name, a custom theme object (optionally based on a named one via `name`),
- * or nothing (falls back to the default 'light' theme).
+ * or nothing - in which case it honours the visitor's OS/browser preference
+ * instead of forcing light, since the author made no explicit choice.
  */
 export const buildStoryTheme = (themeConfig?: string | StoryThemeConfig): Theme => {
+  const defaultName = themeConfig === undefined ? getSystemPreferredThemeName() : DEFAULT_THEME_NAME;
   const requested: StoryThemeConfig = typeof themeConfig === 'string' ? { name: themeConfig } : themeConfig || {};
-  const base = namedThemes[requested.name ?? DEFAULT_THEME_NAME] ?? namedThemes[DEFAULT_THEME_NAME];
+  const base = namedThemes[requested.name ?? defaultName] ?? namedThemes[DEFAULT_THEME_NAME];
   const resolved: StoryThemeConfig = { ...base, ...requested };
   // Falls back to a mode-based guess since GeoView only has 4 fixed theme
   // names of its own and can't otherwise infer one from an arbitrary custom theme.
