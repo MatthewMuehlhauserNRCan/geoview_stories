@@ -193,7 +193,39 @@ interface Slide {
 
 ## Panel Types
 
-Every panel has an optional `title` in addition to its type-specific fields below.
+Every panel has an optional `title` in addition to its type-specific fields below, plus an optional `cssClasses` for width/alignment overrides - see [Panel Width & Alignment](#panel-width--alignment-cssclasses) below.
+
+### Panel Width & Alignment (`cssClasses`)
+
+Every panel type accepts an optional `cssClasses` field - one or more space-separated utility class names (from `src/styles/panels.css`) applied to the panel's outer wrapper, which is the actual flex item in its slide row. There are three independent, composable axes:
+
+**Space-sharing** - how a panel shares the row with its siblings, using `flex-grow` instead of hardcoded percentages so it scales to any number of panels:
+
+| Class | Effect |
+| --- | --- |
+| `grow` | Shares available row space evenly with any sibling that also has `grow`. |
+| `grow-2` / `grow-3` | Same, but claims 2x/3x as much space as a plain `grow` sibling. |
+| `no-grow` | Sizes to its own content instead of growing to fill space. |
+
+**Width ceiling** - caps how wide a panel can get (layered on top of whichever grow behavior applies), using `min(Xpx, 100%)` so it shrinks to fit narrow viewports instead of overflowing:
+
+| Class | Effect |
+| --- | --- |
+| `narrow` | Caps width at `min(600px, 100%)`. |
+| `wide` | Caps width at `min(1200px, 100%)`. |
+| `full-width` | Removes any width cap - spans whatever space it has. |
+
+**Alignment** - pushes a panel within whatever free space is left in the row (only visible if the panel isn't also `grow`, since a growing panel has no free space to push into):
+
+| Class | Effect |
+| --- | --- |
+| `left-align` | Pushes to the left. |
+| `right-align` | Pushes to the right. |
+| `center-align` | Centers. |
+
+Classes combine freely, e.g. `"narrow right-align"` narrows a panel and pushes it to the right. For two or more panels sharing a row, put `grow` (or `grow-2`/`grow-3`) on each one that should participate in the split - e.g. `grow` on both a text and image panel gives an even 50/50 split instead of the default 33/66; adding `narrow` to both leaves a gap in the middle (and around the edges) where the slide's own `backgroundImage` can show through.
+
+See the demo's "Panel Layout Example" slide ([English](../demo/configs/demo-story.json) / [French](../demo/configs/demo-story-fr.json)) for a working example.
 
 ### text
 
@@ -202,7 +234,6 @@ interface TextPanel {
   type: "text";
   content?: string;      // Inline Markdown. Provide this or contentFile (contentFile wins if both are set).
   contentFile?: string;  // Path to an external .md file, fetched at runtime
-  cssClasses?: string;   // Optional extra CSS class(es)
 }
 ```
 
