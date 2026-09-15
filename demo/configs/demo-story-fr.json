@@ -148,7 +148,7 @@
         {
           "type": "video",
           "title": "Exemple de vidéo",
-          "videoType": "YouTube",
+          "videoType": "embed",
           "src": "https://www.youtube.com/embed/dQw4w9WgXcQ",
           "height": 400
         }
@@ -242,7 +242,7 @@
         {
           "type": "text",
           "title": "Poursuivre le développement",
-          "content": "**Fonctionnalités implémentées :**\n- ✅ Panneaux vidéo (locaux, externes, YouTube)\n- ✅ Panneaux de citation avec attribution\n- ✅ Navigation verticale persistante (ordinateur de bureau)\n- ✅ Intégration de base de GeoView\n- ✅ Carte interactive avec système de PI (provisoire)\n- ✅ Panneaux de galerie d'images/diaporama\n- ✅ Panneaux de type « doormat » (liens de ressources)\n\n**Améliorations futures :**\n1. Panneaux de PI dynamiques\n2. Intégration de graphiques"
+          "content": "**Fonctionnalités implémentées :**\n- ✅ Panneaux vidéo (locaux, externes, YouTube)\n- ✅ Panneaux de citation avec attribution\n- ✅ Navigation verticale persistante (ordinateur de bureau)\n- ✅ Intégration de base de GeoView\n- ✅ Carte interactive avec système de PI (provisoire)\n- ✅ Panneaux de galerie d'images/diaporama\n- ✅ Panneaux de type « doormat » (liens de ressources)\n\n**Améliorations futures :**\n1. Intégration de graphiques"
         }
       ]
     }
