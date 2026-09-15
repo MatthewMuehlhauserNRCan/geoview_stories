@@ -99,6 +99,8 @@ Select a built-in theme by name:
 { "theme": "dark" }
 ```
 
+If `theme` is omitted entirely, the story follows the visitor's OS/browser `prefers-color-scheme` (light or dark) instead of defaulting to light - read once on load, not live-updated if the visitor changes it while the page is open. Setting `theme` to anything (a name or a custom object) always takes priority over that.
+
 Or fully customize (optionally based on a named theme via `name`):
 
 ```json
