@@ -85,6 +85,7 @@
                 {
                     "type": "text",
                     "title": "Intégration de GeoView",
+                    "cssClasses": "narrow",
                     "content": "Voici une carte GeoView de base montrant le Canada en projection conique conforme de Lambert (EPSG:3978). Cela démontre les fonctionnalités cartographiques de base."
                 },
                 {

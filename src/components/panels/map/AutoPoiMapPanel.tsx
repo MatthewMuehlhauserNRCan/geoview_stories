@@ -164,7 +164,7 @@ export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelIn
               data-config-url={panel.config}
               data-lang={lang}
               className="geoview-map"
-              sx={[shared.container, { height: '100%' }]}
+              sx={[shared.container, ownClasses.mapViewMinHeight(!!panel.title)]}
             />
             {loading && <MapLoadingOverlay message="Loading map..." />}
             {showScrollGuard && panel.scrollguard && <MapScrollGuardOverlay />}

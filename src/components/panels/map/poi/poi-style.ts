@@ -13,17 +13,28 @@ export const getSxClasses = () => ({
     position: 'sticky',
     top: { xs: 64, md: 80 }, // Stick below header on both mobile and desktop
     alignSelf: 'flex-start',
-    height: { xs: '40vh', md: 'calc(100vh - 100px)' }, // 40% viewport height on mobile, full height on desktop
-    maxHeight: { md: '800px' },
     zIndex: 10, // Ensure map stays above content when sticky
+    // No height here - sized by its content (Paper -> map div, which has the real height below).
+    // A percentage-height chain (mapWrapper -> mapPaper -> mapBody -> map div) can't grow when
+    // GeoView's footer bar expands (percentages need a definite ancestor height, and a fixed one
+    // just clips/scrolls or overlaps the next slide instead of pushing it down in normal flow).
   },
   mapPaper: {
-    height: '100%',
     position: 'relative',
   },
-  mapBody: (hasTitle: boolean) => ({
+  // hasTitle no longer changes anything here (kept for call-site compatibility) - the map div
+  // below carries its own real height, title bar or not.
+  mapBody: (_hasTitle: boolean) => ({
     position: 'relative',
-    height: hasTitle ? 'calc(100% - 65px)' : '100%',
+  }),
+  // The map div's own real (non-percentage) target height - a floor, not a cap, so it can still
+  // grow to fit an expanded GeoView footer bar. Subtracts the title bar's height when present so
+  // the overall sticky card's resting size roughly matches the title-less case.
+  mapViewMinHeight: (hasTitle: boolean) => ({
+    minHeight: {
+      xs: hasTitle ? 'calc(40vh - 65px)' : '40vh',
+      md: hasTitle ? 'calc(100vh - 165px)' : 'calc(100vh - 100px)',
+    },
   }),
   poiSection: {
     flex: '1',

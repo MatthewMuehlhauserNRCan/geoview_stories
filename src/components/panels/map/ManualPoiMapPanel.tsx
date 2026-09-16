@@ -175,7 +175,7 @@ export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, pan
               data-config-url={panel.config}
               data-lang={lang}
               className="geoview-map"
-              sx={[shared.container, { height: '100%' }]}
+              sx={[shared.container, ownClasses.mapViewMinHeight(!!panel.title)]}
             />
             {loading && <MapLoadingOverlay message="Loading interactive map..." />}
             {showScrollGuard && panel.scrollguard && <MapScrollGuardOverlay />}

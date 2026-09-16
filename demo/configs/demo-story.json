@@ -85,6 +85,7 @@
         {
           "type": "text",
           "title": "GeoView Integration",
+          "cssClasses": "narrow",
           "content": "Below is a basic GeoView map showing Canada in Lambert Conformal Conic projection (EPSG:3978). This demonstrates the core map functionality."
         },
         {
