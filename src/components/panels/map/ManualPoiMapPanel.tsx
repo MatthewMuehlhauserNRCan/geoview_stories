@@ -158,7 +158,7 @@ export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, pan
   }
 
   return (
-    <Box sx={ownClasses.root}>
+    <Box sx={ownClasses.root(panel.mapPosition)}>
       {/* Map Container - Sticky on mobile and desktop */}
       <Box sx={ownClasses.mapWrapper}>
         <Paper elevation={2} sx={[shared.paper, ownClasses.mapPaper]}>

@@ -152,6 +152,7 @@
                     "linkField": "linkUrl",
                     "linkLabel": "En savoir plus sur Wikipédia",
                     "imageField": "myImages",
+                    "mapPosition": "right",
                     "scrollguard": true
                 }
             ]

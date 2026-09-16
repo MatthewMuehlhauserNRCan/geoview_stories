@@ -151,6 +151,7 @@
           "linkField": "linkUrl",
           "linkLabel": "Learn more on Wikipedia",
           "imageField": "myImages",
+          "mapPosition": "right",
           "scrollguard": true
         }
       ]

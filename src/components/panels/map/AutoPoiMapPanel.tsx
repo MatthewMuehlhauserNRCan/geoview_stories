@@ -176,7 +176,7 @@ export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelIn
   }
 
   return (
-    <Box ref={containerRef} sx={ownClasses.root}>
+    <Box ref={containerRef} sx={ownClasses.root(panel.mapPosition)}>
       {/* Map Container - Sticky on mobile and desktop */}
       <Box sx={ownClasses.mapWrapper}>
         <Paper elevation={2} sx={[shared.paper, ownClasses.mapPaper]}>

@@ -99,6 +99,8 @@ export interface ManualPoiMapPanel extends BasePanel {
   points: PointOfInterest[];
   duration?: number;
   scrollguard?: boolean;
+  // Which side the sticky map sits on, with the POI list on the other side; default 'left'.
+  mapPosition?: 'left' | 'right';
 }
 
 export interface AutoPoiMapPanel extends BasePanel {
@@ -118,6 +120,8 @@ export interface AutoPoiMapPanel extends BasePanel {
   scale?: number; // Target map scale denominator applied to every auto-generated POI
   duration?: number;
   scrollguard?: boolean;
+  // Which side the sticky map sits on, with the POI list on the other side; default 'left'.
+  mapPosition?: 'left' | 'right';
 }
 
 export type PoiFilterOperator = 'equals' | 'notEquals' | 'contains' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'isNull' | 'isNotNull';

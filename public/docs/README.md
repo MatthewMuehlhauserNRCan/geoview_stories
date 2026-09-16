@@ -334,6 +334,7 @@ interface ManualPoiMapPanel {
   points: PointOfInterest[]; // Required
   duration?: number;         // ms, zoom animation duration for every point
   scrollguard?: boolean;     // Same as the map panel's
+  mapPosition?: "left" | "right"; // Which side the sticky map sits on; default "left"
 }
 
 interface PointOfInterest {
@@ -375,6 +376,7 @@ interface AutoPoiMapPanel {
   scale?: number;    // Target map scale denominator applied to every auto-generated POI
   duration?: number; // ms, zoom animation duration for every point
   scrollguard?: boolean;
+  mapPosition?: "left" | "right"; // Which side the sticky map sits on; default "left"
 }
 
 type PoiFilterOperator = "equals" | "notEquals" | "contains" | "gt" | "gte" | "lt" | "lte" | "in" | "isNull" | "isNotNull";
@@ -410,8 +412,9 @@ type PoiFilter = PoiFilterCondition | PoiFilterGroup;
   }
   ```
   This is a structured JSON condition tree rather than a SQL-like string, deliberately - no expression parser or `eval` involved, just data-driven comparisons. **Not shown in demo.**
+- **`mapPosition`**: swaps which side the sticky map sits on (`"left"` puts the POI list on the right, the default; `"right"` puts the map on the right and the POI list on the left). Also available on `manual-poi-map`.
 
-> The demo's `auto-poi-map` example runs against a small GeoJSON polygon layer that exercises `titleField`, `textField`, `linkField`, and a multi-photo `imageField` (one feature intentionally omits it, and two share the same `titleField` value, to show both of those cases rendering cleanly). `filter` isn't exercised.
+> The demo's `auto-poi-map` example runs against a small GeoJSON polygon layer that exercises `titleField`, `textField`, `linkField`, a multi-photo `imageField` (one feature intentionally omits it, and two share the same `titleField` value, to show both of those cases rendering cleanly), and `mapPosition: "right"`. `filter` isn't exercised.
 
 ### doormat
 

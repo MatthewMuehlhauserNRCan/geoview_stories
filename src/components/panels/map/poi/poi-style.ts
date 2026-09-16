@@ -1,11 +1,11 @@
 export const getSxClasses = () => ({
-  root: {
+  root: (mapPosition: 'left' | 'right' = 'left') => ({
     display: 'flex',
-    flexDirection: { xs: 'column', md: 'row' },
+    flexDirection: { xs: 'column', md: mapPosition === 'right' ? 'row-reverse' : 'row' },
     gap: { xs: 0, md: 3 }, // No gap on mobile for full-width map
     minHeight: '600px',
     mx: { xs: -2, md: 0 }, // Negative margin on mobile to break out of parent padding
-  },
+  }),
   mapWrapper: {
     flex: { xs: '0 0 auto', md: '2' },
     width: { xs: '100%', md: 'auto' }, // Full width on mobile
