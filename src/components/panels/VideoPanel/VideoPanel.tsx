@@ -38,7 +38,7 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({ panel }) => {
         <Box
           component="iframe"
           src={panel.src}
-          sx={classes.embedFrame(panel.height || 500)}
+          sx={classes.embedFrame(panel.height)}
           title={panel.title || 'Video'}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen

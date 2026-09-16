@@ -108,18 +108,31 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
   const classes = getSxClasses();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const openButtonRef = React.useRef<HTMLButtonElement>(null);
+  const collapseButtonRef = React.useRef<HTMLButtonElement>(null);
+  // Desktop's collapsed/expanded toggle swaps in a whole different button (unlike mobile's single
+  // persistent one), so the browser can't carry focus across that unmount on its own - this tracks
+  // whether the pending `collapsed` change came from our own toggle so we know to chase it with focus.
+  const pendingFocusRef = React.useRef(false);
 
   // Desktop: controlled by parent, Mobile: local state
   const isOpen = isDesktop ? !collapsed : mobileOpen;
   const drawerWidth = collapsed && isDesktop ? 0 : 280;
 
   const handleToggle = () => {
+    pendingFocusRef.current = true;
     if (isDesktop && onToggle) {
       onToggle();
     } else {
       setMobileOpen(!mobileOpen);
     }
   };
+
+  React.useEffect(() => {
+    if (!isDesktop || !pendingFocusRef.current) return;
+    pendingFocusRef.current = false;
+    (collapsed ? openButtonRef : collapseButtonRef).current?.focus();
+  }, [collapsed, isDesktop]);
 
   const handleLocalItemClick = (slideIndex: number) => {
     onItemClick(slideIds[slideIndex]);
@@ -132,7 +145,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
     <>
       {/* Menu button - shows when TOC is collapsed */}
       {collapsed && isDesktop && (
-        <IconButton onClick={handleToggle} sx={classes.menuButton} aria-label="Open table of contents">
+        <IconButton ref={openButtonRef} onClick={handleToggle} sx={classes.menuButton} aria-label="Open table of contents">
           <MenuIcon />
         </IconButton>
       )}
@@ -152,11 +165,12 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
         onClose={() => setMobileOpen(false)}
         sx={classes.drawer(drawerWidth)}
       >
-        <Box sx={classes.drawerBody}>
+        <Box sx={classes.drawerBody} inert={!isOpen}>
           {/* Collapse button inside TOC */}
           {!collapsed && isDesktop && (
             <Box sx={classes.collapseRow}>
               <IconButton
+                ref={collapseButtonRef}
                 onClick={handleToggle}
                 size="small"
                 aria-label="Collapse table of contents"

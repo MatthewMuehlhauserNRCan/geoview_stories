@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import { getSxClasses } from './poi-style';
 import { PoiImageLightbox } from './PoiImageLightbox';
@@ -88,11 +88,20 @@ export const PoiCard: React.FC<PoiCardProps> = ({
           </Typography>
         )}
         {linkUrl && (
-          <Typography variant="body2" sx={classes.poiLink}>
-            <a href={linkUrl} target="_blank" rel="noopener noreferrer">
-              {linkLabel || 'Learn more'}
-            </a>
-          </Typography>
+          <Button
+            href={linkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="outlined"
+            size="small"
+            sx={classes.poiLink}
+          >
+            {linkLabel || 'Learn more'}
+            <Box component="span" sx={classes.visuallyHidden}>
+              {' '}
+              (opens in a new tab)
+            </Box>
+          </Button>
         )}
       </Box>
 

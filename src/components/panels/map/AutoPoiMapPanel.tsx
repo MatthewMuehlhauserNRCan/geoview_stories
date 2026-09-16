@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Typography, Paper, Stack, useTheme } from '@mui/material';
 import { AutoPoiMapPanel as AutoPoiMapPanelType } from '@/types/StoryConfig';
-import { useStoryConfig } from '@/core/stores/StoryStore';
+import { useStoryConfig, incrementPendingLoad, decrementPendingLoad } from '@/core/stores/StoryStore';
 import { MapLoadingOverlay, MapScrollGuardOverlay } from './MapOverlays';
 import { getSxClasses as getSharedSxClasses } from './map-shared-style';
 import { getSxClasses } from './poi/poi-style';
 import { useMapLifecycle } from './hooks/useMapLifecycle';
+import { usePreserveScrollOnGrowth } from './hooks/usePreserveScrollOnGrowth';
 import { usePoiScrollObserver } from './poi/usePoiScrollObserver';
 import { zoomToPoiTarget } from './poi/poiZoom';
 import { getLayerLegendIconDataUrl } from './poi/legend-utils';
@@ -41,6 +42,8 @@ export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelIn
   const mapId = `autopoimap_${(panelInstanceId || 'panel').replace(/[^a-zA-Z0-9]/g, '_')}_${panel.config.replace(/[^a-zA-Z0-9]/g, '_')}`;
 
   const mapInstanceRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const pendingLoadRegisteredRef = useRef(false);
   const [pois, setPois] = useState<ResolvedPoi[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
@@ -50,12 +53,29 @@ export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelIn
   const lang = useStoryConfig()?.lang ?? 'en';
   const { error, loading, showScrollGuard } = useMapLifecycle(mapId, panel.scrollguard, geoviewTheme);
 
+  // Registered as early (mount) as possible, well before the map/fetch below even starts - so a
+  // scroll-to-slide waiting on `waitForPendingLoadsCleared` can never race ahead of this panel
+  // announcing it has known async content coming.
+  useEffect(() => {
+    if (pendingLoadRegisteredRef.current) return;
+    pendingLoadRegisteredRef.current = true;
+    incrementPendingLoad();
+  }, []);
+
   // Once the map is ready, pull every feature from the configured layer and turn each into a POI
   useEffect(() => {
     if (loading) return;
 
     const mapViewer = window.cgpv?.api.getMapViewer(mapId);
-    if (!mapViewer) return;
+    if (!mapViewer) {
+      // No fetch will ever start to clear the pendingLoad flag registered on mount - clear it here
+      // instead, so a stuck/missing map viewer can't leave scrollToSlide waiting for nothing.
+      if (pendingLoadRegisteredRef.current) {
+        pendingLoadRegisteredRef.current = false;
+        decrementPendingLoad();
+      }
+      return;
+    }
     mapInstanceRef.current = mapViewer;
 
     (async () => {
@@ -116,6 +136,11 @@ export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelIn
       } catch (err) {
         console.error('[AutoPoiMap] Error building POIs from features:', err);
         setFetchError(err instanceof Error ? err.message : String(err));
+      } finally {
+        if (pendingLoadRegisteredRef.current) {
+          pendingLoadRegisteredRef.current = false;
+          decrementPendingLoad();
+        }
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -134,6 +159,10 @@ export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelIn
     zoomToPoiOnMap(index).catch((err) => console.error('[AutoPoiMap] Zoom failed:', err));
   });
 
+  // The POI card list only exists once the async feature fetch resolves - if the user has already
+  // scrolled past this panel by then, its sudden height keeps the page from jumping under them.
+  usePreserveScrollOnGrowth(containerRef, [pois.length]);
+
   if (error || fetchError) {
     return (
       <Paper elevation={2} sx={[shared.paper, { backgroundColor: 'error.light' }]}>
@@ -147,7 +176,7 @@ export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelIn
   }
 
   return (
-    <Box sx={ownClasses.root}>
+    <Box ref={containerRef} sx={ownClasses.root}>
       {/* Map Container - Sticky on mobile and desktop */}
       <Box sx={ownClasses.mapWrapper}>
         <Paper elevation={2} sx={[shared.paper, ownClasses.mapPaper]}>

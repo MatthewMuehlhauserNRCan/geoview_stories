@@ -162,6 +162,7 @@ export interface VideoPanel extends BasePanel {
   caption?: string;
   transcript?: string;
   width?: string | number;
+  // Embed iframe is 16:9 responsive by default; this only caps how tall it can grow.
   height?: number;
   autoplay?: boolean;
 }

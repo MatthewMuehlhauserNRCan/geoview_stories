@@ -265,12 +265,13 @@ interface VideoPanel {
   caption?: string;     // Local video captions track source
   transcript?: string;  // Link to a transcript, shown below the video
   width?: string | number;  // Local/external video width
-  height?: number;          // iframe height for embed
+  height?: number;          // Optional cap on the embed iframe's height; it's 16:9 responsive by default
   autoplay?: boolean;       // Local/external video autoplay
 }
 ```
 
 - **`videoType`**: `"local"`/`"external"` render a native `<video>` element (a real video file - `src` extension is used to set the correct MIME type, e.g. `.mp4`/`.webm`/`.ogg`/`.mov`). `"embed"` renders an `<iframe>` - use this for any platform with an embed URL (YouTube, Vimeo, Dailymotion, etc.); there's no platform-specific logic, `src` is used as-is, so point it at whatever ready-to-embed URL that platform gives you.
+- **`height`**: the embed iframe scales at a 16:9 aspect ratio by its actual rendered width (e.g. next to a text panel) rather than a fixed pixel height, which would otherwise stretch or squish it depending on how wide its column ends up. Set `height` only if you need to cap how tall it's allowed to grow on a very wide column.
 
 > **Not shown in demo:** `videoType: "local"` / `"external"` (only `"embed"` is used), `transcript`, `width`, `autoplay`.
 

@@ -14,6 +14,7 @@ export const useScrollSpy = (
   const activeIndex = useActiveSlideIndex();
   const observerRef = useRef<IntersectionObserver | null>(null);
   const intersectionMapRef = useRef<Map<string, number>>(new Map());
+  const commitTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {    
     if (!enabled || slideRefs.length === 0) {
@@ -56,17 +57,27 @@ export const useScrollSpy = (
           }
         });
 
+        // Debounced, not immediate: a slide suddenly growing/shrinking (e.g. an auto-POI map's
+        // card list finishing an async load) fires this observer with a one-frame-transient ratio
+        // distortion for every slide, which would otherwise get committed as a real navigation
+        // before the layout (and any compensating scroll) actually settles. Only the last result
+        // after things go quiet for a bit gets applied.
         if (maxId) {
-          const index = slideIds.indexOf(maxId);
-          if (index !== -1 && index !== getActiveSlideIndex()) {
-            setActiveSlideIndex(index);
-
-            // Update URL hash without scrolling
-            const newHash = `#${maxId}`;
-            if (window.location.hash !== newHash) {
-              window.history.replaceState(null, '', newHash);
-            }
+          if (commitTimeoutRef.current) {
+            window.clearTimeout(commitTimeoutRef.current);
           }
+          commitTimeoutRef.current = window.setTimeout(() => {
+            const index = slideIds.indexOf(maxId);
+            if (index !== -1 && index !== getActiveSlideIndex()) {
+              setActiveSlideIndex(index);
+
+              // Update URL hash without scrolling
+              const newHash = `#${maxId}`;
+              if (window.location.hash !== newHash) {
+                window.history.replaceState(null, '', newHash);
+              }
+            }
+          }, 200);
         }
       },
       {
@@ -85,6 +96,9 @@ export const useScrollSpy = (
 
     return () => {
       observerRef.current?.disconnect();
+      if (commitTimeoutRef.current) {
+        window.clearTimeout(commitTimeoutRef.current);
+      }
     };
   }, [slideRefs, slideIds, enabled]);
 
