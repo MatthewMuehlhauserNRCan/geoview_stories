@@ -1,4 +1,5 @@
 {
+  "theme": "light",
   "introSlide": {
     "title": "Welcome to GeoView Stories",
     "subtitle": "An interactive storytelling platform for geospatial data",
@@ -95,13 +96,13 @@
       ]
     },
     {
-      "title": "Interactive Map Example",
-      "id": "interactive-map-example",
+      "title": "Manual POI Map Example",
+      "id": "manual-poi-map-example",
       "panel": [
         {
-          "type": "interactive-map",
-          "title": "Example Interactive Map",
-          "config": "./configs/interactive-map.json",
+          "type": "manual-poi-map",
+          "title": "Example Manual POI Map",
+          "config": "./configs/poi-map.json",
           "points": [
             {
               "title": "Point of Interest A",
@@ -132,6 +133,24 @@
             }
           ],
           "duration": 500,
+          "scrollguard": true
+        }
+      ]
+    },
+    {
+      "title": "Auto POI Photo Gallery Example",
+      "id": "auto-poi-gallery-example",
+      "panel": [
+        {
+          "type": "auto-poi-map",
+          "title": "Example Auto POI Map with Photo Galleries",
+          "config": "./configs/polygon-map.json",
+          "layerId": "geojsonLYR1/polygons.json",
+          "titleField": "Province",
+          "textField": "summary",
+          "linkField": "linkUrl",
+          "linkLabel": "Learn more on Wikipedia",
+          "imageField": "myImages",
           "scrollguard": true
         }
       ]
@@ -253,24 +272,64 @@
     {
       "title": "English",
       "sublist": [
-        { "title": "Introduction", "slideIndex": 0 },
-        { "title": "Panel Layout Example", "slideIndex": 1 },
-        { "title": "Sharing a Row Between Panels", "slideIndex": 2 },
-        { "title": "Guiding Principles for Collaboration", "slideIndex": 3 },
-        { "title": "Standalone Quote Example", "slideIndex": 4 },
+        {
+          "title": "Introduction",
+          "slideIndex": 0
+        },
+        {
+          "title": "Panel Layout Example",
+          "slideIndex": 1
+        },
+        {
+          "title": "Sharing a Row Between Panels",
+          "slideIndex": 2
+        },
+        {
+          "title": "Guiding Principles for Collaboration",
+          "slideIndex": 3
+        },
+        {
+          "title": "Standalone Quote Example",
+          "slideIndex": 4
+        },
         {
           "title": "Maps",
           "sublist": [
-            { "title": "Basic Map", "slideIndex": 5 },
-            { "title": "Interactive Map Example", "slideIndex": 6 }
+            {
+              "title": "Basic Map",
+              "slideIndex": 5
+            },
+            {
+              "title": "Manual POI Map Example",
+              "slideIndex": 6
+            },
+            {
+              "title": "Auto POI Photo Gallery Example",
+              "slideIndex": 7
+            }
           ]
         },
-        { "title": "Video Example", "slideIndex": 7 },
-        { "title": "Image Gallery Example", "slideIndex": 8 },
-        { "title": "Additional Resources Example", "slideIndex": 9 },
-        { "title": "Next Steps", "slideIndex": 10 }
+        {
+          "title": "Video Example",
+          "slideIndex": 8
+        },
+        {
+          "title": "Image Gallery Example",
+          "slideIndex": 9
+        },
+        {
+          "title": "Additional Resources Example",
+          "slideIndex": 10
+        },
+        {
+          "title": "Next Steps",
+          "slideIndex": 11
+        }
       ]
     },
-    { "title": "Français", "href": "index_fr.html" }
+    {
+      "title": "Français",
+      "href": "index_fr.html"
+    }
   ]
 }

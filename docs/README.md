@@ -19,7 +19,8 @@ Complete reference for GeoView Story Library config JSON files: story structure,
   - [map](#map)
   - [quote](#quote)
   - [slideshow](#slideshow)
-  - [interactive-map](#interactive-map)
+  - [manual-poi-map](#manual-poi-map)
+  - [auto-poi-map](#auto-poi-map)
   - [doormat](#doormat)
 
 ## Story Config
@@ -321,11 +322,13 @@ interface SlideshowItem {
 - **`objectFit`**: How each image fills the carousel frame. **Only `"contain"` shown in demo.**
 - **`textPosition`**: Which side the caption sits on - choose whichever side doesn't cover the important part of the photo.
 
-### interactive-map
+### manual-poi-map
+
+A map paired with a scrollable, hand-authored list of points of interest - each one zooms the map to a specific feature as it scrolls into view.
 
 ```ts
-interface InteractiveMapPanel {
-  type: "interactive-map";
+interface ManualPoiMapPanel {
+  type: "manual-poi-map";
   config: string;          // Required, path to a GeoView map config JSON
   points: PointOfInterest[]; // Required
   duration?: number;         // ms, zoom animation duration for every point
@@ -350,6 +353,64 @@ interface PointOfInterest {
 ```
 
 > **Not shown in demo:** `field` (the demo uses `target.value` instead, a static author-provided label), `target.zoom` (the demo only uses `scale`).
+
+### auto-poi-map
+
+Like `manual-poi-map`, but instead of hand-authoring each point of interest, one POI card is generated automatically for **every feature** in a layer - useful when a layer's attribute table already has the content you'd otherwise be copying into `points[]` by hand.
+
+```ts
+interface AutoPoiMapPanel {
+  type: "auto-poi-map";
+  config: string;    // Required, path to a GeoView map config JSON
+  layerId: string;   // Required, e.g. "geoviewLayerId/layerId" - every matching feature in this layer becomes one POI
+  titleField?: string;  // Feature attribute -> card title; missing/empty -> no title rendered
+  textField?: string;   // Feature attribute -> card body text
+  linkField?: string;   // Feature attribute holding a URL -> rendered as a link on the card
+  linkLabel?: string;   // Static label for the link (the field only holds the URL itself); default "Learn more"
+  imageField?: string;  // Feature attribute holding an image URL -> shown atop the card
+  sortField?: string;   // Feature attribute to sort POIs by; omit to keep the order features are returned in
+  sortDirection?: "asc" | "desc"; // default "asc"
+  filter?: PoiFilter;   // Optional subset of the layer's features that become POIs
+  scale?: number;    // Target map scale denominator applied to every auto-generated POI
+  duration?: number; // ms, zoom animation duration for every point
+  scrollguard?: boolean;
+}
+
+type PoiFilterOperator = "equals" | "notEquals" | "contains" | "gt" | "gte" | "lt" | "lte" | "in" | "isNull" | "isNotNull";
+
+interface PoiFilterCondition {
+  field: string;
+  operator: PoiFilterOperator;
+  value?: string | number | boolean | Array<string | number>; // not needed for isNull/isNotNull; an array only for "in"
+}
+
+interface PoiFilterGroup {
+  all?: PoiFilter[]; // AND
+  any?: PoiFilter[]; // OR
+  not?: PoiFilter;
+}
+
+type PoiFilter = PoiFilterCondition | PoiFilterGroup;
+```
+
+- A missing/empty field for a given feature just means that piece doesn't render for that card (e.g. no `titleField` value -> no title), not an error.
+- There's no built-in limit on how many features become POIs - a layer with hundreds of features means hundreds of scroll-triggered cards, so this works best with a small, curated layer. It's on the story author to pick a layer sized appropriately for a scrollytelling list.
+- All fields (including the legend swatch icon) come from the **one** configured layer, unlike `manual-poi-map` where each point can reference a different layer.
+- **`imageField`** can hold more than one photo: a value containing `;` (e.g. `"a.jpg;b.jpg;c.jpg"`) is split into a list. The card always shows the first photo as a clickable thumbnail that opens a full-size lightbox; if there's more than one photo, a small gallery badge appears on it and the lightbox gets prev/next controls to step through all of them.
+- **`filter`** (Optional): lets the map show every feature in the layer while only a subset become scroll-triggered POI cards - independent of any filter already applied to the layer itself. Evaluated client-side against each feature's attributes; `all`/`any`/`not` nest freely for arbitrary AND/OR/NOT grouping, e.g.:
+  ```json
+  {
+    "filter": {
+      "all": [
+        { "field": "Status", "operator": "equals", "value": "Active" },
+        { "field": "Year", "operator": "gte", "value": 2020 }
+      ]
+    }
+  }
+  ```
+  This is a structured JSON condition tree rather than a SQL-like string, deliberately - no expression parser or `eval` involved, just data-driven comparisons. **Not shown in demo.**
+
+> The demo's `auto-poi-map` example runs against a small GeoJSON polygon layer that exercises `titleField`, `textField`, `linkField`, and a multi-photo `imageField` (one feature intentionally omits it, and two share the same `titleField` value, to show both of those cases rendering cleanly). `filter` isn't exercised.
 
 ### doormat
 

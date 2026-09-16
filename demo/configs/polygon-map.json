@@ -1,0 +1,39 @@
+{
+  "map": {
+    "interaction": "dynamic",
+    "viewSettings": {
+      "initialView": {
+        "zoomAndCenter": [
+          4,
+          [-95, 52]
+        ]
+      },
+      "projection": 3978
+    },
+    "basemapOptions": {
+      "basemapId": "transport",
+      "shaded": true,
+      "labeled": true
+    },
+    "listOfGeoviewLayerConfig": [
+      {
+        "geoviewLayerId": "geojsonLYR1",
+        "geoviewLayerName": "GeoJSON Sample",
+        "metadataAccessPath": "./configs/geojson/metadata.meta",
+        "geoviewLayerType": "GeoJSON",
+        "serviceDateFormat": "DD/MM/YYYYTHH:mm:ss",
+        "listOfLayerEntryConfig": [
+          {
+            "layerId": "polygons.json",
+            "layerName": "Polygons"
+          }
+        ]
+      }
+    ]
+  },
+  "components": [
+    "north-arrow",
+    "overview-map"
+  ],
+  "theme": "geo.ca"
+}
