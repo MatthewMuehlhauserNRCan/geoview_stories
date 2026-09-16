@@ -332,6 +332,7 @@ interface ManualPoiMapPanel {
   type: "manual-poi-map";
   config: string;          // Required, path to a GeoView map config JSON
   points: PointOfInterest[]; // Required
+  linkLabel?: string;        // Default link button label for points that don't set their own; default "Learn more"
   duration?: number;         // ms, zoom animation duration for every point
   scrollguard?: boolean;     // Same as the map panel's
   mapPosition?: "left" | "right"; // Which side the sticky map sits on; default "left"
@@ -340,8 +341,10 @@ interface ManualPoiMapPanel {
 interface PointOfInterest {
   title?: string;
   text?: string;   // Description shown on the POI card
-  image?: string;  // Photo shown at the top of the card
+  image?: string | string[]; // One photo, or several for a gallery with a lightbox
   altText?: string;
+  linkUrl?: string;   // Rendered as a link button on the card
+  linkLabel?: string; // Overrides the panel's linkLabel for just this point
   field?: string;  // Feature attribute name to read and display live from the map service
   target: {
     layerId?: string;        // e.g. "geoviewLayerId/layerId"
@@ -354,7 +357,9 @@ interface PointOfInterest {
 }
 ```
 
-> **Not shown in demo:** `field` (the demo uses `target.value` instead, a static author-provided label), `target.zoom` (the demo only uses `scale`).
+- **`image`**: a single URL, or an array of URLs for a photo gallery - same lightbox behavior as `auto-poi-map`'s `imageField` (first photo is the clickable thumbnail; a gallery badge and prev/next controls appear when there's more than one).
+
+> **Not shown in demo:** `field` (the demo uses `target.value` instead, a static author-provided label), `target.zoom` (the demo only uses `scale`), `linkUrl`/`linkLabel`, multi-image `image` arrays.
 
 ### auto-poi-map
 

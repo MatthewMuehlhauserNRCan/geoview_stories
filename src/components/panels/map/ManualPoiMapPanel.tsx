@@ -200,10 +200,12 @@ export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, pan
                   index={index}
                   title={poi.title}
                   text={poi.text}
-                  images={poi.image ? [poi.image] : undefined}
+                  images={Array.isArray(poi.image) ? poi.image : poi.image ? [poi.image] : undefined}
                   altText={poi.altText}
                   fieldValue={fieldValue}
                   iconDataUrl={featureData?.iconDataUrl}
+                  linkUrl={poi.linkUrl}
+                  linkLabel={poi.linkLabel ?? panel.linkLabel}
                   isActive={activePoiIndex === index}
                   cardRef={(el) => {
                     poiRefs.current[index] = el;

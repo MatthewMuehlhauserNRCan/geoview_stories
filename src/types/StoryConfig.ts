@@ -97,6 +97,7 @@ export interface ManualPoiMapPanel extends BasePanel {
   type: 'manual-poi-map';
   config: string;
   points: PointOfInterest[];
+  linkLabel?: string; // Default link button label for points that don't set their own; defaults to "Learn more"
   duration?: number;
   scrollguard?: boolean;
   // Which side the sticky map sits on, with the POI list on the other side; default 'left'.
@@ -144,8 +145,10 @@ export type PoiFilter = PoiFilterCondition | PoiFilterGroup;
 export interface PointOfInterest {
   title?: string;
   text?: string;
-  image?: string;
+  image?: string | string[]; // One photo, or several for a gallery with a lightbox (like auto-poi-map's imageField)
   altText?: string;
+  linkUrl?: string; // Rendered as a link button on the card, like auto-poi-map's linkField
+  linkLabel?: string; // Overrides the panel's linkLabel for just this point
   field?: string; // Field name to display from feature attributes
   target: {
     layerId?: string;
