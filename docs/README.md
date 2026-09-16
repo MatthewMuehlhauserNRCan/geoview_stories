@@ -17,10 +17,10 @@ Complete reference for GeoView Story Library config JSON files: story structure,
   - [image](#image)
   - [video](#video)
   - [map](#map)
-  - [quote](#quote)
-  - [slideshow](#slideshow)
   - [manual-poi-map](#manual-poi-map)
   - [auto-poi-map](#auto-poi-map)
+  - [quote](#quote)
+  - [slideshow](#slideshow)
   - [doormat](#doormat)
 
 ## Story Config
@@ -287,42 +287,6 @@ interface MapPanel {
 
 `scrollguard` (Optional) prevents page scrolling from being hijacked by the map - the user must hold Ctrl/Cmd while scrolling to zoom.
 
-### quote
-
-```ts
-interface QuotePanel {
-  type: "quote";
-  quote: string; // Required
-  author?: string;
-  role?: string;
-  organization?: string;
-}
-```
-
-### slideshow
-
-Image gallery carousel with dot navigation, back/forward arrows, and a full-screen viewer.
-
-```ts
-interface SlideshowPanel {
-  type: "slideshow";
-  items: SlideshowItem[]; // Required
-  loop?: boolean;           // default false
-  objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down"; // default "cover"
-}
-
-interface SlideshowItem {
-  src: string; // Required
-  altText?: string;
-  text?: string;                     // Optional overlay caption, semi-transparent backdrop
-  textPosition?: "left" | "right";   // default "left"
-}
-```
-
-- **`loop`**: Wrap around at the first/last image instead of disabling the arrow.
-- **`objectFit`**: How each image fills the carousel frame. **Only `"contain"` shown in demo.**
-- **`textPosition`**: Which side the caption sits on - choose whichever side doesn't cover the important part of the photo.
-
 ### manual-poi-map
 
 A map paired with a scrollable, hand-authored list of points of interest - each one zooms the map to a specific feature as it scrolls into view.
@@ -420,6 +384,42 @@ type PoiFilter = PoiFilterCondition | PoiFilterGroup;
 - **`mapPosition`**: swaps which side the sticky map sits on (`"left"` puts the POI list on the right, the default; `"right"` puts the map on the right and the POI list on the left). Also available on `manual-poi-map`.
 
 > The demo's `auto-poi-map` example runs against a small GeoJSON polygon layer that exercises `titleField`, `textField`, `linkField`, a multi-photo `imageField` (one feature intentionally omits it, and two share the same `titleField` value, to show both of those cases rendering cleanly), and `mapPosition: "right"`. `filter` isn't exercised.
+
+### quote
+
+```ts
+interface QuotePanel {
+  type: "quote";
+  quote: string; // Required
+  author?: string;
+  role?: string;
+  organization?: string;
+}
+```
+
+### slideshow
+
+Image gallery carousel with dot navigation, back/forward arrows, and a full-screen viewer.
+
+```ts
+interface SlideshowPanel {
+  type: "slideshow";
+  items: SlideshowItem[]; // Required
+  loop?: boolean;           // default false
+  objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down"; // default "cover"
+}
+
+interface SlideshowItem {
+  src: string; // Required
+  altText?: string;
+  text?: string;                     // Optional overlay caption, semi-transparent backdrop
+  textPosition?: "left" | "right";   // default "left"
+}
+```
+
+- **`loop`**: Wrap around at the first/last image instead of disabling the arrow.
+- **`objectFit`**: How each image fills the carousel frame. **Only `"contain"` shown in demo.**
+- **`textPosition`**: Which side the caption sits on - choose whichever side doesn't cover the important part of the photo.
 
 ### doormat
 
