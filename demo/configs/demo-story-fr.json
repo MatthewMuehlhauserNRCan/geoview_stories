@@ -1,277 +1,336 @@
 {
-  "introSlide": {
-    "title": "Bienvenue dans GeoView Stories",
-    "subtitle": "Une plateforme de narration interactive pour les données géospatiales",
-    "backgroundImage": "images/banner_draft_4-rapids.jpg"
-  },
-  "slides": [
-    {
-      "title": "Introduction",
-      "id": "introduction",
-      "panel": [
-        {
-          "type": "text",
-          "title": "Pour commencer",
-          "content": "Bienvenue dans **GeoView Stories**! Il s'agit d'une preuve de concept pour la création d'histoires interactives avec des cartes.\n\nCette démonstration présente les fonctionnalités de base, notamment :\n- Navigation par défilement\n- Table des matières persistante (ordinateur de bureau)\n- Routage par ancre URL\n- Panneaux de texte, d'image et de vidéo\n- Carte interactive avec points d'intérêt\n- Panneaux de citation"
-        }
-      ]
+    "theme": "light",
+    "introSlide": {
+        "title": "Bienvenue dans GeoView Stories",
+        "subtitle": "Une plateforme de narration interactive pour les données géospatiales",
+        "backgroundImage": "images/banner_draft_4-rapids.jpg"
     },
-    {
-      "title": "Exemple de mise en page des panneaux",
-      "id": "layout-example",
-      "panel": [
+    "slides": [
         {
-          "type": "text",
-          "title": "Contrôler la largeur et l'alignement des panneaux",
-          "cssClasses": "right-align",
-          "content": "Chaque type de panneau - pas seulement le texte - accepte un champ optionnel `cssClasses` pour contrôler sa largeur et sa position, indépendamment de la mise en page habituelle de la diapositive :\n\n- `left-align` / `right-align` - décale le panneau d'un côté, avec une largeur maximale modérée\n- `center-align` - centre le panneau avec une largeur maximale modérée\n- `full-width` - supprime complètement la limite de largeur\n- `narrow` / `wide` - une limite de largeur plus étroite ou plus large; combinable avec une classe d'alignement, par exemple `\"narrow right-align\"`\n\nCe panneau utilise lui-même `cssClasses: \"right-align\"`."
-        }
-      ]
-    },
-    {
-      "title": "Partager une rangée entre panneaux",
-      "id": "row-sharing-example",
-      "panel": [
-        {
-          "type": "text",
-          "title": "Croissance égale",
-          "cssClasses": "grow",
-          "content": "Ces deux panneaux partagent une rangée en utilisant `cssClasses: \"grow\"` sur les deux - flexbox répartit l'espace également entre eux, peu importe le nombre de panneaux dans la rangée.\n\nContrairement à une division fixe 50/50, `grow` s'adapte automatiquement : ajoutez un troisième panneau avec `grow` et les trois partagent également l'espace, sans avoir à recalculer de pourcentages."
+            "title": "Introduction",
+            "id": "introduction",
+            "panel": [
+                {
+                    "type": "text",
+                    "title": "Pour commencer",
+                    "content": "Bienvenue dans **GeoView Stories**! Il s'agit d'une preuve de concept pour la création d'histoires interactives avec des cartes.\n\nCette démonstration présente les fonctionnalités de base, notamment :\n- Navigation par défilement\n- Table des matières persistante (ordinateur de bureau)\n- Routage par ancre URL\n- Panneaux de texte, d'image et de vidéo\n- Carte interactive avec points d'intérêt\n- Panneaux de citation"
+                }
+            ]
         },
         {
-          "type": "text",
-          "title": "Largeurs pondérées et fixes",
-          "cssClasses": "grow",
-          "content": "Pour rendre un côté plus grand, utilisez `grow-2` ou `grow-3` au lieu de simplement `grow` sur le panneau qui doit être plus grand - cela fonctionne des deux côtés, pas seulement à gauche; c'est le panneau avec la valeur la plus élevée qui l'emporte, peu importe sa position.\n\nUtilisez `no-grow` sur un panneau qui doit s'ajuster à son propre contenu plutôt que de s'étirer, et combinez l'une de ces classes avec `narrow` / `wide` / `full-width` pour limiter la croissance d'un panneau."
-        }
-      ]
-    },
-    {
-      "title": "Principes directeurs de collaboration",
-      "id": "guiding-principles",
-      "backgroundImage": "images/BackgroundImageTest.jpg",
-      "panel": [
-        {
-          "type": "text",
-          "title": "Principes directeurs de collaboration",
-          "contentFile": "content/guiding-principles-fr.md"
+            "title": "Exemple de mise en page des panneaux",
+            "id": "layout-example",
+            "panel": [
+                {
+                    "type": "text",
+                    "title": "Contrôler la largeur et l'alignement des panneaux",
+                    "cssClasses": "right-align",
+                    "content": "Chaque type de panneau - pas seulement le texte - accepte un champ optionnel `cssClasses` pour contrôler sa largeur et sa position, indépendamment de la mise en page habituelle de la diapositive :\n\n- `left-align` / `right-align` - décale le panneau d'un côté, avec une largeur maximale modérée\n- `center-align` - centre le panneau avec une largeur maximale modérée\n- `full-width` - supprime complètement la limite de largeur\n- `narrow` / `wide` - une limite de largeur plus étroite ou plus large; combinable avec une classe d'alignement, par exemple `\"narrow right-align\"`\n\nCe panneau utilise lui-même `cssClasses: \"right-align\"`."
+                }
+            ]
         },
         {
-          "type": "image",
-          "altText": "Un cercle avec le texte « Principes directeurs » est entouré de sept lignes. Chaque ligne se termine par un texte. Le texte est le suivant : Respect des savoirs et des cultures autochtones. Respecter les systèmes de connaissances et les récits oraux dirigés par les Autochtones, et faire preuve de reconnaissance et de considération pour les protocoles, la gouvernance et les processus décisionnels autochtones, les cérémonies, les lois, la spiritualité, la langue et les valeurs. Souveraineté des données et de l'information : respecter la propriété et le contrôle des nations autochtones sur leurs données et leur information afin de protéger et d'autonomiser les communautés. Collaboration et relations : travailler à une compréhension mutuelle et favoriser de meilleures relations entre les nations et gouvernements autochtones. Intégrité et transparence : faire preuve d'intégrité et de transparence pour promouvoir l'équité et la confiance. Bien-être intergénérationnel : reconnaître l'importance du transfert des connaissances intergénérationnelles, en assurant l'accessibilité et la pertinence culturelle pour les jeunes et les générations futures. Faire valoir et soutenir la continuité de la sagesse autochtone concernant les effets cumulatifs et le bien-être intergénérationnel. Intendance environnementale : promouvoir des approches durables et holistiques qui protègent la terre, l'air, l'eau et les espèces. Intégrer les enseignements autochtones et les apprentissages tirés de la terre, et comprendre les rôles des Autochtones en tant que gardiens et intendants. Interconnexion : reconnaître et adopter l'interconnexion de tous les êtres vivants et écosystèmes, en tissant ensemble les connaissances autochtones et occidentales dans une approche holistique et inclusive.",
-          "caption": "",
-          "src": "images/Guiding Principles-v02.png"
-        }
-      ]
-    },
-    {
-      "title": "Exemple de citation autonome",
-      "id": "quote-example",
-      "panel": [
-        {
-          "type": "quote",
-          "quote": "Lorsque nous établissons des relations avec nos voisins, nous devons apprendre à vivre ensemble dans le respect et à nous efforcer de nous comprendre les uns les autres. On ne peut pas séparer le milieu aquatique du milieu terrestre - tout est interconnecté. La spiritualité et la science occidentale doivent être tissées ensemble pour produire un changement significatif et durable pour le bien commun.",
-          "author": "Eddie Gardner",
-          "role": "Aîné",
-          "organization": "Première Nation de Skwah"
-        }
-      ]
-    },
-    {
-      "title": "Carte de base",
-      "id": "basic-map",
-      "panel": [
-        {
-          "type": "text",
-          "title": "Intégration de GeoView",
-          "content": "Voici une carte GeoView de base montrant le Canada en projection conique conforme de Lambert (EPSG:3978). Cela démontre les fonctionnalités cartographiques de base."
+            "title": "Partager une rangée entre panneaux",
+            "id": "row-sharing-example",
+            "panel": [
+                {
+                    "type": "text",
+                    "title": "Croissance égale",
+                    "cssClasses": "grow",
+                    "content": "Ces deux panneaux partagent une rangée en utilisant `cssClasses: \"grow\"` sur les deux - flexbox répartit l'espace également entre eux, peu importe le nombre de panneaux dans la rangée.\n\nContrairement à une division fixe 50/50, `grow` s'adapte automatiquement : ajoutez un troisième panneau avec `grow` et les trois partagent également l'espace, sans avoir à recalculer de pourcentages."
+                },
+                {
+                    "type": "text",
+                    "title": "Largeurs pondérées et fixes",
+                    "cssClasses": "grow",
+                    "content": "Pour rendre un côté plus grand, utilisez `grow-2` ou `grow-3` au lieu de simplement `grow` sur le panneau qui doit être plus grand - cela fonctionne des deux côtés, pas seulement à gauche; c'est le panneau avec la valeur la plus élevée qui l'emporte, peu importe sa position.\n\nUtilisez `no-grow` sur un panneau qui doit s'ajuster à son propre contenu plutôt que de s'étirer, et combinez l'une de ces classes avec `narrow` / `wide` / `full-width` pour limiter la croissance d'un panneau."
+                }
+            ]
         },
         {
-          "type": "map",
-          "title": "Fond de carte du Canada",
-          "config": "./configs/default-map.json",
-          "scrollguard": true
-        }
-      ]
-    },
-    {
-      "title": "Exemple de carte interactive",
-      "id": "interactive-map-example",
-      "panel": [
-        {
-          "type": "interactive-map",
-          "title": "Exemple de carte interactive",
-          "config": "./configs/interactive-map.json",
-          "points": [
-            {
-              "title": "Point d'intérêt A",
-              "text": "Ceci est un exemple de point d'intérêt.",
-              "target": {
-                "layerId": "Project_Summaries/1",
-                "oid": 1,
-                "value": "Kapawe'no First Nation",
-                "scale": 50000
-              }
-            },
-            {
-              "title": "Point d'intérêt B",
-              "text": "Un autre exemple d'emplacement montrant les interactions cartographiques déclenchées par le défilement.",
-              "target": {
-                "layerId": "Project_Summaries/1",
-                "oid": 2,
-                "value": "Adams Lake First Nation",
-                "scale": 75000
-              }
-            },
-            {
-              "title": "Retour à la vue d'ensemble",
-              "text": "Ce point d'intérêt revient à l'étendue complète de la carte.",
-              "target": {
-                "returnHome": true
-              }
-            }
-          ],
-          "duration": 500,
-          "scrollguard": true
-        }
-      ]
-    },
-    {
-      "title": "Exemple de vidéo",
-      "id": "video-example",
-      "panel": [
-        {
-          "type": "text",
-          "title": "Prise en charge multimédia",
-          "content": "GeoView Stories prend en charge divers formats multimédias, y compris les vidéos provenant de YouTube et de sources locales."
+            "title": "Principes directeurs de collaboration",
+            "id": "guiding-principles",
+            "backgroundImage": "images/BackgroundImageTest.jpg",
+            "panel": [
+                {
+                    "type": "text",
+                    "title": "Principes directeurs de collaboration",
+                    "contentFile": "content/guiding-principles-fr.md"
+                },
+                {
+                    "type": "image",
+                    "altText": "Un cercle avec le texte « Principes directeurs » est entouré de sept lignes. Chaque ligne se termine par un texte. Le texte est le suivant : Respect des savoirs et des cultures autochtones. Respecter les systèmes de connaissances et les récits oraux dirigés par les Autochtones, et faire preuve de reconnaissance et de considération pour les protocoles, la gouvernance et les processus décisionnels autochtones, les cérémonies, les lois, la spiritualité, la langue et les valeurs. Souveraineté des données et de l'information : respecter la propriété et le contrôle des nations autochtones sur leurs données et leur information afin de protéger et d'autonomiser les communautés. Collaboration et relations : travailler à une compréhension mutuelle et favoriser de meilleures relations entre les nations et gouvernements autochtones. Intégrité et transparence : faire preuve d'intégrité et de transparence pour promouvoir l'équité et la confiance. Bien-être intergénérationnel : reconnaître l'importance du transfert des connaissances intergénérationnelles, en assurant l'accessibilité et la pertinence culturelle pour les jeunes et les générations futures. Faire valoir et soutenir la continuité de la sagesse autochtone concernant les effets cumulatifs et le bien-être intergénérationnel. Intendance environnementale : promouvoir des approches durables et holistiques qui protègent la terre, l'air, l'eau et les espèces. Intégrer les enseignements autochtones et les apprentissages tirés de la terre, et comprendre les rôles des Autochtones en tant que gardiens et intendants. Interconnexion : reconnaître et adopter l'interconnexion de tous les êtres vivants et écosystèmes, en tissant ensemble les connaissances autochtones et occidentales dans une approche holistique et inclusive.",
+                    "caption": "",
+                    "src": "images/Guiding Principles-v02.png"
+                }
+            ]
         },
         {
-          "type": "video",
-          "title": "Exemple de vidéo",
-          "videoType": "embed",
-          "src": "https://www.youtube.com/embed/dQw4w9WgXcQ",
-          "height": 400
-        }
-      ]
-    },
-    {
-      "title": "Exemple de galerie d'images",
-      "id": "image-gallery-example",
-      "panel": [
-        {
-          "type": "slideshow",
-          "title": "Exemple de galerie d'images",
-          "loop": true,
-          "objectFit": "contain",
-          "items": [
-            {
-              "src": "images/banner_draft_4-rapids.jpg",
-              "altText": "Rapides sur une rivière entourée de forêt",
-              "text": "Le texte placé à gauche laisse le côté droit de la photo dégagé. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-              "textPosition": "left"
-            },
-            {
-              "src": "images/BackgroundImageTest.jpg",
-              "altText": "Image de test d'arrière-plan",
-              "text": "Le texte placé à droite laisse le côté gauche de la photo dégagé. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-              "textPosition": "right"
-            },
-            {
-              "src": "images/Guiding Principles-v02.png",
-              "altText": "Diagramme des principes directeurs avec sept principes environnants"
-            },
-            {
-              "src": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/images/first-frost.jpg",
-              "altText": "Une autre image avec un lien externe"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "title": "Exemple de ressources supplémentaires",
-      "id": "additional-resources-example",
-      "panel": [
-        {
-          "type": "doormat",
-          "title": "Ressources supplémentaires",
-          "items": [
-            {
-              "title": "Plateforme scientifique et de données ouvertes",
-              "href": "https://osdp-psdo.canada.ca/dp/en",
-              "description": "Recherchez des publications et des ensembles de données fédéraux, provinciaux et territoriaux, explorez des collections de contenu sur les effets cumulatifs (EC) par sujet et par région, apprenez-en davantage sur les effets cumulatifs et les activités de développement, créez et exportez vos propres cartes."
-            },
-            {
-              "title": "Évaluation des effets cumulatifs en vertu de la Loi sur l'évaluation d'impact",
-              "href": "https://www.canada.ca/en/impact-assessment-agency/services/policy-guidance/practitioners-guide-impact-assessment-act/policy-framework-assessing-cumulative-effects-under-impact-assessment-act.html",
-              "description": "Explorez les exigences générales et l'approche pour évaluer les effets cumulatifs des projets désignés en vertu de la Loi sur l'évaluation d'impact (LEI)."
-            },
-            {
-              "title": "Centre autochtone des effets cumulatifs",
-              "href": "https://www.icce-caec.ca/",
-              "description": "Apprenez-en davantage et trouvez des ressources relatives au travail autochtone sur les effets cumulatifs."
-            },
-            {
-              "title": "Cadre des effets cumulatifs - Colombie-Britannique",
-              "href": "https://www2.gov.bc.ca/gov/content/environment/natural-resource-stewardship/cumulative-effects-framework",
-              "description": "Apprenez-en davantage sur le Cadre des effets cumulatifs de la C.-B., y compris les politiques, les orientations, les évaluations et protocoles de valeurs, les évaluations par région, les données sur les effets cumulatifs, les études de cas et la mobilisation."
-            },
-            {
-              "title": "Ressources | CCME",
-              "href": "https://ccme.ca/en/resources",
-              "description": "Cliquez ici pour les ressources sur les effets cumulatifs élaborées par le Conseil canadien des ministres de l'environnement (CCME)."
-            },
-            {
-              "title": "Aperçu de la recherche sur les effets cumulatifs à RNCan",
-              "href": "https://storymaps.arcgis.com/stories/77e97ee6eb944a62811153c47924627c",
-              "description": "Découvrez les recherches sur les effets cumulatifs menées par le Centre canadien de cartographie et d'observation de la Terre, le Service canadien des forêts et la Commission géologique du Canada, de 2018 à 2023."
-            },
-            {
-              "title": "Gestion des effets cumulatifs de l'Alberta",
-              "href": "https://landuse.alberta.ca/CumulativeEffects/CumulativeEffectsManagement/Pages/default.aspx",
-              "description": "Apprenez-en davantage sur le plan de gestion des effets cumulatifs du gouvernement de l'Alberta."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "title": "Prochaines étapes",
-      "id": "next-steps",
-      "panel": [
-        {
-          "type": "text",
-          "title": "Poursuivre le développement",
-          "content": "**Fonctionnalités implémentées :**\n- ✅ Panneaux vidéo (locaux, externes, YouTube)\n- ✅ Panneaux de citation avec attribution\n- ✅ Navigation verticale persistante (ordinateur de bureau)\n- ✅ Intégration de base de GeoView\n- ✅ Carte interactive avec système de PI (provisoire)\n- ✅ Panneaux de galerie d'images/diaporama\n- ✅ Panneaux de type « doormat » (liens de ressources)\n\n**Améliorations futures :**\n1. Intégration de graphiques"
-        }
-      ]
-    }
-  ],
-  "tocOrientation": "vertical",
-  "tocHeading": "Chapitres",
-  "lang": "fr",
-  "tableOfContents": [
-    {
-      "title": "Français",
-      "sublist": [
-        { "title": "Introduction", "slideIndex": 0 },
-        { "title": "Exemple de mise en page des panneaux", "slideIndex": 1 },
-        { "title": "Partager une rangée entre panneaux", "slideIndex": 2 },
-        { "title": "Principes directeurs de collaboration", "slideIndex": 3 },
-        { "title": "Exemple de citation autonome", "slideIndex": 4 },
-        {
-          "title": "Cartes",
-          "sublist": [
-            { "title": "Carte de base", "slideIndex": 5 },
-            { "title": "Exemple de carte interactive", "slideIndex": 6 }
-          ]
+            "title": "Exemple de citation autonome",
+            "id": "quote-example",
+            "panel": [
+                {
+                    "type": "quote",
+                    "quote": "Lorsque nous établissons des relations avec nos voisins, nous devons apprendre à vivre ensemble dans le respect et à nous efforcer de nous comprendre les uns les autres. On ne peut pas séparer le milieu aquatique du milieu terrestre - tout est interconnecté. La spiritualité et la science occidentale doivent être tissées ensemble pour produire un changement significatif et durable pour le bien commun.",
+                    "author": "Eddie Gardner",
+                    "role": "Aîné",
+                    "organization": "Première Nation de Skwah"
+                }
+            ]
         },
-        { "title": "Exemple de vidéo", "slideIndex": 7 },
-        { "title": "Exemple de galerie d'images", "slideIndex": 8 },
-        { "title": "Exemple de ressources supplémentaires", "slideIndex": 9 },
-        { "title": "Prochaines étapes", "slideIndex": 10 }
-      ]
-    },
-    { "title": "English", "href": "index.html" }
-  ]
+        {
+            "title": "Carte de base",
+            "id": "basic-map",
+            "panel": [
+                {
+                    "type": "text",
+                    "title": "Intégration de GeoView",
+                    "content": "Voici une carte GeoView de base montrant le Canada en projection conique conforme de Lambert (EPSG:3978). Cela démontre les fonctionnalités cartographiques de base."
+                },
+                {
+                    "type": "map",
+                    "title": "Fond de carte du Canada",
+                    "config": "./configs/default-map.json",
+                    "scrollguard": true
+                }
+            ]
+        },
+        {
+            "title": "Exemple de carte de PI manuelle",
+            "id": "manual-poi-map-example",
+            "panel": [
+                {
+                    "type": "manual-poi-map",
+                    "title": "Exemple de carte de PI manuelle",
+                    "config": "./configs/poi-map.json",
+                    "points": [
+                        {
+                            "title": "Point d'intérêt A",
+                            "text": "Ceci est un exemple de point d'intérêt.",
+                            "target": {
+                                "layerId": "Project_Summaries/1",
+                                "oid": 1,
+                                "value": "Kapawe'no First Nation",
+                                "scale": 50000
+                            }
+                        },
+                        {
+                            "title": "Point d'intérêt B",
+                            "text": "Un autre exemple d'emplacement montrant les interactions cartographiques déclenchées par le défilement.",
+                            "target": {
+                                "layerId": "Project_Summaries/1",
+                                "oid": 2,
+                                "value": "Adams Lake First Nation",
+                                "scale": 75000
+                            }
+                        },
+                        {
+                            "title": "Retour à la vue d'ensemble",
+                            "text": "Ce point d'intérêt revient à l'étendue complète de la carte.",
+                            "target": {
+                                "returnHome": true
+                            }
+                        }
+                    ],
+                    "duration": 500,
+                    "scrollguard": true
+                }
+            ]
+        },
+        {
+            "title": "Exemple de galerie photo de PI automatique",
+            "id": "auto-poi-gallery-example",
+            "panel": [
+                {
+                    "type": "auto-poi-map",
+                    "title": "Exemple de carte de PI automatique avec galeries de photos",
+                    "config": "./configs/polygon-map.json",
+                    "layerId": "geojsonLYR1/polygons.json",
+                    "titleField": "Province",
+                    "textField": "summary",
+                    "linkField": "linkUrl",
+                    "linkLabel": "En savoir plus sur Wikipédia",
+                    "imageField": "myImages",
+                    "scrollguard": true
+                }
+            ]
+        },
+        {
+            "title": "Exemple de vidéo",
+            "id": "video-example",
+            "panel": [
+                {
+                    "type": "text",
+                    "title": "Prise en charge multimédia",
+                    "content": "GeoView Stories prend en charge divers formats multimédias, y compris les vidéos provenant de YouTube et de sources locales."
+                },
+                {
+                    "type": "video",
+                    "title": "Exemple de vidéo",
+                    "videoType": "embed",
+                    "src": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                    "height": 400
+                }
+            ]
+        },
+        {
+            "title": "Exemple de galerie d'images",
+            "id": "image-gallery-example",
+            "panel": [
+                {
+                    "type": "slideshow",
+                    "title": "Exemple de galerie d'images",
+                    "loop": true,
+                    "objectFit": "contain",
+                    "items": [
+                        {
+                            "src": "images/banner_draft_4-rapids.jpg",
+                            "altText": "Rapides sur une rivière entourée de forêt",
+                            "text": "Le texte placé à gauche laisse le côté droit de la photo dégagé. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                            "textPosition": "left"
+                        },
+                        {
+                            "src": "images/BackgroundImageTest.jpg",
+                            "altText": "Image de test d'arrière-plan",
+                            "text": "Le texte placé à droite laisse le côté gauche de la photo dégagé. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                            "textPosition": "right"
+                        },
+                        {
+                            "src": "images/Guiding Principles-v02.png",
+                            "altText": "Diagramme des principes directeurs avec sept principes environnants"
+                        },
+                        {
+                            "src": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/images/first-frost.jpg",
+                            "altText": "Une autre image avec un lien externe"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Exemple de ressources supplémentaires",
+            "id": "additional-resources-example",
+            "panel": [
+                {
+                    "type": "doormat",
+                    "title": "Ressources supplémentaires",
+                    "items": [
+                        {
+                            "title": "Plateforme scientifique et de données ouvertes",
+                            "href": "https://osdp-psdo.canada.ca/dp/en",
+                            "description": "Recherchez des publications et des ensembles de données fédéraux, provinciaux et territoriaux, explorez des collections de contenu sur les effets cumulatifs (EC) par sujet et par région, apprenez-en davantage sur les effets cumulatifs et les activités de développement, créez et exportez vos propres cartes."
+                        },
+                        {
+                            "title": "Évaluation des effets cumulatifs en vertu de la Loi sur l'évaluation d'impact",
+                            "href": "https://www.canada.ca/en/impact-assessment-agency/services/policy-guidance/practitioners-guide-impact-assessment-act/policy-framework-assessing-cumulative-effects-under-impact-assessment-act.html",
+                            "description": "Explorez les exigences générales et l'approche pour évaluer les effets cumulatifs des projets désignés en vertu de la Loi sur l'évaluation d'impact (LEI)."
+                        },
+                        {
+                            "title": "Centre autochtone des effets cumulatifs",
+                            "href": "https://www.icce-caec.ca/",
+                            "description": "Apprenez-en davantage et trouvez des ressources relatives au travail autochtone sur les effets cumulatifs."
+                        },
+                        {
+                            "title": "Cadre des effets cumulatifs - Colombie-Britannique",
+                            "href": "https://www2.gov.bc.ca/gov/content/environment/natural-resource-stewardship/cumulative-effects-framework",
+                            "description": "Apprenez-en davantage sur le Cadre des effets cumulatifs de la C.-B., y compris les politiques, les orientations, les évaluations et protocoles de valeurs, les évaluations par région, les données sur les effets cumulatifs, les études de cas et la mobilisation."
+                        },
+                        {
+                            "title": "Ressources | CCME",
+                            "href": "https://ccme.ca/en/resources",
+                            "description": "Cliquez ici pour les ressources sur les effets cumulatifs élaborées par le Conseil canadien des ministres de l'environnement (CCME)."
+                        },
+                        {
+                            "title": "Aperçu de la recherche sur les effets cumulatifs à RNCan",
+                            "href": "https://storymaps.arcgis.com/stories/77e97ee6eb944a62811153c47924627c",
+                            "description": "Découvrez les recherches sur les effets cumulatifs menées par le Centre canadien de cartographie et d'observation de la Terre, le Service canadien des forêts et la Commission géologique du Canada, de 2018 à 2023."
+                        },
+                        {
+                            "title": "Gestion des effets cumulatifs de l'Alberta",
+                            "href": "https://landuse.alberta.ca/CumulativeEffects/CumulativeEffectsManagement/Pages/default.aspx",
+                            "description": "Apprenez-en davantage sur le plan de gestion des effets cumulatifs du gouvernement de l'Alberta."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Prochaines étapes",
+            "id": "next-steps",
+            "panel": [
+                {
+                    "type": "text",
+                    "title": "Poursuivre le développement",
+                    "content": "**Fonctionnalités implémentées :**\n- ✅ Panneaux vidéo (locaux, externes, YouTube)\n- ✅ Panneaux de citation avec attribution\n- ✅ Navigation verticale persistante (ordinateur de bureau)\n- ✅ Intégration de base de GeoView\n- ✅ Carte interactive avec système de PI (provisoire)\n- ✅ Panneaux de galerie d'images/diaporama\n- ✅ Panneaux de type « doormat » (liens de ressources)\n\n**Améliorations futures :**\n1. Intégration de graphiques"
+                }
+            ]
+        }
+    ],
+    "tocOrientation": "vertical",
+    "tocHeading": "Chapitres",
+    "lang": "fr",
+    "tableOfContents": [
+        {
+            "title": "Français",
+            "sublist": [
+                {
+                    "title": "Introduction",
+                    "slideIndex": 0
+                },
+                {
+                    "title": "Exemple de mise en page des panneaux",
+                    "slideIndex": 1
+                },
+                {
+                    "title": "Partager une rangée entre panneaux",
+                    "slideIndex": 2
+                },
+                {
+                    "title": "Principes directeurs de collaboration",
+                    "slideIndex": 3
+                },
+                {
+                    "title": "Exemple de citation autonome",
+                    "slideIndex": 4
+                },
+                {
+                    "title": "Cartes",
+                    "sublist": [
+                        {
+                            "title": "Carte de base",
+                            "slideIndex": 5
+                        },
+                        {
+                            "title": "Exemple de carte de PI manuelle",
+                            "slideIndex": 6
+                        },
+                        {
+                            "title": "Exemple de galerie photo de PI automatique",
+                            "slideIndex": 7
+                        }
+                    ]
+                },
+                {
+                    "title": "Exemple de vidéo",
+                    "slideIndex": 8
+                },
+                {
+                    "title": "Exemple de galerie d'images",
+                    "slideIndex": 9
+                },
+                {
+                    "title": "Exemple de ressources supplémentaires",
+                    "slideIndex": 10
+                },
+                {
+                    "title": "Prochaines étapes",
+                    "slideIndex": 11
+                }
+            ]
+        },
+        {
+            "title": "English",
+            "href": "index.html"
+        }
+    ]
 }

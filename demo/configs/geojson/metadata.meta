@@ -1,0 +1,79 @@
+{
+  "copyrightText": "Adapted from the GeoView project's own test datasets",
+  "listOfLayerEntryConfig": [
+    {
+      "layerId": "polygons.json",
+      "layerName": "Polygons",
+      "source": {
+        "featureInfo": {
+          "queryable": true,
+          "nameField": "Province",
+          "outfields": [
+            { "name": "Province", "alias": "Province", "type": "string" },
+            { "name": "creationDate", "alias": "Creation Date", "type": "date" },
+            { "name": "myImages", "alias": "My Images", "type": "string" },
+            { "name": "summary", "alias": "Summary", "type": "string" },
+            { "name": "linkUrl", "alias": "Link URL", "type": "string" }
+          ]
+        }
+      },
+      "layerStyle": {
+        "Polygon": {
+          "type": "uniqueValue",
+          "fields": ["Province"],
+          "hasDefault": true,
+          "info": [
+            {
+              "label": "Quebec",
+              "visible": true,
+              "values": ["Quebec"],
+              "settings": {
+                "type": "filledPolygon",
+                "color": "rgba(0,128,128,0.5)",
+                "patternSize": 10,
+                "patternWidth": 2,
+                "fillStyle": "diagonalCross",
+                "stroke": {
+                  "color": "rgba(128,128,0,1)",
+                  "lineStyle": "dot"
+                }
+              }
+            },
+            {
+              "label": "Alberta",
+              "visible": false,
+              "values": ["Alberta"],
+              "settings": {
+                "type": "filledPolygon",
+                "color": "rgba(255,0,255,0.5)",
+                "patternSize": 10,
+                "patternWidth": 2,
+                "fillStyle": "diagonalCross",
+                "stroke": {
+                  "color": "rgba(128,0,128,1)",
+                  "lineStyle": "dot"
+                }
+              }
+            },
+            {
+              "label": "Other provinces",
+              "visible": true,
+              "values": [],
+              "settings": {
+                "type": "filledPolygon",
+                "color": "rgba(0,0,255,0.5)",
+                "patternSize": 10,
+                "patternWidth": 2,
+                "fillStyle": "diagonalCross",
+                "stroke": {
+                  "color": "rgba(128,0,0,1)",
+                  "lineStyle": "dot"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

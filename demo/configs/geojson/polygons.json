@@ -1,0 +1,93 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Province": "Ontario",
+        "creationDate": "14/02/2020T19:00:00-05:00",
+        "myImages": "https://cdn.photoswipe.com/photoswipe-demo-images/photos/1/img-2500.jpg;https://cdn.photoswipe.com/photoswipe-demo-images/photos/2/img-2500.jpg;https://cdn.photoswipe.com/photoswipe-demo-images/photos/3/img-2500.jpg",
+        "summary": "A Northern Ontario test polygon, included here to demonstrate multi-photo POI cards - its `myImages` field holds three semicolon-separated URLs.",
+        "linkUrl": "https://en.wikipedia.org/wiki/Ontario"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-89, 54],
+            [-85, 55],
+            [-85, 52],
+            [-89, 52],
+            [-89, 54]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Province": "Ontario",
+        "creationDate": "23/05/2020T12:00:00-05:00",
+        "myImages": "https://cdn.photoswipe.com/photoswipe-demo-images/photos/1/img-2500.jpg;https://cdn.photoswipe.com/photoswipe-demo-images/photos/2/img-2500.jpg;https://cdn.photoswipe.com/photoswipe-demo-images/photos/3/img-2500.jpg",
+        "summary": "A second Ontario test polygon - handy for confirming a POI list handles two features sharing the same title field value.",
+        "linkUrl": "https://en.wikipedia.org/wiki/Ontario"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-90, 52],
+            [-84, 53],
+            [-84, 50],
+            [-90, 50],
+            [-90, 52]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Province": "Quebec",
+        "creationDate": "24/06/2020T17:00:00-05:00",
+        "myImages": "",
+        "summary": "Quebec's test polygon has no `myImages` value at all, showing how a card with just a title, text, and link still renders cleanly.",
+        "linkUrl": "https://en.wikipedia.org/wiki/Quebec"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-73, 50],
+            [-73, 45.5],
+            [-74.25, 45.5],
+            [-74.25, 50],
+            [-73, 50]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Province": "Alberta",
+        "creationDate": "15/02/2021T13:00:00-05:00",
+        "myImages": "https://cdn.photoswipe.com/photoswipe-demo-images/photos/5/img-2500.jpg",
+        "summary": "Alberta's polygon is hidden by default in the layer's own legend styling, but still becomes its own POI card here.",
+        "linkUrl": "https://en.wikipedia.org/wiki/Alberta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-115, 55],
+            [-110.25, 55],
+            [-111, 49.5],
+            [-114, 49.6],
+            [-115, 55]
+          ]
+        ]
+      }
+    }
+  ]
+}

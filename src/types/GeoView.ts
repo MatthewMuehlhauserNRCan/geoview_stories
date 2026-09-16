@@ -40,6 +40,10 @@ declare global {
             getGeoviewLayerPaths: () => string[];
             getGeoviewLayer: (layerPath: string) => GeoviewLayer | undefined;
         };
+        // Queries every feature of a layer at once (vs. layerController which only reads config/instances).
+        layerSetController: {
+            triggerGetAllFeatureInfo: (layerPath: string, waitForLayer?: boolean) => Promise<TypeFeatureInfoResult>;
+        };
         uiController: {
             setCrosshairActive: (active: boolean) => void;
         };
@@ -62,6 +66,28 @@ declare global {
     // for vector layers - kept loose since exact structure is internal to GeoView.
     getLegend: () => { legend?: unknown } | undefined;
   }
+
+  // A single field's value from a feature query (see TypeFeatureInfoEntry below).
+  type TypeFieldEntry = {
+    fieldKey: number;
+    value: unknown;
+    dataType: string;
+    alias?: string;
+  };
+
+  // One feature returned by layerSetController.triggerGetAllFeatureInfo - featureIcon is the
+  // feature's own rendered style swatch (correct even for uniqueValue/classBreaks-styled layers),
+  // unlike a layer-level legend icon which only ever reflects one style class.
+  type TypeFeatureInfoEntry = {
+    extent?: Extent;
+    featureIcon?: string;
+    fieldInfo: Partial<Record<string, TypeFieldEntry>>;
+    nameField?: string;
+  };
+
+  type TypeFeatureInfoResult = {
+    results: TypeFeatureInfoEntry[];
+  };
 
   type Extent = [number, number, number, number]; // [minX, minY, maxX, maxY]
   type Coordinate = [number, number]; // [x, y]

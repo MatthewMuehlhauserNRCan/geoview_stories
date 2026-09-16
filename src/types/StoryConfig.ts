@@ -54,7 +54,7 @@ export interface Slide {
 
 export interface BasePanel {
   title?: string;
-  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'interactive-map' | 'quote' | 'doormat';
+  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'manual-poi-map' | 'auto-poi-map' | 'quote' | 'doormat';
   // Optional utility class(es) from src/styles/panels.css (e.g. "narrow right-align") for
   // width/alignment overrides - works on every panel type, not just text.
   cssClasses?: string;
@@ -93,13 +93,49 @@ export interface MapPanel extends BasePanel {
   scrollguard?: boolean;
 }
 
-export interface InteractiveMapPanel extends BasePanel {
-  type: 'interactive-map';
+export interface ManualPoiMapPanel extends BasePanel {
+  type: 'manual-poi-map';
   config: string;
   points: PointOfInterest[];
   duration?: number;
   scrollguard?: boolean;
 }
+
+export interface AutoPoiMapPanel extends BasePanel {
+  type: 'auto-poi-map';
+  config: string;
+  layerId: string; // Layer whose features each become one POI
+  titleField?: string; // Feature attribute -> card title; missing/empty -> no title rendered
+  textField?: string; // Feature attribute -> card body text
+  linkField?: string; // Feature attribute holding a URL -> rendered as a link on the card
+  linkLabel?: string; // Static label for the link (the field only holds the URL itself); defaults to "Learn more"
+  imageField?: string; // Feature attribute holding an image URL -> shown atop the card like PointOfInterest.image
+  sortField?: string; // Feature attribute to sort POIs by; omit to keep the order features are returned in
+  sortDirection?: 'asc' | 'desc'; // default 'asc'
+  // Optional subset of the layer's features to turn into POIs - independent of any filter already
+  // applied to the layer itself (e.g. the map can show every feature while only some become POIs).
+  filter?: PoiFilter;
+  scale?: number; // Target map scale denominator applied to every auto-generated POI
+  duration?: number;
+  scrollguard?: boolean;
+}
+
+export type PoiFilterOperator = 'equals' | 'notEquals' | 'contains' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'isNull' | 'isNotNull';
+
+export interface PoiFilterCondition {
+  field: string;
+  operator: PoiFilterOperator;
+  // Not needed for isNull/isNotNull; an array only for "in"
+  value?: string | number | boolean | Array<string | number>;
+}
+
+export interface PoiFilterGroup {
+  all?: PoiFilter[]; // AND
+  any?: PoiFilter[]; // OR
+  not?: PoiFilter;
+}
+
+export type PoiFilter = PoiFilterCondition | PoiFilterGroup;
 
 export interface PointOfInterest {
   title?: string;
@@ -156,7 +192,8 @@ export type Panel =
   | TextPanel
   | ImagePanel
   | MapPanel
-  | InteractiveMapPanel
+  | ManualPoiMapPanel
+  | AutoPoiMapPanel
   | VideoPanel
   | SlideshowPanel
   | QuotePanelConfig

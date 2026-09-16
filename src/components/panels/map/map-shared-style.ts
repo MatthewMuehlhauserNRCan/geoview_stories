@@ -1,7 +1,12 @@
-/** Shared classes so MapPanel and InteractiveMapPanel look consistent with each other */
+/** Shared classes so MapPanel, ManualPoiMapPanel, and AutoPoiMapPanel look consistent with each other */
 export const getSxClasses = () => ({
   paper: {
-    overflow: 'hidden',
+    // Split by axis (not `overflow: 'hidden'`) so the map's rounded corners still clip
+    // horizontally, but GeoView's footer bar - which grows taller in normal document flow when a
+    // tab (e.g. "Layers") is expanded, rather than overlaying the map - is reachable via scroll
+    // instead of being invisibly cut off by a fixed-height card.
+    overflowX: 'hidden',
+    overflowY: 'auto',
     borderRadius: { xs: 0, md: 2 },
     // Explicit border so separation from the page doesn't rely on elevation shadow alone.
     border: '1px solid',

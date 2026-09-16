@@ -163,7 +163,9 @@ Story configurations are JSON files that define the structure and content. See `
 - **map** - Basic GeoView map
 - **quote** - Styled quotations with attribution
 - **slideshow** - Image gallery carousel with dot navigation, optional side-positioned caption text per image, a full-screen viewer, and a configurable `objectFit`
-- **interactive-map** - Map with scrollable points of interest; each POI can zoom to a feature's extent by scale or explicit zoom level, or return to the map's home view
+- **manual-poi-map** - Map with a scrollable, hand-authored list of points of interest; each POI can zoom to a feature's extent by scale or explicit zoom level, or return to the map's home view
+- **auto-poi-map** - Map with one point of interest generated automatically per feature in a layer, via field mappings (title/text/link/image) instead of an authored list
+- **doormat** - A responsive grid of link cards, e.g. for an "additional resources" list
 
 ### Theming
 

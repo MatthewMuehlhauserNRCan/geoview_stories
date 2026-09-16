@@ -37,5 +37,7 @@ export const validateStoryConfig = (config: StoryConfig): boolean => {
  * since the slideshow panel type doesn't support maps.
  */
 export const configHasMaps = (config: StoryConfig): boolean =>
-  config.slides.some(slide => slide.panel.some(panel => panel.type === 'map' || panel.type === 'interactive-map'));
+  config.slides.some(slide =>
+    slide.panel.some(panel => panel.type === 'map' || panel.type === 'manual-poi-map' || panel.type === 'auto-poi-map')
+  );
 

@@ -4,7 +4,8 @@ import { TextPanel } from './TextPanel/TextPanel';
 import { ImagePanel } from './ImagePanel/ImagePanel';
 import { MapPanel } from './map/MapPanel';
 import { VideoPanel } from './VideoPanel/VideoPanel';
-import { InteractiveMapPanel } from './map/InteractiveMapPanel';
+import { ManualPoiMapPanel } from './map/ManualPoiMapPanel';
+import { AutoPoiMapPanel } from './map/AutoPoiMapPanel';
 import { QuotePanel } from './QuotePanel/QuotePanel';
 import { SlideshowPanel } from './SlideshowPanel/SlideshowPanel';
 import { DoormatPanel } from './DoormatPanel/DoormatPanel';
@@ -26,8 +27,10 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstan
       return <ImagePanel panel={panel} />;
     case 'map':
       return <MapPanel panel={panel} panelInstanceId={panelInstanceId} />;
-    case 'interactive-map':
-      return <InteractiveMapPanel panel={panel} panelInstanceId={panelInstanceId} />;
+    case 'manual-poi-map':
+      return <ManualPoiMapPanel panel={panel} panelInstanceId={panelInstanceId} />;
+    case 'auto-poi-map':
+      return <AutoPoiMapPanel panel={panel} panelInstanceId={panelInstanceId} />;
     case 'video':
       return <VideoPanel panel={panel} />;
     case 'quote':
