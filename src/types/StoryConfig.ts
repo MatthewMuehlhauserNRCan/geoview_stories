@@ -93,6 +93,11 @@ export interface Slide {
   // `id` per slide to keep deep links working when the title text itself is translated.
   id?: string;
   backgroundImage?: string;
+  // Darkening overlay on this slide's own backgroundImage (0-1) - each background photo can need
+  // a different amount, especially since the same image renders under both light and dark themes.
+  // Omit to fall back to a mode-based default (darker in dark mode) so plain photos aren't required
+  // to set this at all.
+  backgroundScrimOpacity?: number;
   // A flat array is one row (panels laid out side by side on desktop, stacked on mobile - the
   // usual case). Use an array of arrays to stack several such rows vertically under this same
   // slide/title instead of starting a new slide just to get a second title-less row of panels.

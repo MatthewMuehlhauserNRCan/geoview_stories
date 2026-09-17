@@ -193,6 +193,7 @@ interface Slide {
   titleStyle?: HeadingStyle;
   id?: string;
   backgroundImage?: string;
+  backgroundScrimOpacity?: number; // 0-1 darkening over backgroundImage; only applied in dark mode, default 0.5
   includeInToc?: boolean; // default true
 }
 
@@ -231,6 +232,7 @@ A `border` with a partial `sides` list (e.g. just `["bottom"]`) renders as a sim
 - **`titleStyle`** (Optional): Visual overrides for this slide's title - `align`, `backgroundColor`, `backgroundImage`, `border` (`true` for a simple default box, or a `{ width, style, color, sides }` object - `sides: ["bottom"]` for a simple rule instead of a full box), `underline` (`true` for a simple default, or a `{ color, thickness, offset }` object), `color`, `fontSize`, `fontWeight`. Unset fields fall back to the normal look for that `level`. See the demo's "Maps" section slides.
 - **`id`** (Optional): Stable, language-independent id used for the slide's URL hash/DOM id. Falls back to a slugified `title` when omitted - since the title is what gets translated, set matching `id`s across a story's different-language configs (see the [French demo](../demo/configs/demo-story-fr.json)) so deep links keep working after a language switch.
 - **`backgroundImage`** (Optional): Full-page crossfade background while this slide is active.
+- **`backgroundScrimOpacity`** (Optional): Darkening applied over this slide's own `backgroundImage`, since a bright photo can otherwise clash with the theme (especially dark mode) or hurt text contrast. Only ever applied in dark mode - light mode's own UI is already bright enough that a photo doesn't fight it the same way, so this field (and its `0.5` default) is ignored entirely in light mode. Tune per-slide since different photos need different amounts of darkening. **Not shown in demo.**
 - **`includeInToc`** (Optional): Set `false` to hide this slide from the table of contents. Default `true`.
 
 ### Example: stacking rows under one title

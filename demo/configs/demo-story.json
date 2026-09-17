@@ -50,6 +50,7 @@
       "title": "Guiding Principles for Collaboration",
       "id": "guiding-principles",
       "backgroundImage": "images/BackgroundImageTest.jpg",
+      "backgroundScrimOpacity": 0.3,
       "panel": [
         {
           "type": "text",

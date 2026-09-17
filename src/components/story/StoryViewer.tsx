@@ -77,10 +77,17 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
   // Background image state management for true crossfade
   const [bgLayer1, setBgLayer1] = useState<string>('');
   const [bgLayer2, setBgLayer2] = useState<string>('');
+  const [scrimLayer1, setScrimLayer1] = useState<number>(0);
+  const [scrimLayer2, setScrimLayer2] = useState<number>(0);
   const [activeLayer, setActiveLayer] = useState<1 | 2>(1);
 
-  // Get active slide's background image
-  const activeBackgroundImage = config?.slides[activeIndex]?.backgroundImage || '';
+  // Get active slide's background image and scrim darkening. The scrim only ever applies in dark
+  // mode - light mode's own UI is already bright, so a bright photo doesn't fight it the way it
+  // fights a dark theme - so `backgroundScrimOpacity` (or its 0.5 default) is ignored entirely in
+  // light mode rather than being a fixed value that applies regardless of theme.
+  const activeSlide = config?.slides[activeIndex];
+  const activeBackgroundImage = activeSlide?.backgroundImage || '';
+  const activeScrimOpacity = theme.palette.mode === 'dark' ? activeSlide?.backgroundScrimOpacity ?? 0.5 : 0;
 
   // Handle background image crossfade between two layers
   useEffect(() => {
@@ -90,13 +97,15 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
       // Update the inactive layer and switch to it
       if (activeLayer === 1) {
         setBgLayer2(activeBackgroundImage);
+        setScrimLayer2(activeScrimOpacity);
         setActiveLayer(2);
       } else {
         setBgLayer1(activeBackgroundImage);
+        setScrimLayer1(activeScrimOpacity);
         setActiveLayer(1);
       }
     }
-  }, [activeBackgroundImage, activeLayer, bgLayer1, bgLayer2]);
+  }, [activeBackgroundImage, activeScrimOpacity, activeLayer, bgLayer1, bgLayer2]);
 
   const handleEnterStory = () => {
     if (slideIds.length > 0) {
@@ -117,12 +126,12 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
     <>
       {/* Full-page background with MUI Fade crossfade - Layer 1 */}
       <Fade in={activeLayer === 1} timeout={800}>
-        <Box sx={classes.backgroundLayer(bgLayer1, activeLayer === 1)} />
+        <Box sx={classes.backgroundLayer(bgLayer1, scrimLayer1, activeLayer === 1)} />
       </Fade>
 
       {/* Full-page background with MUI Fade crossfade - Layer 2 */}
       <Fade in={activeLayer === 2} timeout={800}>
-        <Box sx={classes.backgroundLayer(bgLayer2, activeLayer === 2)} />
+        <Box sx={classes.backgroundLayer(bgLayer2, scrimLayer2, activeLayer === 2)} />
       </Fade>
 
       {/* containerRef stays mounted across loading/error/ready states so useStoryInit can always find it */}

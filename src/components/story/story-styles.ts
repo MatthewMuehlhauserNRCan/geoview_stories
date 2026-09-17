@@ -181,13 +181,17 @@ export const getSxClasses = (theme: Theme) => ({
   },
 
   storyViewer: {
-    backgroundLayer: (image: string, isActive: boolean) => ({
+    // A scrim (dark overlay) is layered into the same background-image stack as the photo itself,
+    // rather than a separate element, so it stays in sync with the crossfade for free.
+    backgroundLayer: (image: string, scrimOpacity: number, isActive: boolean) => ({
       position: 'fixed',
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundImage: image ? `url(${image})` : 'none',
+      backgroundImage: image
+        ? `linear-gradient(rgba(0, 0, 0, ${scrimOpacity}), rgba(0, 0, 0, ${scrimOpacity})), url(${image})`
+        : 'none',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
