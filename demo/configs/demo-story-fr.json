@@ -12,7 +12,7 @@
             "panel": [
                 {
                     "type": "text",
-                    "content": "Bienvenue dans **GeoView Stories**! Il s'agit d'une preuve de concept pour la création d'histoires interactives avec des cartes.\n\nCette démonstration présente les fonctionnalités de base, notamment :\n- Navigation par défilement\n- Table des matières persistante (ordinateur de bureau)\n- Routage par ancre URL\n- Panneaux de texte, d'image et de vidéo\n- Carte interactive avec points d'intérêt\n- Panneaux de citation"
+                    "content": "Bienvenue dans **GeoView Stories**! Il s'agit d'une preuve de concept pour la création d'histoires interactives avec des cartes.\n\nCette démonstration présente les fonctionnalités de base, notamment :\n- Navigation par défilement\n- Table des matières persistante (ordinateur de bureau)\n- Routage par ancre URL\n- Panneaux de texte, d'image et de vidéo\n- Carte interactive avec points d'intérêt\n- Panneaux de citation\n- Panneau de paillasson\n- Galerie d'images"
                 }
             ]
         },

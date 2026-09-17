@@ -11,7 +11,7 @@
       "panel": [
         {
           "type": "text",
-          "content": "Welcome to **GeoView Stories**! This is a proof-of-concept for creating interactive stories with maps.\n\nThis demo shows the basic functionality including:\n- Scroll-based navigation\n- Persistent table of contents (desktop)\n- URL hash routing\n- Text, image, and video panels\n- Interactive map with points of interest\n- Quote panels"
+          "content": "Welcome to **GeoView Stories**! This is a proof-of-concept for creating interactive stories with maps.\n\nThis demo shows the basic functionality including:\n- Scroll-based navigation\n- Persistent table of contents (desktop)\n- URL hash routing\n- Text, image, and video panels\n- Interactive map with points of interest\n- Quote panels\n- Doormat Panel \n- Image Gallery"
         }
       ]
     },
