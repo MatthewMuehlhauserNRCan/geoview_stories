@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Card, CardActionArea, Typography } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { DoormatPanel as DoormatPanelType } from '@/types/StoryConfig';
 import { getSxClasses } from './DoormatPanel-style';
 
@@ -25,6 +26,14 @@ export const DoormatPanel: React.FC<DoormatPanelProps> = ({ panel }) => {
               >
                 <Typography component="span" className="doormat-title-bar" sx={classes.cardTitleBar}>
                   {item.title}
+                  {external && (
+                    <>
+                      <OpenInNewIcon fontSize="inherit" sx={{ ml: 0.5, verticalAlign: 'middle' }} />
+                      <Box component="span" sx={classes.visuallyHidden}>
+                        (opens in new tab)
+                      </Box>
+                    </>
+                  )}
                 </Typography>
                 {item.description && (
                   <Typography variant="body2" sx={classes.cardBody}>
