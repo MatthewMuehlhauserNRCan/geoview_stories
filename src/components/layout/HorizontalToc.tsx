@@ -79,6 +79,7 @@ const HorizontalTocEntry: React.FC<EntryProps> = ({ item, slideIds, activeIndex,
               <MenuItem
                 key={child.slideIndex}
                 selected={activeIndex === child.slideIndex}
+                sx={{ fontSize: child.level === 4 ? 12 : child.level === 3 ? 13 : 14 }}
                 onClick={() => {
                   setAnchorEl(null);
                   onItemClick(slideIds[child.slideIndex!]);

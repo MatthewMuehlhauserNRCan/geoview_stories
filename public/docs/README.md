@@ -9,6 +9,7 @@ Complete reference for GeoView Story Library config JSON files: story structure,
 ## Table of Contents
 
 - [Story Config](#story-config)
+- [Auto-Generated TOC & Sections](#auto-generated-toc--sections)
 - [Theming](#theming)
 - [Intro Slide](#intro-slide)
 - [Slides](#slides)
@@ -36,16 +37,19 @@ interface StoryConfig {
   tableOfContents?: TocItem[];
   tocHeading?: string; // default "Chapters"
   lang?: "en" | "fr"; // default "en"
+  defaultTitleStyle?: HeadingStyle;
 
   // Required
   slides: Slide[];
 }
 
 interface TocItem {
-  title: string;
+  title?: string;        // Required unless `autoToc` is set.
   slideIndex?: number;   // Local entry that scrolls to this slide. Omit for an external link or group label.
   href?: string;          // External entry that navigates to another page. Mutually exclusive with slideIndex.
   sublist?: TocItem[];    // Nested entries, fully recursive - a sublist item can itself have a sublist.
+  level?: 2 | 3 | 4;      // Auto-populated from the source slide's level; affects title styling only, not indent.
+  autoToc?: boolean;      // Sentinel: replaced in place with the auto-generated section/slide tree. See below.
 }
 ```
 
@@ -57,13 +61,24 @@ An entry with neither `slideIndex` nor `href` (just a `title` and a `sublist`) r
 - **`slides`** (Required): Array of slides that make up the story. See [Slides](#slides).
 - **`tocOrientation`** (Optional): Table of contents layout. Default `"vertical"`.
   - `"vertical"`: the usual side Drawer (persistent on desktop, a hamburger-triggered temporary drawer on mobile), with fully recursive `sublist` nesting.
-  - `"horizontal"`: a slim, sticky top bar instead of a side Drawer. Only supports **one level** of dropdown (a top-level entry's `sublist` opens a menu; a grandchild's own `sublist` isn't rendered) - a slim bar has nowhere to put a flyout-within-a-flyout. Labels are truncated to a single line. Below the desktop breakpoint it automatically falls back to the same vertical Drawer as `"vertical"`, so it's still usable on narrow screens. **Not shown in demo** - the demo's TOC uses cross-page `href` links and multi-level grouping, which don't fit a horizontal dropdown bar as well as the vertical Drawer.
+  - `"horizontal"`: a slim, sticky top bar instead of a side Drawer. Only supports **one level** of dropdown (a top-level entry's `sublist` opens a menu; a grandchild's own `sublist` isn't rendered) - a slim bar has nowhere to put a flyout-within-a-flyout. Labels are truncated to a single line. Below the desktop breakpoint it automatically falls back to the same vertical Drawer as `"vertical"`, so it's still usable on narrow screens.
 - **`theme`** (Optional): Built-in theme name, or a custom theme object. See [Theming](#theming). **Custom theme objects and `geoviewTheme` not shown in demo config** (the demo instead uses the `data-theme` HTML attribute).
-- **`tableOfContents`** (Optional): Explicit override of the auto-derived TOC (which otherwise lists one entry per slide, skipping any with `includeInToc: false`). Lets you relabel entries independently of the slide's own title, group several slides under one heading via `sublist`, and mix in links to other pages (`href`) at whatever position matches your site's overall navigation order - useful for a shared TOC across multiple themed story pages, where the current page's section is expanded (`sublist`) and sibling pages are plain links. See the [French demo](../demo/index_fr.html) for a working example (each language links to the other via `href`).
+- **`tableOfContents`** (Optional): The TOC is auto-generated straight from each slide's own `title`/`level`, like a document outline - see [Auto-Generated TOC & Sections](#auto-generated-toc--sections) below. Set `tableOfContents` to override or extend that: it fully replaces the auto tree unless you splice the auto tree back in with an `{ "autoToc": true }` entry - useful for a shared TOC across multiple themed story pages, where the current page's own navigation is auto-generated and sibling pages are plain `href` links. See the [French demo](../demo/index_fr.html) for a working example (each language links to the other via `href`).
 - **`tocHeading`** (Optional): TOC panel heading. Default `"Chapters"` - override for other languages (e.g. `"Chapitres"`).
 - **`lang`** (Optional): Drives the GeoView map viewer's own UI language (`data-lang` on each map element). Default `"en"`. GeoView map configs are already bilingual internally, so a single `config` JSON works for both languages - no need for separate French map configs.
+- **`defaultTitleStyle`** (Optional): A base [`HeadingStyle`](#slides) applied to every slide's title, so a look (border/underline/alignment/etc.) doesn't need repeating on each slide by hand. Each slide's own `titleStyle` is shallow-merged on top - only the fields it actually sets override this default, field by field (not a deep merge of nested `border`/`underline` objects - setting either of those on a slide replaces the whole thing). Set a field to `false` (e.g. `titleStyle: { border: false }`) on a slide to opt back out of a default for just that one. See the demo's `defaultTitleStyle` (a subtle bottom rule under every title) and how "Basic Map"/"Auto POI Photo Gallery Example" opt out of it with `border: false` to keep their own underline/plain look.
 
-### Example: `tableOfContents`
+## Auto-Generated TOC & Sections
+
+By default, the table of contents is built directly from each slide's own heading - no separate TOC list to keep in sync by hand. Every `Slide` has a `level` (1-4, default `1`):
+
+- A **level-1 slide** (the default - most slides) is always its own top-level TOC entry, and becomes the current "section" for whatever slides follow it.
+- A **level 2-4 slide** instead nests as a child of the nearest preceding level-1 slide - use this for a slide that's really a sub-heading grouped under the section right before it (e.g. several map examples grouped under a "Maps" section slide). Levels 2-4 all nest at the same TOC depth as each other and are only differentiated by title/TOC size, not extra indentation.
+- A slide with `includeInToc: false` produces no TOC entry at all (and can't become a section for later slides to nest under), same as before.
+
+See the demo's "Maps" section (`demo/configs/demo-story.json`): a level-1 "Maps" slide followed by three level-2 slides ("Basic Map", "Manual POI Map Example", "Auto POI Photo Gallery Example"), which produces the exact same nested TOC group you'd otherwise have had to author by hand.
+
+If you still need a fully or partially hand-authored `tableOfContents` (for cross-page links, a language group, custom labels/ordering), you don't lose the auto-generated tree - splice it back in with a `{ "autoToc": true }` entry at whatever position it belongs:
 
 ```json
 {
@@ -72,20 +87,15 @@ An entry with neither `slideIndex` nor `href` (just a `title` and a `sublist`) r
     {
       "title": "English",
       "sublist": [
-        { "title": "Introduction", "slideIndex": 0 },
-        {
-          "title": "Project Summaries",
-          "sublist": [
-            { "title": "Community A", "slideIndex": 4 },
-            { "title": "Community B", "slideIndex": 5 }
-          ]
-        }
+        { "autoToc": true }
       ]
     },
     { "title": "Français", "href": "index_fr.html" }
   ]
 }
 ```
+
+Here, "English" wraps this story's own auto-generated section/slide tree, while "Français" is a plain cross-page link - so you still get one shared, hand-authored top level (grouping/ordering languages or sibling story pages) without re-typing every slide title into `tableOfContents` yourself.
 
 Each entry is either local (`slideIndex`, scrolls within the page), external (`href`, navigates to another page, rendered with an external-link icon and never highlighted as active), or a plain group label (neither field set - just a heading for its own `sublist`). `sublist` nesting is recursive, so a "theme"/language group can contain sections that each group their own items, to whatever depth you need. Local and external entries can be freely mixed at any level, in whatever order matches your site's overall navigation - this is what makes a cross-page link (a language switch, a link to a sibling "theme" page, etc.) sit at the right position relative to the current page's own entries.
 
@@ -176,26 +186,74 @@ interface IntroSlide {
 interface Slide {
   // Required
   title: string;
-  panel: Panel[];
+  panel: Panel[] | Panel[][]; // Panel[] = one row; Panel[][] = several rows stacked vertically
 
   // Optional
+  level?: 1 | 2 | 3 | 4; // default 1
+  titleStyle?: HeadingStyle;
   id?: string;
   backgroundImage?: string;
   includeInToc?: boolean; // default true
 }
+
+interface HeadingStyle {
+  align?: "left" | "center" | "right";
+  backgroundColor?: string;
+  backgroundImage?: string;
+  border?: boolean | HeadingBorderStyle; // true for a simple default border; an object for full control
+  underline?: boolean | HeadingUnderlineStyle; // true for a simple default underline; an object for control
+  color?: string;
+  fontSize?: string | number;
+  fontWeight?: string | number;
+}
+
+interface HeadingBorderStyle {
+  width?: string | number; // default 1 (px)
+  style?: "solid" | "dashed" | "dotted" | "double" | "groove" | "ridge" | "inset" | "outset"; // default "solid"
+  color?: string; // default the theme's divider color
+  sides?: Array<"top" | "right" | "bottom" | "left">; // default all 4; e.g. ["bottom"] for a simple rule
+}
+
+interface HeadingUnderlineStyle {
+  color?: string; // default currentColor
+  thickness?: string | number; // default 2 (px)
+  offset?: string | number; // gap between text and the line; default 4 (px)
+}
 ```
+
+A `border` with a partial `sides` list (e.g. just `["bottom"]`) renders as a simple rule - padding is only added on the side(s) actually drawn, so it doesn't look like an oddly one-sided box. A full 4-side border (the default, or `border: true`) keeps the boxed-heading look (padding on all sides, rounded corners). `underline` is a separate, simpler option for a plain text-decoration line instead of a border - handy for breaking up a title-only slide (see [Auto-Generated TOC & Sections](#auto-generated-toc--sections)) without the extra weight of a full box. See the demo's "Maps" section slides for a bottom-border vs. underline vs. plain comparison.
 
 ### Properties
 
-- **`title`** (Required): Used for the slide heading and TOC entry (unless overridden by `tableOfContents`).
-- **`panel`** (Required): One or more panels; see [Panel Types](#panel-types). A text panel paired with one media panel (image/video/map/slideshow) gets a side-by-side layout.
+- **`title`** (Required): The slide's single heading - also drives the auto-generated TOC entry (unless overridden by `tableOfContents`). See [Auto-Generated TOC & Sections](#auto-generated-toc--sections).
+- **`panel`** (Required): `Panel[]` (a flat array - the common case) is a single row: one or more panels laid out side by side on desktop and stacked on mobile; see [Panel Types](#panel-types). A text panel paired with one media panel (image/video/map/slideshow) gets a side-by-side layout. `Panel[][]` (an array of rows) stacks several such rows vertically under this same slide/title - useful for several independent text/image blocks that don't each need their own title. An empty array (`[]`) is valid - useful for a pure "section header" slide whose only purpose is the title itself (see `level` below); a panel-less slide automatically gets much less vertical padding than a normal slide, so it doesn't leave a large empty-looking gap before the next slide. See the demo's "Maps" section slide. **Multi-row `Panel[][]` not shown in demo.**
+- **`level`** (Optional): Heading level, `1`-`4`. Default `1` (most slides - each is its own top-level TOC entry, at the size shown throughout the demo). Set `2`-`4` for a slide that's really a sub-heading grouped under the level-1 slide right before it - it renders smaller and nests as a TOC child of that slide instead of getting its own top-level entry. See [Auto-Generated TOC & Sections](#auto-generated-toc--sections) and the demo's "Maps" section (a level-1 slide followed by three level-2 slides).
+- **`titleStyle`** (Optional): Visual overrides for this slide's title - `align`, `backgroundColor`, `backgroundImage`, `border` (`true` for a simple default box, or a `{ width, style, color, sides }` object - `sides: ["bottom"]` for a simple rule instead of a full box), `underline` (`true` for a simple default, or a `{ color, thickness, offset }` object), `color`, `fontSize`, `fontWeight`. Unset fields fall back to the normal look for that `level`. See the demo's "Maps" section slides.
 - **`id`** (Optional): Stable, language-independent id used for the slide's URL hash/DOM id. Falls back to a slugified `title` when omitted - since the title is what gets translated, set matching `id`s across a story's different-language configs (see the [French demo](../demo/configs/demo-story-fr.json)) so deep links keep working after a language switch.
 - **`backgroundImage`** (Optional): Full-page crossfade background while this slide is active.
 - **`includeInToc`** (Optional): Set `false` to hide this slide from the table of contents. Default `true`.
 
+### Example: stacking rows under one title
+
+```json
+{
+  "title": "Project Photos",
+  "panel": [
+    [{ "type": "text", "content": "First batch of photos from the field survey." }],
+    [
+      { "type": "image", "src": "images/site-a.jpg", "cssClasses": "grow" },
+      { "type": "image", "src": "images/site-b.jpg", "cssClasses": "grow" }
+    ],
+    [{ "type": "text", "content": "A second, unrelated batch from a later visit." }]
+  ]
+}
+```
+
+This renders as one slide/heading ("Project Photos") with three rows stacked vertically: a text row, a two-image side-by-side row, then another text row - without needing three separate slides (and three separate titles) to keep each block visually distinct.
+
 ## Panel Types
 
-Every panel has an optional `title` in addition to its type-specific fields below, plus an optional `cssClasses` for width/alignment overrides - see [Panel Width & Alignment](#panel-width--alignment-cssclasses) below.
+Every slide's own `title` (see [Slides](#slides) above) is the section's heading - panels themselves don't have a `title` field, so there's exactly one heading per slide regardless of how many panels it has. Every panel type also accepts an optional `cssClasses` for width/alignment overrides - see [Panel Width & Alignment](#panel-width--alignment-cssclasses) below.
 
 ### Panel Width & Alignment (`cssClasses`)
 

@@ -145,7 +145,6 @@ Story configurations are JSON files that define the structure and content. See `
       "panel": [
         {
           "type": "text",
-          "title": "Hello World",
           "content": "# Markdown content here",
           "cssClasses": "left-align"
         }
@@ -198,21 +197,18 @@ To reuse the exact same config file with a different theme (e.g. a `_dark` varia
 
 ### Table of Contents
 
-By default, the TOC is auto-derived from `slides` (one entry per slide, in order), skipping any slide with `includeInToc: false`.
+By default, the TOC is generated straight from each slide's own heading, like a document outline. Every `Slide` has a `level` (1-4, default `1`): a level-1 slide is always its own top-level entry and becomes the current "section" for whatever follows; a level 2-4 slide instead nests as a child of the nearest preceding level-1 slide (see the demo's "Maps" section - a level-1 slide followed by three level-2 map-example slides). Slides with `includeInToc: false` are skipped, same as before.
 
-For more control - custom labels, grouping several slides under one heading, or links out to other pages - provide an explicit `tableOfContents` array, which replaces the auto-derived list entirely:
+For cross-page links, a language group, or custom labels/ordering, provide an explicit `tableOfContents` array. It replaces the auto-generated tree unless you splice that tree back in with an `{ "autoToc": true }` entry:
 
 ```json
 {
   "tocHeading": "Chapters",
   "tableOfContents": [
-    { "title": "Introduction", "slideIndex": 0 },
     {
-      "title": "Project Summaries",
-      "slideIndex": 3,
+      "title": "English",
       "sublist": [
-        { "title": "Community A", "slideIndex": 4 },
-        { "title": "Community B", "slideIndex": 5 }
+        { "autoToc": true }
       ]
     },
     { "title": "Français", "href": "index_fr.html" }
@@ -220,9 +216,11 @@ For more control - custom labels, grouping several slides under one heading, or 
 }
 ```
 
-Each entry is either local (`slideIndex`, scrolls within the page, optionally with one level of `sublist`) or external (`href`, navigates to another page - shown with an external-link icon, never highlighted as active). Both kinds can be freely mixed in the same array, in whatever order matches your site's navigation - this is what makes a cross-page "switch language/theme" link possible without leaving the TOC. `tocHeading` overrides the panel's heading text (default `"Chapters"`).
+Each entry is either local (`slideIndex`, scrolls within the page), external (`href`, navigates to another page - shown with an external-link icon, never highlighted as active), or a plain group label (just a heading for its own `sublist`). All three kinds, plus the `autoToc` sentinel, can be freely mixed at any depth, in whatever order matches your site's navigation - this is what makes a cross-page "switch language/theme" link possible without leaving the TOC. `tocHeading` overrides the panel's heading text (default `"Chapters"`).
 
 See the [French demo](demo/index_fr.html) for a complete working example: `demo/configs/demo-story.json` and `demo/configs/demo-story-fr.json` each end their `tableOfContents` with a link to the other language's page, and share the same `Slide.id` per slide so deep links (`#3-basic-map`) resolve correctly in both.
+
+See [public/docs/README.md](public/docs/README.md#auto-generated-toc--sections) for the full reference on slide `level`, `titleStyle`, and the `autoToc` sentinel.
 
 ## Folder Structure
 

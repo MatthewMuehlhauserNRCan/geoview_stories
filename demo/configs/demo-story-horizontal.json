@@ -11,7 +11,6 @@
       "panel": [
         {
           "type": "text",
-          "title": "Getting Started",
           "content": "Welcome to **GeoView Stories**! This is a proof-of-concept for creating interactive stories with maps.\n\nThis demo shows the basic functionality including:\n- Scroll-based navigation\n- Persistent table of contents (desktop)\n- URL hash routing\n- Text, image, and video panels\n- Interactive map with points of interest\n- Quote panels"
         }
       ]
@@ -19,31 +18,31 @@
     {
       "title": "Panel Layout Example",
       "id": "layout-example",
+      "titleStyle": {
+        "align": "center",
+        "border": { "width": 2, "style": "solid", "color": "primary.main" },
+        "backgroundColor": "action.hover"
+      },
       "panel": [
-        {
-          "type": "text",
-          "title": "Controlling Panel Width & Alignment",
-          "cssClasses": "right-align",
-          "content": "Every panel type - not just text - accepts an optional `cssClasses` field for extra control over its width and position, independent of the slide's usual layout:\n\n- `left-align` / `right-align` - shifts the panel to one side, capped at a moderate width\n- `center-align` - centers the panel with a moderate width cap\n- `full-width` - removes the width cap entirely, so the panel fills the available space\n- `narrow` / `wide` - a tighter or looser width cap; combine with an alignment class, e.g. `\"narrow right-align\"`\n\nThis panel itself is using `cssClasses: \"right-align\"`."
-        }
-      ]
-    },
-    {
-      "title": "Sharing a Row Between Panels",
-      "id": "row-sharing-example",
-      "panel": [
-        {
-          "type": "text",
-          "title": "Growing Evenly",
-          "cssClasses": "grow",
-          "content": "These two panels are sharing one row using `cssClasses: \"grow\"` on both - flexbox splits the space evenly between them, however many panels end up in the row.\n\nUnlike a fixed 50/50 split, `grow` scales automatically: add a third panel with `grow` and all three share equally, with no percentages to work out by hand."
-        },
-        {
-          "type": "text",
-          "title": "Weighted & Fixed Widths",
-          "cssClasses": "grow",
-          "content": "To make one side bigger, use `grow-2` or `grow-3` instead of plain `grow` on whichever panel should be larger - it works on either side, not just the left; whichever panel gets the higher number wins, regardless of its position.\n\nUse `no-grow` on a panel that should size to its own content instead of stretching, and combine any of these with `narrow` / `wide` / `full-width` to cap how far a panel is allowed to grow."
-        }
+        [
+          {
+            "type": "text",
+            "cssClasses": "right-align",
+            "content": "Every panel type - not just text - accepts an optional `cssClasses` field for extra control over its width and position, independent of the slide's usual layout:\n\n- `left-align` / `right-align` - shifts the panel to one side, capped at a moderate width\n- `center-align` - centers the panel with a moderate width cap\n- `full-width` - removes the width cap entirely, so the panel fills the available space\n- `narrow` / `wide` - a tighter or looser width cap; combine with an alignment class, e.g. `\"narrow right-align\"`\n\nThis panel itself is using `cssClasses: \"right-align\"`.\n\nThe title above shows `titleStyle`: a centered heading with a custom border and background. And this whole slide is two stacked rows (`panel` set to an array of arrays) instead of two separate slides - handy for grouping a few related, title-less blocks under one heading."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "cssClasses": "grow",
+            "content": "### Growing Evenly\n\nThese two panels are sharing one row using `cssClasses: \"grow\"` on both - flexbox splits the space evenly between them, however many panels end up in the row.\n\nUnlike a fixed 50/50 split, `grow` scales automatically: add a third panel with `grow` and all three share equally, with no percentages to work out by hand."
+          },
+          {
+            "type": "text",
+            "cssClasses": "grow",
+            "content": "### Weighted & Fixed Widths\n\nTo make one side bigger, use `grow-2` or `grow-3` instead of plain `grow` on whichever panel should be larger - it works on either side, not just the left; whichever panel gets the higher number wins, regardless of its position.\n\nUse `no-grow` on a panel that should size to its own content instead of stretching, and combine any of these with `narrow` / `wide` / `full-width` to cap how far a panel is allowed to grow."
+          }
+        ]
       ]
     },
     {
@@ -53,7 +52,6 @@
       "panel": [
         {
           "type": "text",
-          "title": "Guiding Principles for Collaboration",
           "contentFile": "content/guiding-principles.md"
         },
         {
@@ -78,18 +76,26 @@
       ]
     },
     {
+      "title": "Maps",
+      "id": "maps-section",
+      "panel": []
+    },
+    {
       "title": "Basic Map",
       "id": "basic-map",
+      "level": 2,
+      "titleStyle": {
+        "align": "right",
+        "border": false
+      },
       "panel": [
         {
           "type": "text",
-          "title": "GeoView Integration",
           "cssClasses": "narrow",
-          "content": "Below is a basic GeoView map showing Canada in Lambert Conformal Conic projection (EPSG:3978). This demonstrates the core map functionality."
+          "content": "Here is a basic GeoView map showing Canada in Lambert Conformal Conic projection (EPSG:3978). This demonstrates the core map functionality."
         },
         {
           "type": "map",
-          "title": "Canada Basemap",
           "config": "./configs/default-map.json",
           "scrollguard": true
         }
@@ -98,10 +104,14 @@
     {
       "title": "Manual POI Map Example",
       "id": "manual-poi-map-example",
+      "level": 2,
+      "titleStyle": {
+        "align": "left",
+        "border": { "sides": ["bottom"], "width": 3, "color": "primary.main" }
+      },
       "panel": [
         {
           "type": "manual-poi-map",
-          "title": "Example Manual POI Map",
           "config": "./configs/poi-map.json",
           "points": [
             {
@@ -140,10 +150,15 @@
     {
       "title": "Auto POI Photo Gallery Example",
       "id": "auto-poi-gallery-example",
+      "level": 2,
+      "titleStyle": {
+        "align": "right",
+        "border": false,
+        "underline": { "thickness": 3, "color": "primary.main" }
+      },
       "panel": [
         {
           "type": "auto-poi-map",
-          "title": "Example Auto POI Map with Photo Galleries",
           "config": "./configs/polygon-map.json",
           "layerId": "geojsonLYR1/polygons.json",
           "titleField": "Province",
@@ -162,12 +177,10 @@
       "panel": [
         {
           "type": "text",
-          "title": "Multimedia Support",
           "content": "Geoview Stories supports various multimedia formats including videos from YouTube and local sources."
         },
         {
           "type": "video",
-          "title": "Example Video",
           "videoType": "embed",
           "src": "https://www.youtube.com/embed/dQw4w9WgXcQ",
           "height": 400
@@ -180,7 +193,6 @@
       "panel": [
         {
           "type": "slideshow",
-          "title": "Image Gallery Example",
           "loop": true,
           "objectFit": "contain",
           "items": [
@@ -214,7 +226,6 @@
       "panel": [
         {
           "type": "doormat",
-          "title": "Additional resources",
           "items": [
             {
               "title": "Open Science and Data Platform",
@@ -261,7 +272,6 @@
       "panel": [
         {
           "type": "text",
-          "title": "Continue Development",
           "content": "**Implemented Features:**\n- ✅ Video panels (local, external, YouTube)\n- ✅ Quote panels with attribution\n- ✅ Persistent vertical navigation (desktop)\n- ✅ Basic GeoView map integration\n- ✅ Interactive map with POI system (placeholder)\n- ✅ Image gallery/slideshow panels\n- ✅ Doormat/resource link panels\n\n**Future Enhancements:**\n1. Chart integration"
         }
       ]
@@ -269,24 +279,11 @@
   ],
   "tocOrientation": "horizontal",
   "lang": "en",
+  "defaultTitleStyle": {
+    "border": { "sides": ["bottom"], "color": "divider" }
+  },
   "tableOfContents": [
-    { "title": "Introduction", "slideIndex": 0 },
-    { "title": "Panel Layout Example", "slideIndex": 1 },
-    { "title": "Sharing a Row Between Panels", "slideIndex": 2 },
-    { "title": "Guiding Principles for Collaboration", "slideIndex": 3 },
-    { "title": "Standalone Quote Example", "slideIndex": 4 },
-    {
-      "title": "Maps",
-      "sublist": [
-        { "title": "Basic Map", "slideIndex": 5 },
-        { "title": "Manual POI Map Example", "slideIndex": 6 },
-        { "title": "Auto POI Photo Gallery Example", "slideIndex": 7 }
-      ]
-    },
-    { "title": "Video Example", "slideIndex": 8 },
-    { "title": "Image Gallery Example", "slideIndex": 9 },
-    { "title": "Additional Resources Example", "slideIndex": 10 },
-    { "title": "Next Steps", "slideIndex": 11 },
+    { "autoToc": true },
     { "title": "Français", "href": "index_fr.html" }
   ]
 }

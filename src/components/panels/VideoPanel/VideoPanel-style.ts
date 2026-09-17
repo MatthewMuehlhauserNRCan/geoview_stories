@@ -4,8 +4,6 @@ export const getSxClasses = () => ({
     width: '100%',
   },
   paper: { overflow: 'hidden', borderRadius: { xs: 0, md: 2 } },
-  title: { p: 2 },
-  titleText: { fontWeight: 600 },
   videoBody: { position: 'relative' },
   // 16:9 by default so the iframe scales with the column's actual width instead of a fixed pixel
   // height stretching/squishing it once paired with a media column that isn't a fixed size (e.g.

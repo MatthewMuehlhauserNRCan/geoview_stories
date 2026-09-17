@@ -1,6 +1,5 @@
 export const getSxClasses = () => ({
   wrapper: { width: '100%' },
-  title: { fontWeight: 600, mb: 2 },
   carousel: {
     position: 'relative',
     width: '100%',

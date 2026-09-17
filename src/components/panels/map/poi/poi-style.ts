@@ -6,12 +6,16 @@ export const getSxClasses = () => ({
     minHeight: '600px',
     mx: { xs: -2, md: 0 }, // Negative margin on mobile to break out of parent padding
   }),
+  // The flex item within `root` - holds the sticky map.
   mapWrapper: {
     flex: { xs: '0 0 auto', md: '2' },
     width: { xs: '100%', md: 'auto' }, // Full width on mobile
     minWidth: 0,
     position: 'sticky',
-    top: { xs: 64, md: 80 }, // Stick below header on both mobile and desktop
+    // No offset on mobile: there's no persistent header to clear there, and the mobile TOC button
+    // is a fixed overlay (doesn't need page content to leave it room) - an offset just left a gap
+    // above the sticky map that POI cards visibly scrolled through as they passed behind it.
+    top: { xs: 0, md: 80 },
     alignSelf: 'flex-start',
     zIndex: 10, // Ensure map stays above content when sticky
     // No height here - sized by its content (Paper -> map div, which has the real height below).
@@ -22,20 +26,23 @@ export const getSxClasses = () => ({
   mapPaper: {
     position: 'relative',
   },
-  // hasTitle no longer changes anything here (kept for call-site compatibility) - the map div
-  // below carries its own real height, title bar or not.
-  mapBody: (_hasTitle: boolean) => ({
+  mapBody: {
     position: 'relative',
-  }),
+  },
   // The map div's own real (non-percentage) target height - a floor, not a cap, so it can still
-  // grow to fit an expanded GeoView footer bar. Subtracts the title bar's height when present so
-  // the overall sticky card's resting size roughly matches the title-less case.
-  mapViewMinHeight: (hasTitle: boolean) => ({
-    minHeight: {
-      xs: hasTitle ? 'calc(40vh - 65px)' : '40vh',
-      md: hasTitle ? 'calc(100vh - 165px)' : 'calc(100vh - 100px)',
-    },
-  }),
+  // grow to fit an expanded GeoView footer bar. The title bar lives outside the sticky map now,
+  // so this no longer needs to carve out room for it.
+  mapViewMinHeight: {
+    minHeight: { xs: '40vh', md: 'calc(100vh - 100px)' },
+    // Capped on mobile only: without a ceiling, GeoView's own mobile-responsive layout can grow
+    // this well past half the screen (e.g. stacked controls needing more room), leaving no space
+    // for - and no visible way to reach - the POI cards below it. Desktop stays uncapped so an
+    // expanded footer bar can still grow the map card instead of being clipped/scrolled. MUI's sx
+    // breakpoints cascade upward, so the `xs` cap must be explicitly reset at `md` - otherwise it
+    // silently applies at every width, including desktop.
+    maxHeight: { xs: '50vh', md: 'none' },
+  },
+
   poiSection: {
     flex: '1',
     minWidth: 0,

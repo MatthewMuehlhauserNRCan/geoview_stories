@@ -14,7 +14,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ panel }) => {
   // Opt-out rather than opt-in: full screen on click is the expected behavior
   // for a story image unless a panel explicitly disables it.
   const fullscreenEnabled = panel.fullscreen !== false;
-  const altText = panel.altText || panel.title || 'Image';
+  const altText = panel.altText || 'Image';
 
   const openLightbox = () => setLightboxOpen(true);
   const closeLightbox = () => setLightboxOpen(false);
@@ -22,13 +22,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ panel }) => {
   return (
     <Box sx={classes.wrapper}>
       <Paper elevation={0} sx={classes.paper}>
-        {panel.title && (
-          <Box sx={classes.title}>
-            <Typography variant="h5" component="h3" sx={classes.titleText}>
-              {panel.title}
-            </Typography>
-          </Box>
-        )}
         <Box
           component="img"
           src={panel.src}

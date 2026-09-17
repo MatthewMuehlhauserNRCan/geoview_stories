@@ -4,9 +4,6 @@ export const getSxClasses = () => ({
     backgroundColor: 'background.paper',
     borderRadius: 2,
   },
-  title: {
-    fontWeight: 600,
-  },
   content: {
     '& p': { mb: 2, lineHeight: 1.7 },
     '& h1, & h2, & h3': { mt: 3, mb: 2, fontWeight: 600 },

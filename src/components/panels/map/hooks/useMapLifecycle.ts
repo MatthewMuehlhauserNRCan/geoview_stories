@@ -40,7 +40,9 @@ export const useMapLifecycle = (mapId: string, scrollguardEnabled: boolean | und
         return;
       }
 
-      e.preventDefault();
+      // Only stop OL's own zoom-on-scroll from ever seeing this event - don't preventDefault, so
+      // the browser's native scroll still runs (the page, or this card's own overflow when an
+      // expanded footer bar makes it scrollable) instead of the wheel doing nothing at all.
       e.stopPropagation();
       setShowScrollGuard(true);
 

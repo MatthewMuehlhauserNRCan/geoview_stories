@@ -1,7 +1,4 @@
 export const getSxClasses = () => ({
-  title: {
-    fontWeight: 600,
-  },
   // Flexbox (not grid) so a partial last row centers instead of hugging the left edge.
   list: {
     display: 'flex',

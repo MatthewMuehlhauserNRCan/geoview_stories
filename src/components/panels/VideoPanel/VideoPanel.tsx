@@ -39,7 +39,7 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({ panel }) => {
           component="iframe"
           src={panel.src}
           sx={classes.embedFrame(panel.height)}
-          title={panel.title || 'Video'}
+          title="Video"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
@@ -59,13 +59,6 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({ panel }) => {
   return (
     <Box sx={classes.wrapper}>
       <Paper elevation={0} sx={classes.paper}>
-        {panel.title && (
-          <Box sx={classes.title}>
-            <Typography variant="h5" component="h3" sx={classes.titleText}>
-              {panel.title}
-            </Typography>
-          </Box>
-        )}
         <Box sx={classes.videoBody}>{renderVideo()}</Box>
         {panel.transcript && (
           <Box sx={classes.transcript}>

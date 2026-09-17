@@ -5,14 +5,18 @@
 export interface StoryConfig {
   introSlide?: IntroSlide;
   slides: Slide[];
-  tocOrientation?: 'vertical' | 'horizontal';
-  theme?: string | StoryThemeConfig; // Name of a built-in theme (e.g. 'light', 'dark'), or a custom theme definition
+  lang?: 'en' | 'fr'; // Drives the GeoView map viewer's own UI language (data-lang); default 'en'
   // Explicit override of the auto-derived TOC (one entry per non-excluded slide). Lets a
   // page reorder/relabel entries, group slides under one heading via `sublist`, and mix in
   // links to other theme pages (href) at whatever position matches the site's overall order.
   tableOfContents?: TocItem[];
+  tocOrientation?: 'vertical' | 'horizontal';
   tocHeading?: string; // TOC panel heading; default "Chapters" (e.g. "Chapitres" for a French story)
-  lang?: 'en' | 'fr'; // Drives the GeoView map viewer's own UI language (data-lang); default 'en'
+  theme?: string | StoryThemeConfig; // Name of a built-in theme (e.g. 'light', 'dark'), or a custom theme definition
+  // Base title style applied to every slide, so a look (border/underline/alignment/etc.) doesn't
+  // need repeating on each slide by hand. A slide's own `titleStyle` is shallow-merged on top -
+  // each field it sets wins over this default; set a field to `false`/omit it to fall back here.
+  defaultTitleStyle?: HeadingStyle;
 }
 
 export interface StoryThemeConfig {
@@ -41,19 +45,62 @@ export interface IntroSlide {
   scrimOpacity?: number; // 0-1 darkening over backgroundImage for text contrast (WCAG); defaults to 0.4
 }
 
+// Styling overrides for a slide or intro title - unset fields fall back to the normal look for
+// that heading level (font size/weight come from the level; these mostly cover layout/decoration).
+export interface HeadingStyle {
+  align?: 'left' | 'center' | 'right';
+  backgroundColor?: string;
+  backgroundImage?: string;
+  // `true` for a simple default (1px solid, theme divider color, all 4 sides); an object for full
+  // control, including a bottom (or other single-side) rule instead of a full box via `sides`.
+  border?: boolean | HeadingBorderStyle;
+  // `true` for a simple default underline; an object for control over color/thickness/offset.
+  underline?: boolean | HeadingUnderlineStyle;
+  color?: string;
+  fontSize?: string | number;
+  fontWeight?: string | number;
+}
+
+export interface HeadingBorderStyle {
+  width?: string | number; // default 1 (px)
+  style?: 'solid' | 'dashed' | 'dotted' | 'double' | 'groove' | 'ridge' | 'inset' | 'outset'; // default 'solid'
+  color?: string; // default theme divider color
+  // Which side(s) get the border; default all 4. E.g. `['bottom']` for a simple rule under the
+  // title instead of a full box - padding is also only added on the included sides in that case.
+  sides?: Array<'top' | 'right' | 'bottom' | 'left'>;
+}
+
+export interface HeadingUnderlineStyle {
+  color?: string; // default currentColor (matches the title's own text color)
+  thickness?: string | number; // default 2 (px)
+  offset?: string | number; // gap between the text baseline and the line; default 4 (px)
+}
+
 export interface Slide {
   title: string;
+  // Heading level for this slide's title - drives both its visual size (h1-h4) and how it's
+  // grouped in the auto-generated table of contents: a level-1 slide (the default) is always its
+  // own top-level TOC entry and becomes the current "section" for any slides that follow; a
+  // level 2-4 slide instead nests as a flat child of the nearest preceding level-1 slide (rare -
+  // use it for a slide that's really a sub-heading under the section right before it, e.g. one of
+  // several map examples grouped under a "Maps" section slide). Levels 2-4 all nest at the same
+  // TOC depth as each other, differentiated only by title size/styling, not extra indentation.
+  level?: 1 | 2 | 3 | 4;
+  // Visual overrides for this slide's title; unset fields fall back to the level's default look.
+  titleStyle?: HeadingStyle;
   // Stable, language-independent id used for the slide's URL hash/DOM id. Falls back to a
   // slugified `title` when omitted, so give matching stories in different languages the same
   // `id` per slide to keep deep links working when the title text itself is translated.
   id?: string;
   backgroundImage?: string;
-  panel: Panel[];
+  // A flat array is one row (panels laid out side by side on desktop, stacked on mobile - the
+  // usual case). Use an array of arrays to stack several such rows vertically under this same
+  // slide/title instead of starting a new slide just to get a second title-less row of panels.
+  panel: Panel[] | Panel[][];
   includeInToc?: boolean;
 }
 
 export interface BasePanel {
-  title?: string;
   type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'manual-poi-map' | 'auto-poi-map' | 'quote' | 'doormat';
   // Optional utility class(es) from src/styles/panels.css (e.g. "narrow right-align") for
   // width/alignment overrides - works on every panel type, not just text.
@@ -208,10 +255,19 @@ export type Panel =
   | DoormatPanel;
 
 export interface TocItem {
-  title: string;
+  // Required unless `autoToc` is set.
+  title?: string;
   slideIndex?: number; // Local entry that scrolls to this slide. Omit for an external link or group label.
   href?: string; // External entry that navigates to another page instead of scrolling. Mutually exclusive with slideIndex.
   // Nested entries, fully recursive - a sublist item can itself have a slideIndex, an href, and/or
   // its own sublist (e.g. a "theme"/language group containing sections that each group their own items).
   sublist?: TocItem[];
+  // Auto-populated on generated entries from the source slide's `level` (2-4); only affects TOC
+  // title styling, not indentation - all of a section's children render at the same depth.
+  level?: 2 | 3 | 4;
+  // Sentinel: wherever this appears in a manually-authored `tableOfContents` array (at any depth),
+  // it's replaced in place with the story's own auto-generated section/slide tree (built from each
+  // slide's `title`/`level`). Lets a manual list mix hand-authored entries (cross-page links,
+  // language groups) with this story's own real heading-based navigation.
+  autoToc?: boolean;
 }

@@ -16,11 +16,6 @@ export const getSxClasses = () => ({
     width: '100%',
     backgroundColor: 'grey.200',
   },
-  titleBar: {
-    p: 2,
-    borderBottom: '1px solid',
-    borderColor: 'divider',
-  },
   overlay: {
     position: 'absolute',
     top: 0,

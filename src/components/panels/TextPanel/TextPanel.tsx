@@ -43,11 +43,6 @@ export const TextPanel: React.FC<TextPanelProps> = ({ panel }) => {
 
   return (
     <Paper elevation={0} sx={classes.paper}>
-      {panel.title && (
-        <Typography variant="h4" component="h2" gutterBottom sx={classes.title}>
-          {panel.title}
-        </Typography>
-      )}
       <Box sx={classes.content}>
         {fileError && (
           <Typography color="error" variant="body2">

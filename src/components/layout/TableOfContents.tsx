@@ -43,6 +43,9 @@ const TocEntry: React.FC<TocEntryProps> = ({ item, depth, activeIndex, onLocalCl
   // A group label - no slideIndex to scroll to and no href to navigate to - is just
   // heading text for its sublist, not a real action, so it shouldn't look clickable.
   const isGroupLabel = !isExternal && item.slideIndex === undefined;
+  // Sub-heading entries (level 2-4) nest at the same depth/indent as their section's other
+  // children - a smaller font is the only thing that visually sets them apart.
+  const fontSize = item.level === 4 ? 12 : item.level === 3 ? 13 : 14;
 
   return (
     <>
@@ -50,7 +53,7 @@ const TocEntry: React.FC<TocEntryProps> = ({ item, depth, activeIndex, onLocalCl
         <ListItemButton component="a" href={item.href} sx={classes.externalItem(depth)}>
           <ListItemText
             primary={item.title || 'Untitled'}
-            slotProps={{ primary: { style: { fontSize: 14, fontWeight: 600 } } }}
+            slotProps={{ primary: { style: { fontSize, fontWeight: 600 } } }}
           />
           <OpenInNewIcon fontSize="small" sx={classes.externalIcon} />
         </ListItemButton>
@@ -58,7 +61,7 @@ const TocEntry: React.FC<TocEntryProps> = ({ item, depth, activeIndex, onLocalCl
         <ListItem sx={classes.groupLabel(depth)}>
           <ListItemText
             primary={item.title || 'Untitled'}
-            slotProps={{ primary: { style: { fontSize: 14, fontWeight: 600 } } }}
+            slotProps={{ primary: { style: { fontSize, fontWeight: 600 } } }}
           />
         </ListItem>
       ) : (
@@ -71,12 +74,13 @@ const TocEntry: React.FC<TocEntryProps> = ({ item, depth, activeIndex, onLocalCl
             primary={item.title || 'Untitled'}
             slotProps={{
               primary: {
-                style: { fontSize: 14, fontWeight: activeIndex === item.slideIndex ? 600 : 400 },
+                style: { fontSize, fontWeight: activeIndex === item.slideIndex ? 600 : 400 },
               },
             }}
           />
         </ListItemButton>
       )}
+
 
       {item.sublist && (
         <List disablePadding>

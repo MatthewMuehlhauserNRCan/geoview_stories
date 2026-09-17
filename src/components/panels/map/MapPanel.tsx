@@ -53,8 +53,9 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
         return;
       }
 
-      // Prevent map zoom
-      e.preventDefault();
+      // Only stop OL's own zoom-on-scroll from seeing this event - don't preventDefault, so the
+      // browser's native scroll still runs (the page, or this card's own overflow when an
+      // expanded footer bar makes it scrollable) instead of the wheel doing nothing at all.
       e.stopPropagation();
       
       // Show scroll guard overlay
@@ -100,21 +101,14 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
 
   return (
     <Box sx={classes.wrapper}>
-      <Paper elevation={2} sx={[shared.paper, { height: panel.title ? 'auto' : '600px' }]}>
-        {panel.title && (
-          <Box sx={shared.titleBar}>
-            <Typography variant="h5" component="h3" sx={{ fontWeight: 600 }}>
-              {panel.title}
-            </Typography>
-          </Box>
-        )}
+      <Paper elevation={2} sx={shared.paper}>
         <Box sx={{ position: 'relative' }}>
           <Box
             id={mapId}
             data-config-url={panel.config}
             data-lang={lang}
             className="geoview-map"
-            sx={[shared.container, { height: panel.title ? '500px' : '600px' }]}
+            sx={[shared.container, { minHeight: '600px' }]}
           />
           {loading && <MapLoadingOverlay message="Loading GeoView map..." />}
           {showScrollGuard && panel.scrollguard && <MapScrollGuardOverlay />}

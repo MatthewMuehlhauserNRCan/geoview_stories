@@ -1,8 +1,6 @@
 export const getSxClasses = () => ({
   wrapper: { mx: { xs: -2, md: 0 }, width: '100%' },
   paper: { overflow: 'hidden', borderRadius: { xs: 0, md: 2 } },
-  title: { p: 2 },
-  titleText: { fontWeight: 600 },
   // maxWidth/maxHeight (not width/height) so a tall image scales down
   // proportionally instead of being cropped or distorted.
   image: { display: 'block', maxWidth: '100%', maxHeight: { md: '70vh' }, width: 'auto', height: 'auto', mx: 'auto' },

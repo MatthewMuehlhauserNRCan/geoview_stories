@@ -50,16 +50,11 @@ export const SlideshowPanel: React.FC<SlideshowPanelProps> = ({ panel }) => {
 
   return (
     <Box sx={classes.wrapper}>
-      {panel.title && (
-        <Typography variant="h5" component="h3" sx={classes.title}>
-          {panel.title}
-        </Typography>
-      )}
       <Box
         sx={classes.carousel}
         role="region"
         aria-roledescription="carousel"
-        aria-label={panel.title || 'Image gallery'}
+        aria-label="Image gallery"
         tabIndex={0}
         onKeyDown={handleKeyDown}
       >

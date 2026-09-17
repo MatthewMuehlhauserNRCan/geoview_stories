@@ -11,11 +11,6 @@ export const DoormatPanel: React.FC<DoormatPanelProps> = ({ panel }) => {
   const classes = getSxClasses();
   return (
     <Box>
-      {panel.title && (
-        <Typography variant="h4" component="h2" gutterBottom sx={classes.title}>
-          {panel.title}
-        </Typography>
-      )}
       <Box sx={classes.list}>
         {panel.items.map((item, index) => {
           const external = item.external ?? true;

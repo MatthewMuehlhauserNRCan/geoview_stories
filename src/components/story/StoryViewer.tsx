@@ -10,6 +10,7 @@ import { useScrollToSlide } from '@/hooks/useScrollToSlide';
 import { useStoryInit } from '@/hooks/useGeoViewStoryInit';
 import { useStoryStore } from '@/core/stores/StoryStore';
 import { generateSlideId } from '@/utils/configLoader';
+import { resolveTableOfContents } from '@/utils/tocBuilder';
 import { buildStoryTheme } from '@/theme/buildTheme';
 import { getSxClasses } from './story-styles';
 
@@ -107,17 +108,10 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
     scrollToSlide(slideId);
   };
 
-  // Build TOC items (only meaningful once config has loaded). An explicit `tableOfContents`
-  // (custom labels, sublist grouping, theme-page links) overrides the auto-derived list.
-  const tocItems: TocItem[] = config
-    ? config.tableOfContents ??
-      config.slides
-        .map((slide, index) => ({
-          title: slide.title,
-          slideIndex: index,
-        }))
-        .filter((item, index) => config.slides[index].includeInToc !== false)
-    : [];
+  // Build TOC items (only meaningful once config has loaded). Derived straight from each slide's
+  // own title/level (a document-outline-style auto TOC), unless a manual `tableOfContents`
+  // overrides it - which can itself splice that auto tree back in via an `{ autoToc: true }` entry.
+  const tocItems: TocItem[] = config ? resolveTableOfContents(config) : [];
 
   return (
     <>

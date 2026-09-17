@@ -1,5 +1,5 @@
 import type { Theme } from '@mui/material/styles';
-import { Panel } from '@/types/StoryConfig';
+import { HeadingStyle, Panel } from '@/types/StoryConfig';
 
 // Slide vertical padding, in theme spacing units (top + bottom); kept as one
 // constant so the row/media height calcs below can never drift out of sync with it.
@@ -7,6 +7,20 @@ const slidePaddingYUnits = 8;
 
 /** The row's own guaranteed min height, reused as the image/video crop cap below */
 const getSlideContentHeight = (theme: Theme) => `calc(80vh - ${theme.spacing(slidePaddingYUnits * 2)})`;
+
+// `color`/`backgroundColor`/`borderColor` (and its per-side longhands) are resolved against
+// `theme.palette` automatically by MUI's sx system - but `textDecorationColor` isn't one of the
+// props that system covers, so a dot-path token like 'primary.main' has to be resolved by hand
+// or it's passed through as literal (invalid) CSS and silently ignored.
+const resolveThemeColor = (theme: Theme, value: string): string => {
+  const path = value.split('.');
+  let result: unknown = theme.palette;
+  for (const key of path) {
+    result = (result as Record<string, unknown> | undefined)?.[key];
+    if (result === undefined) return value;
+  }
+  return typeof result === 'string' ? result : value;
+};
 
 /** Shared sx classes for the story-level components (intro slide, slide layout, story viewer) */
 export const getSxClasses = (theme: Theme) => ({
@@ -70,18 +84,85 @@ export const getSxClasses = (theme: Theme) => ({
   },
 
   slide: {
-    // Mostly fills the screen for pacing, but only when there's a media panel
-    // to fill it; text/quote-only slides size to their (often short) content instead.
-    section: (hasMedia: boolean) => ({
+    // Mostly fills the screen for pacing, but only when there's a media panel to fill it; a
+    // title-only slide (no panels at all - e.g. a pure section-header slide) gets a much smaller
+    // padding, since the usual full slide rhythm would otherwise leave a large empty-looking gap
+    // around content that isn't there.
+    section: (hasMedia: boolean, isEmpty: boolean) => ({
       ...(hasMedia && {
         minHeight: '80vh',
         '@supports (height: 80dvh)': { minHeight: '80dvh' },
       }),
-      py: slidePaddingYUnits,
+      py: isEmpty ? 3 : slidePaddingYUnits,
       position: 'relative',
       width: '100%',
     }),
     inner: { position: 'relative', width: '100%', px: { xs: 2, md: 4 } },
+    // Vertical stack of a slide's rows - `gap` separates multiple stacked rows under one title;
+    // a single-row slide (the common case) just renders one child, so the gap never applies.
+    rows: { display: 'flex', flexDirection: 'column', gap: 6 },
+    // One heading per slide, sized by the slide's `level` (Slide.tsx picks the variant/component);
+    // `style` layers on any per-slide title overrides (align/background/border/font). No bottom
+    // margin when there are no panels below it - nothing to space the title away from.
+    title: (style?: HeadingStyle, hasRows: boolean = true) => {
+      const border = style?.border;
+      const borderWidth = typeof border === 'object' && border.width !== undefined
+        ? typeof border.width === 'number' ? `${border.width}px` : border.width
+        : '1px';
+      const borderStyleValue = (typeof border === 'object' && border.style) || 'solid';
+      // Longhand per-side props (not a `border` shorthand string) so MUI's sx system can still
+      // resolve a theme token like 'divider' for color, and so a partial `sides` list (e.g. just
+      // `['bottom']` for a simple rule under the title) only sets the sides actually wanted.
+      const borderColor = (typeof border === 'object' && border.color) || 'divider';
+      const allSides: Array<'top' | 'right' | 'bottom' | 'left'> = ['top', 'right', 'bottom', 'left'];
+      const borderSides = (typeof border === 'object' && border.sides) || allSides;
+      const isFullBorder = borderSides.length === allSides.length;
+      const borderSx: Record<string, string> = {};
+      borderSides.forEach(side => {
+        const cap = side.charAt(0).toUpperCase() + side.slice(1);
+        borderSx[`border${cap}Width`] = borderWidth;
+        borderSx[`border${cap}Style`] = borderStyleValue;
+        borderSx[`border${cap}Color`] = borderColor;
+      });
+
+      const underline = style?.underline;
+      const underlineColor = resolveThemeColor(theme, (typeof underline === 'object' && underline.color) || 'currentColor');
+      const underlineThickness = typeof underline === 'object' && underline.thickness !== undefined
+        ? typeof underline.thickness === 'number' ? `${underline.thickness}px` : underline.thickness
+        : '2px';
+      const underlineOffset = typeof underline === 'object' && underline.offset !== undefined
+        ? typeof underline.offset === 'number' ? `${underline.offset}px` : underline.offset
+        : '4px';
+
+      return {
+        fontWeight: style?.fontWeight ?? 600,
+        mb: hasRows ? 3 : 0,
+        ...(style?.align && { textAlign: style.align }),
+        ...(style?.color && { color: style.color }),
+        ...(style?.fontSize && { fontSize: style.fontSize }),
+        ...(style?.backgroundColor && { backgroundColor: style.backgroundColor }),
+        ...(style?.backgroundImage && {
+          backgroundImage: `url(${style.backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }),
+        ...(underline && {
+          textDecorationLine: 'underline',
+          textDecorationColor: underlineColor,
+          textDecorationThickness: underlineThickness,
+          textUnderlineOffset: underlineOffset,
+        }),
+        ...(border && borderSx),
+        // A full 4-side border gets the usual boxed-heading padding; a partial one (e.g.
+        // bottom-only) just gets a little breathing room on the side(s) it's actually drawn on,
+        // so it reads as a simple rule rather than an oddly-padded box.
+        ...(border && isFullBorder && { p: 2, borderRadius: 1 }),
+        ...(border && !isFullBorder && Object.fromEntries(
+          borderSides.map(side => [{ top: 'pt', right: 'pr', bottom: 'pb', left: 'pl' }[side], 1])
+        )),
+        ...(!border && (style?.backgroundColor || style?.backgroundImage) && { p: 2, borderRadius: 1 }),
+      };
+    },
     row: (flexDirection: { xs: string; md: string } | string, hasTextAndImage: boolean, hasMedia: boolean) => ({
       display: 'flex',
       flexDirection,

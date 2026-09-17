@@ -12,7 +12,6 @@
             "panel": [
                 {
                     "type": "text",
-                    "title": "Pour commencer",
                     "content": "Bienvenue dans **GeoView Stories**! Il s'agit d'une preuve de concept pour la création d'histoires interactives avec des cartes.\n\nCette démonstration présente les fonctionnalités de base, notamment :\n- Navigation par défilement\n- Table des matières persistante (ordinateur de bureau)\n- Routage par ancre URL\n- Panneaux de texte, d'image et de vidéo\n- Carte interactive avec points d'intérêt\n- Panneaux de citation"
                 }
             ]
@@ -20,31 +19,31 @@
         {
             "title": "Exemple de mise en page des panneaux",
             "id": "layout-example",
+            "titleStyle": {
+                "align": "center",
+                "border": { "width": 2, "style": "solid", "color": "primary.main" },
+                "backgroundColor": "action.hover"
+            },
             "panel": [
-                {
-                    "type": "text",
-                    "title": "Contrôler la largeur et l'alignement des panneaux",
-                    "cssClasses": "right-align",
-                    "content": "Chaque type de panneau - pas seulement le texte - accepte un champ optionnel `cssClasses` pour contrôler sa largeur et sa position, indépendamment de la mise en page habituelle de la diapositive :\n\n- `left-align` / `right-align` - décale le panneau d'un côté, avec une largeur maximale modérée\n- `center-align` - centre le panneau avec une largeur maximale modérée\n- `full-width` - supprime complètement la limite de largeur\n- `narrow` / `wide` - une limite de largeur plus étroite ou plus large; combinable avec une classe d'alignement, par exemple `\"narrow right-align\"`\n\nCe panneau utilise lui-même `cssClasses: \"right-align\"`."
-                }
-            ]
-        },
-        {
-            "title": "Partager une rangée entre panneaux",
-            "id": "row-sharing-example",
-            "panel": [
-                {
-                    "type": "text",
-                    "title": "Croissance égale",
-                    "cssClasses": "grow",
-                    "content": "Ces deux panneaux partagent une rangée en utilisant `cssClasses: \"grow\"` sur les deux - flexbox répartit l'espace également entre eux, peu importe le nombre de panneaux dans la rangée.\n\nContrairement à une division fixe 50/50, `grow` s'adapte automatiquement : ajoutez un troisième panneau avec `grow` et les trois partagent également l'espace, sans avoir à recalculer de pourcentages."
-                },
-                {
-                    "type": "text",
-                    "title": "Largeurs pondérées et fixes",
-                    "cssClasses": "grow",
-                    "content": "Pour rendre un côté plus grand, utilisez `grow-2` ou `grow-3` au lieu de simplement `grow` sur le panneau qui doit être plus grand - cela fonctionne des deux côtés, pas seulement à gauche; c'est le panneau avec la valeur la plus élevée qui l'emporte, peu importe sa position.\n\nUtilisez `no-grow` sur un panneau qui doit s'ajuster à son propre contenu plutôt que de s'étirer, et combinez l'une de ces classes avec `narrow` / `wide` / `full-width` pour limiter la croissance d'un panneau."
-                }
+                [
+                    {
+                        "type": "text",
+                        "cssClasses": "right-align",
+                        "content": "Chaque type de panneau - pas seulement le texte - accepte un champ optionnel `cssClasses` pour contrôler sa largeur et sa position, indépendamment de la mise en page habituelle de la diapositive :\n\n- `left-align` / `right-align` - décale le panneau d'un côté, avec une largeur maximale modérée\n- `center-align` - centre le panneau avec une largeur maximale modérée\n- `full-width` - supprime complètement la limite de largeur\n- `narrow` / `wide` - une limite de largeur plus étroite ou plus large; combinable avec une classe d'alignement, par exemple `\"narrow right-align\"`\n\nCe panneau utilise lui-même `cssClasses: \"right-align\"`.\n\nLe titre ci-dessus utilise `titleStyle` : un titre centré avec une bordure et un arrière-plan personnalisés. Et cette diapositive entière est composée de deux rangées empilées (`panel` défini comme un tableau de tableaux) au lieu de deux diapositives distinctes - pratique pour regrouper quelques blocs sans titre sous un même en-tête."
+                    }
+                ],
+                [
+                    {
+                        "type": "text",
+                        "cssClasses": "grow",
+                        "content": "### Croissance égale\n\nCes deux panneaux partagent une rangée en utilisant `cssClasses: \"grow\"` sur les deux - flexbox répartit l'espace également entre eux, peu importe le nombre de panneaux dans la rangée.\n\nContrairement à une division fixe 50/50, `grow` s'adapte automatiquement : ajoutez un troisième panneau avec `grow` et les trois partagent également l'espace, sans avoir à recalculer de pourcentages."
+                    },
+                    {
+                        "type": "text",
+                        "cssClasses": "grow",
+                        "content": "### Largeurs pondérées et fixes\n\nPour rendre un côté plus grand, utilisez `grow-2` ou `grow-3` au lieu de simplement `grow` sur le panneau qui doit être plus grand - cela fonctionne des deux côtés, pas seulement à gauche; c'est le panneau avec la valeur la plus élevée qui l'emporte, peu importe sa position.\n\nUtilisez `no-grow` sur un panneau qui doit s'ajuster à son propre contenu plutôt que de s'étirer, et combinez l'une de ces classes avec `narrow` / `wide` / `full-width` pour limiter la croissance d'un panneau."
+                    }
+                ]
             ]
         },
         {
@@ -54,7 +53,6 @@
             "panel": [
                 {
                     "type": "text",
-                    "title": "Principes directeurs de collaboration",
                     "contentFile": "content/guiding-principles-fr.md"
                 },
                 {
@@ -79,18 +77,26 @@
             ]
         },
         {
+            "title": "Cartes",
+            "id": "maps-section",
+            "panel": []
+        },
+        {
             "title": "Carte de base",
             "id": "basic-map",
+            "level": 2,
+            "titleStyle": {
+                "align": "right",
+                "border": false
+            },
             "panel": [
                 {
                     "type": "text",
-                    "title": "Intégration de GeoView",
                     "cssClasses": "narrow",
                     "content": "Voici une carte GeoView de base montrant le Canada en projection conique conforme de Lambert (EPSG:3978). Cela démontre les fonctionnalités cartographiques de base."
                 },
                 {
                     "type": "map",
-                    "title": "Fond de carte du Canada",
                     "config": "./configs/default-map.json",
                     "scrollguard": true
                 }
@@ -99,10 +105,14 @@
         {
             "title": "Exemple de carte de PI manuelle",
             "id": "manual-poi-map-example",
+            "level": 2,
+            "titleStyle": {
+                "align": "left",
+                "border": { "sides": ["bottom"], "width": 3, "color": "primary.main" }
+            },
             "panel": [
                 {
                     "type": "manual-poi-map",
-                    "title": "Exemple de carte de PI manuelle",
                     "config": "./configs/poi-map.json",
                     "points": [
                         {
@@ -141,10 +151,15 @@
         {
             "title": "Exemple de galerie photo de PI automatique",
             "id": "auto-poi-gallery-example",
+            "level": 2,
+            "titleStyle": {
+                "align": "right",
+                "border": false,
+                "underline": { "thickness": 3, "color": "primary.main" }
+            },
             "panel": [
                 {
                     "type": "auto-poi-map",
-                    "title": "Exemple de carte de PI automatique avec galeries de photos",
                     "config": "./configs/polygon-map.json",
                     "layerId": "geojsonLYR1/polygons.json",
                     "titleField": "Province",
@@ -163,12 +178,10 @@
             "panel": [
                 {
                     "type": "text",
-                    "title": "Prise en charge multimédia",
                     "content": "GeoView Stories prend en charge divers formats multimédias, y compris les vidéos provenant de YouTube et de sources locales."
                 },
                 {
                     "type": "video",
-                    "title": "Exemple de vidéo",
                     "videoType": "embed",
                     "src": "https://www.youtube.com/embed/dQw4w9WgXcQ",
                     "height": 400
@@ -181,7 +194,6 @@
             "panel": [
                 {
                     "type": "slideshow",
-                    "title": "Exemple de galerie d'images",
                     "loop": true,
                     "objectFit": "contain",
                     "items": [
@@ -215,7 +227,6 @@
             "panel": [
                 {
                     "type": "doormat",
-                    "title": "Ressources supplémentaires",
                     "items": [
                         {
                             "title": "Plateforme scientifique et de données ouvertes",
@@ -262,7 +273,6 @@
             "panel": [
                 {
                     "type": "text",
-                    "title": "Poursuivre le développement",
                     "content": "**Fonctionnalités implémentées :**\n- ✅ Panneaux vidéo (locaux, externes, YouTube)\n- ✅ Panneaux de citation avec attribution\n- ✅ Navigation verticale persistante (ordinateur de bureau)\n- ✅ Intégration de base de GeoView\n- ✅ Carte interactive avec système de PI (provisoire)\n- ✅ Panneaux de galerie d'images/diaporama\n- ✅ Panneaux de type « doormat » (liens de ressources)\n\n**Améliorations futures :**\n1. Intégration de graphiques"
                 }
             ]
@@ -271,63 +281,14 @@
     "tocOrientation": "vertical",
     "tocHeading": "Chapitres",
     "lang": "fr",
+    "defaultTitleStyle": {
+        "border": { "sides": ["bottom"], "color": "divider" }
+    },
     "tableOfContents": [
         {
             "title": "Français",
             "sublist": [
-                {
-                    "title": "Introduction",
-                    "slideIndex": 0
-                },
-                {
-                    "title": "Exemple de mise en page des panneaux",
-                    "slideIndex": 1
-                },
-                {
-                    "title": "Partager une rangée entre panneaux",
-                    "slideIndex": 2
-                },
-                {
-                    "title": "Principes directeurs de collaboration",
-                    "slideIndex": 3
-                },
-                {
-                    "title": "Exemple de citation autonome",
-                    "slideIndex": 4
-                },
-                {
-                    "title": "Cartes",
-                    "sublist": [
-                        {
-                            "title": "Carte de base",
-                            "slideIndex": 5
-                        },
-                        {
-                            "title": "Exemple de carte de PI manuelle",
-                            "slideIndex": 6
-                        },
-                        {
-                            "title": "Exemple de galerie photo de PI automatique",
-                            "slideIndex": 7
-                        }
-                    ]
-                },
-                {
-                    "title": "Exemple de vidéo",
-                    "slideIndex": 8
-                },
-                {
-                    "title": "Exemple de galerie d'images",
-                    "slideIndex": 9
-                },
-                {
-                    "title": "Exemple de ressources supplémentaires",
-                    "slideIndex": 10
-                },
-                {
-                    "title": "Prochaines étapes",
-                    "slideIndex": 11
-                }
+                { "autoToc": true }
             ]
         },
         {

@@ -1,4 +1,15 @@
-import { StoryConfig } from '@/types/StoryConfig';
+import { Panel, StoryConfig } from '@/types/StoryConfig';
+
+/**
+ * Normalizes a slide's `panel` field to always be an array of rows: a flat `Panel[]` (the common
+ * case, one row) becomes a single-row array; an already-nested `Panel[][]` (several stacked rows
+ * under one title) is returned as-is.
+ */
+export const getSlideRows = (panel: Panel[] | Panel[][]): Panel[][] => {
+  if (panel.length === 0) return [];
+  return Array.isArray(panel[0]) ? (panel as Panel[][]) : [panel as Panel[]];
+};
+
 
 /**
  * Load and parse story configuration from JSON file
@@ -38,6 +49,8 @@ export const validateStoryConfig = (config: StoryConfig): boolean => {
  */
 export const configHasMaps = (config: StoryConfig): boolean =>
   config.slides.some(slide =>
-    slide.panel.some(panel => panel.type === 'map' || panel.type === 'manual-poi-map' || panel.type === 'auto-poi-map')
+    getSlideRows(slide.panel).some(row =>
+      row.some(panel => panel.type === 'map' || panel.type === 'manual-poi-map' || panel.type === 'auto-poi-map')
+    )
   );
 

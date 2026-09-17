@@ -162,20 +162,13 @@ export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, pan
       {/* Map Container - Sticky on mobile and desktop */}
       <Box sx={ownClasses.mapWrapper}>
         <Paper elevation={2} sx={[shared.paper, ownClasses.mapPaper]}>
-          {panel.title && (
-            <Box sx={shared.titleBar}>
-              <Typography variant="h5" component="h3" sx={{ fontWeight: 600 }}>
-                {panel.title}
-              </Typography>
-            </Box>
-          )}
-          <Box sx={ownClasses.mapBody(!!panel.title)}>
+          <Box sx={ownClasses.mapBody}>
             <Box
               id={mapId}
               data-config-url={panel.config}
               data-lang={lang}
               className="geoview-map"
-              sx={[shared.container, ownClasses.mapViewMinHeight(!!panel.title)]}
+              sx={[shared.container, ownClasses.mapViewMinHeight]}
             />
             {loading && <MapLoadingOverlay message="Loading interactive map..." />}
             {showScrollGuard && panel.scrollguard && <MapScrollGuardOverlay />}
