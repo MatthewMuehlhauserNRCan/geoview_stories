@@ -51,29 +51,27 @@
             "id": "guiding-principles",
             "backgroundImage": "images/BackgroundImageTest.jpg",
             "panel": [
-                {
-                    "type": "text",
-                    "contentFile": "content/guiding-principles-fr.md"
-                },
-                {
-                    "type": "image",
-                    "altText": "Un cercle avec le texte « Principes directeurs » est entouré de sept lignes. Chaque ligne se termine par un texte. Le texte est le suivant : Respect des savoirs et des cultures autochtones. Respecter les systèmes de connaissances et les récits oraux dirigés par les Autochtones, et faire preuve de reconnaissance et de considération pour les protocoles, la gouvernance et les processus décisionnels autochtones, les cérémonies, les lois, la spiritualité, la langue et les valeurs. Souveraineté des données et de l'information : respecter la propriété et le contrôle des nations autochtones sur leurs données et leur information afin de protéger et d'autonomiser les communautés. Collaboration et relations : travailler à une compréhension mutuelle et favoriser de meilleures relations entre les nations et gouvernements autochtones. Intégrité et transparence : faire preuve d'intégrité et de transparence pour promouvoir l'équité et la confiance. Bien-être intergénérationnel : reconnaître l'importance du transfert des connaissances intergénérationnelles, en assurant l'accessibilité et la pertinence culturelle pour les jeunes et les générations futures. Faire valoir et soutenir la continuité de la sagesse autochtone concernant les effets cumulatifs et le bien-être intergénérationnel. Intendance environnementale : promouvoir des approches durables et holistiques qui protègent la terre, l'air, l'eau et les espèces. Intégrer les enseignements autochtones et les apprentissages tirés de la terre, et comprendre les rôles des Autochtones en tant que gardiens et intendants. Interconnexion : reconnaître et adopter l'interconnexion de tous les êtres vivants et écosystèmes, en tissant ensemble les connaissances autochtones et occidentales dans une approche holistique et inclusive.",
-                    "caption": "",
-                    "src": "images/Guiding Principles-v02.png"
-                }
-            ]
-        },
-        {
-            "title": "Exemple de citation autonome",
-            "id": "quote-example",
-            "panel": [
-                {
-                    "type": "quote",
-                    "quote": "Lorsque nous établissons des relations avec nos voisins, nous devons apprendre à vivre ensemble dans le respect et à nous efforcer de nous comprendre les uns les autres. On ne peut pas séparer le milieu aquatique du milieu terrestre - tout est interconnecté. La spiritualité et la science occidentale doivent être tissées ensemble pour produire un changement significatif et durable pour le bien commun.",
-                    "author": "Eddie Gardner",
-                    "role": "Aîné",
-                    "organization": "Première Nation de Skwah"
-                }
+                [
+                    {
+                        "type": "text",
+                        "contentFile": "content/guiding-principles-fr.md"
+                    },
+                    {
+                        "type": "image",
+                        "altText": "Un cercle avec le texte « Principes directeurs » est entouré de sept lignes. Chaque ligne se termine par un texte. Le texte est le suivant : Respect des savoirs et des cultures autochtones. Respecter les systèmes de connaissances et les récits oraux dirigés par les Autochtones, et faire preuve de reconnaissance et de considération pour les protocoles, la gouvernance et les processus décisionnels autochtones, les cérémonies, les lois, la spiritualité, la langue et les valeurs. Souveraineté des données et de l'information : respecter la propriété et le contrôle des nations autochtones sur leurs données et leur information afin de protéger et d'autonomiser les communautés. Collaboration et relations : travailler à une compréhension mutuelle et favoriser de meilleures relations entre les nations et gouvernements autochtones. Intégrité et transparence : faire preuve d'intégrité et de transparence pour promouvoir l'équité et la confiance. Bien-être intergénérationnel : reconnaître l'importance du transfert des connaissances intergénérationnelles, en assurant l'accessibilité et la pertinence culturelle pour les jeunes et les générations futures. Faire valoir et soutenir la continuité de la sagesse autochtone concernant les effets cumulatifs et le bien-être intergénérationnel. Intendance environnementale : promouvoir des approches durables et holistiques qui protègent la terre, l'air, l'eau et les espèces. Intégrer les enseignements autochtones et les apprentissages tirés de la terre, et comprendre les rôles des Autochtones en tant que gardiens et intendants. Interconnexion : reconnaître et adopter l'interconnexion de tous les êtres vivants et écosystèmes, en tissant ensemble les connaissances autochtones et occidentales dans une approche holistique et inclusive.",
+                        "caption": "",
+                        "src": "images/Guiding Principles-v02.png"
+                    }
+                ],
+                [
+                    {
+                        "type": "quote",
+                        "quote": "Lorsque nous établissons des relations avec nos voisins, nous devons apprendre à vivre ensemble dans le respect et à nous efforcer de nous comprendre les uns les autres. On ne peut pas séparer le milieu aquatique du milieu terrestre - tout est interconnecté. La spiritualité et la science occidentale doivent être tissées ensemble pour produire un changement significatif et durable pour le bien commun.",
+                        "author": "Eddie Gardner",
+                        "role": "Aîné",
+                        "organization": "Première Nation de Skwah"
+                    }
+                ]   
             ]
         },
         {
