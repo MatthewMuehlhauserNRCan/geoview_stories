@@ -4,7 +4,8 @@ A React-based storytelling library for creating interactive stories with GeoView
 
 **📦 CDN Link:** `https://matthewmuehlhausernrcan.github.io/geoview_stories/geoview-story.js`  
 **🌐 Demo:** [https://matthewmuehlhausernrcan.github.io/geoview_stories/demo/](https://matthewmuehlhausernrcan.github.io/geoview_stories/demo/)  
-**📄 Template:** [demo/index.html](demo/index.html)
+**📄 Template:** [demo/index.html](demo/index.html)  
+**🛠️ Config Builder:** [editor/](editor/) - a visual editor with a live preview, for authoring a config without hand-writing JSON (see [editor/README.md](editor/README.md))
 
 ## Features
 
@@ -112,6 +113,8 @@ npm run deploy
 ```
 
 `deploy` publishes the current `dist/` folder to the `gh-pages` branch (via the `gh-pages` package) - run `build` first so it publishes a fresh bundle, since `deploy` on its own doesn't rebuild anything.
+
+To also include the [Config Builder](editor/) in the deployed site, see [DEPLOYMENT.md](DEPLOYMENT.md#including-the-config-builder) - it's a separate build step, in a specific order.
 
 ## GitHub Pages Deployment
 
@@ -228,6 +231,7 @@ See [public/docs/README.md](public/docs/README.md#auto-generated-toc--sections) 
 │   └── images/        # Story assets
 ├── dist/              # Built library (generated)
 │   └── geoview-story.js
+├── editor/            # Config builder - separate app/build, see editor/README.md
 ├── public/            # Static public files
 │   ├── index.html     # Library landing/documentation page
 │   └── docs/          # Full configuration reference (docsify)

@@ -11,6 +11,20 @@ npm run deploy
 
 `webpack.common.js`'s `CopyWebpackPlugin` already copies `demo/`, `public/index.html`, and `public/docs/` into `dist/` alongside the built `geoview-story.js` (see [webpack.common.js](webpack.common.js)) - so after `npm run build`, `dist/` *is* the complete site, laid out exactly as it needs to be served. `npm run deploy` (`gh-pages -d dist`) pushes that folder's contents to the repo's `gh-pages` branch, with GitHub Pages configured (**Settings → Pages → Source: Deploy from a branch → `gh-pages`**) to serve it directly from there - no separate build/artifact step on GitHub's side. Always run `build` first; `deploy` on its own just republishes whatever is currently in `dist/`.
 
+### Including the Config Builder
+
+The [editor/](editor/) config builder is a separate app (its own `package.json`/Vite build, never wired into the commands above) - if you want it included in the deployed site, build it too, **in this exact order**:
+
+```bash
+npm run build              # 1. Root project first - populates dist/
+cd editor
+npm run build               # 2. Builds the editor AND copies its output into ../dist/editor
+cd ..
+npm run deploy              # 3. Publishes dist/, now including dist/editor/
+```
+
+Order matters: the root webpack config has `output.clean: true`, so building root *after* the editor deletes `dist/editor/` again. See [editor/README.md](editor/README.md) for details on the editor itself.
+
 ## Deployment Structure
 
 After `npm run build`, `dist/` (and, after `npm run deploy`, the `gh-pages` branch) looks like:
@@ -20,11 +34,12 @@ dist/                       # = gh-pages branch root after deploy
 ├── geoview-story.js       # The library itself - what the CDN link points at
 ├── index.html             # Library landing/documentation page
 ├── docs/                  # Full configuration reference (docsify)
-└── demo/                  # Demo story, showing the library in use
-    ├── index.html
-    ├── index_dark.html    # Same demo config, dark theme via data-theme
-    ├── configs/           # Story configurations
-    └── images/
+├── demo/                  # Demo story, showing the library in use
+│   ├── index.html
+│   ├── index_dark.html    # Same demo config, dark theme via data-theme
+│   ├── configs/           # Story configurations
+│   └── images/
+└── editor/                # Config builder - only present if you also built editor/ (see above)
 ```
 
 ## Custom Domain (Optional)
@@ -50,8 +65,15 @@ If changes aren't reflected after `npm run deploy`:
 - Wait a few minutes for GitHub to rebuild
 - Check the repo's **Settings → Pages** to confirm the source is still set to the `gh-pages` branch
 
+### "Config Builder" Link Not Working
+
+- **Locally, via `npm run serve`**: expected - the root dev server can't run the editor's separate Vite dev pipeline. Use `cd editor && npm run dev` and go to `localhost:5173` directly instead. See [editor/README.md](editor/README.md).
+- **On the deployed site**: the editor wasn't built/copied in before the last deploy - see "Including the Config Builder" above.
+
+
 
 ## Local Development vs Production
 
 - **Local development**: Use `npm run serve` (webpack dev server with hot reload)
+- **Config builder development**: `cd editor && npm run dev` (separate Vite dev server, port 5173 - see [editor/README.md](editor/README.md))
 - **Publishing the demo site**: `npm run build && npm run deploy`

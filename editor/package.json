@@ -1,0 +1,29 @@
+{
+  "name": "geoview-stories-editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Standalone visual config builder + live preview for GeoView Story configs. Imports ../src directly but is otherwise fully decoupled from the main library's build/scripts.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/copy-to-site.cjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.1.1",
+    "@mui/material": "^9.1.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-markdown": "^9.0.1",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.6",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
+  }
+}
