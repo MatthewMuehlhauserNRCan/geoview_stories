@@ -1,118 +1,57 @@
-# GitHub Pages Setup Instructions
+# GitHub Pages Deployment
 
-This document explains how to set up GitHub Pages for your GeoView Story repository.
+This repo is a library - imported and used to build a GeoView Story, not an application in its own right. The GitHub Pages site built from it exists to distribute the package (the CDN-hosted `geoview-story.js`) and demonstrate it (the `demo/` story plus its config reference docs).
 
-## Automatic Deployment (Recommended)
-
-The repository is configured with GitHub Actions to automatically deploy to GitHub Pages when you push to the `main` branch.
-
-### First-Time Setup
-
-1. **Push your code to GitHub**
-   ```bash
-   git add .
-   git commit -m "Initial commit"
-   git push origin main
-   ```
-
-2. **Enable GitHub Pages**
-   - Go to your repository on GitHub
-   - Click **Settings** → **Pages**
-   - Under **Source**, select **GitHub Actions**
-   - The workflow will run automatically and deploy your site
-
-3. **Access your site**
-   - Your site will be available at: `https://[username].github.io/[repo-name]/`
-   - Demo: `https://[username].github.io/[repo-name]/demo/`
-
-### Manual Trigger
-
-You can also manually trigger the deployment:
-- Go to **Actions** tab in your GitHub repository
-- Click on **Deploy to GitHub Pages** workflow
-- Click **Run workflow** → **Run workflow**
-
-## Local Preview
-
-To preview the deployment locally before pushing:
+## Deploying
 
 ```bash
-npm run host
-```
-
-This will:
-1. Build the library (`npm run build`)
-2. Prepare the deployment folder (`npm run prepare-deploy`)
-3. Serve the deployment locally on http://localhost:3001
-
-### Manual Steps
-
-If you prefer to run each step individually:
-
-```bash
-# Build the library
 npm run build
-
-# Prepare deployment folder
-npm run prepare-deploy
-
-# Preview deployment
-npm run serve-deploy
+npm run deploy
 ```
+
+`webpack.common.js`'s `CopyWebpackPlugin` already copies `demo/`, `public/index.html`, and `public/docs/` into `dist/` alongside the built `geoview-story.js` (see [webpack.common.js](webpack.common.js)) - so after `npm run build`, `dist/` *is* the complete site, laid out exactly as it needs to be served. `npm run deploy` (`gh-pages -d dist`) pushes that folder's contents to the repo's `gh-pages` branch, with GitHub Pages configured (**Settings → Pages → Source: Deploy from a branch → `gh-pages`**) to serve it directly from there - no separate build/artifact step on GitHub's side. Always run `build` first; `deploy` on its own just republishes whatever is currently in `dist/`.
 
 ## Deployment Structure
 
-The deployed site has the following structure:
+After `npm run build`, `dist/` (and, after `npm run deploy`, the `gh-pages` branch) looks like:
 
 ```
-/                           # Root (documentation page)
-├── index.html             # Library documentation
+dist/                       # = gh-pages branch root after deploy
+├── geoview-story.js       # The library itself - what the CDN link points at
+├── index.html             # Library landing/documentation page
 ├── docs/                  # Full configuration reference (docsify)
-├── dist/                  # Built library files
-│   └── geoview-story.js  # Main library file
-└── demo/                  # Demo application
-    ├── index.html        # Demo page
-    ├── index_dark.html   # Same demo config, dark theme via data-theme
-    ├── configs/          # Story configurations
-    └── images/           # Demo assets
+└── demo/                  # Demo story, showing the library in use
+    ├── index.html
+    ├── index_dark.html    # Same demo config, dark theme via data-theme
+    ├── configs/           # Story configurations
+    └── images/
 ```
+
+## Custom Domain (Optional)
+
+To use a custom domain:
+1. Go to **Settings** → **Pages**
+2. Enter your custom domain under **Custom domain** - GitHub writes/maintains the `CNAME` file on the `gh-pages` branch for you from this setting, so it survives every future `npm run deploy`
+3. Add a CNAME record in your DNS settings pointing to `[username].github.io`
 
 ## Troubleshooting
-
-### Workflow Fails
-
-If the GitHub Actions workflow fails:
-- Check the **Actions** tab for error details
-- Ensure all dependencies are in `package.json`
-- Verify that `npm run build` works locally
 
 ### Demo Not Working
 
 If the demo doesn't work on GitHub Pages:
 - Verify paths in `demo/index.html` are correct
 - Check browser console for errors
-- Ensure `dist/geoview-story.js` exists
+- Ensure `dist/geoview-story.js` exists after `npm run build`
 
 ### Pages Not Updating
 
-If changes aren't reflected:
+If changes aren't reflected after `npm run deploy`:
 - Clear your browser cache
 - Wait a few minutes for GitHub to rebuild
-- Check the Actions tab to see if the workflow completed
+- Check the repo's **Settings → Pages** to confirm the source is still set to the `gh-pages` branch
 
-## Custom Domain (Optional)
-
-To use a custom domain:
-1. Go to **Settings** → **Pages**
-2. Enter your custom domain under **Custom domain**
-3. Add a CNAME record in your DNS settings pointing to `[username].github.io`
-4. Create a `CNAME` file in the `deploy/` folder with your domain name
-   ```bash
-   echo "yourdomain.com" > deploy/CNAME
-   ```
 
 ## Local Development vs Production
 
 - **Local development**: Use `npm run serve` (webpack dev server with hot reload)
-- **Production preview**: Use `npm run host` (simulates GitHub Pages deployment)
-- **Production deployment**: Push to `main` branch (automatic via GitHub Actions)
+- **Publishing the demo site**: `npm run build && npm run deploy`

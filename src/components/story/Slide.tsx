@@ -70,7 +70,7 @@ export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideI
                     // component - flex-grow/basis classes only mean anything on a direct flex child.
                     <Box
                       key={panelIndex}
-                      sx={getPanelSx(panel, hasTextAndImage, hasMultiplePanels, theme)}
+                      sx={getPanelSx(panel, hasTextAndImage, hasMultiplePanels)}
                       className={panel.cssClasses}
                     >
                       <PanelRenderer panel={panel} panelInstanceId={`${slideId}-row-${rowIndex}-panel-${panelIndex}`} />

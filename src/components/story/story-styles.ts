@@ -228,7 +228,7 @@ const TEXT_WIDTH_PAIRED_WITH_MEDIA = '33.333%'; // squeeze so the media column c
 const TEXT_WIDTH_STANDALONE = '50%'; // no media to make room for, so it can breathe more
 const QUOTE_WIDTH_STANDALONE = '66.666%'; // pull-quotes read better wide, but not full-bleed
 
-export const getPanelSx = (panel: Panel, hasTextAndImage: boolean, hasMultiplePanels: boolean, theme: Theme) => {
+export const getPanelSx = (panel: Panel, hasTextAndImage: boolean, hasMultiplePanels: boolean) => {
   const isTextPanel = panel.type === 'text';
   const isMediaPanel = ['image', 'map', 'video', 'slideshow'].includes(panel.type);
 

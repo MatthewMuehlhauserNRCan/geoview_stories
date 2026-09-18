@@ -104,24 +104,20 @@ npm run build
 
 Outputs `dist/geoview-story.js` - a bundled library ready for distribution.
 
-### Preview Deployment (like GeoView's "rush host")
+### Deploy
 
 ```bash
-npm run host
+npm run build
+npm run deploy
 ```
 
-This builds the library and serves it locally at `http://localhost:3001` in the same structure as GitHub Pages. Perfect for testing before deployment.
+`deploy` publishes the current `dist/` folder to the `gh-pages` branch (via the `gh-pages` package) - run `build` first so it publishes a fresh bundle, since `deploy` on its own doesn't rebuild anything.
 
 ## GitHub Pages Deployment
 
-This repository is configured for automatic deployment to GitHub Pages.
+This is a library - the GitHub Pages site built from this repo (the CDN-hosted `geoview-story.js`, its docs, and the `demo/` story) exists to demonstrate and distribute the package, not as a hosted application in its own right.
 
-### Quick Setup
-
-1. Push your code to GitHub
-2. Go to **Settings** → **Pages** → Set source to **GitHub Actions**
-3. Push to `main` branch triggers automatic deployment
-4. Your site will be at `https://[username].github.io/[repo-name]/`
+`npm run deploy` publishes it: `webpack.common.js` already copies `demo/`, `public/index.html`, and `public/docs/` into `dist/` alongside `geoview-story.js` (see [webpack.common.js](webpack.common.js)), so `dist/` after a build *is* the full site. `gh-pages -d dist` (what `deploy` runs) pushes that folder's contents to the `gh-pages` branch, which GitHub Pages serves directly - matching the CDN link at the top of this README.
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
 

@@ -1,20 +1,17 @@
 {
   "name": "geoview-stories",
   "version": "0.1.0",
-  "description": "Interactive storytelling application for GeoView maps",
+  "description": "Interactive storytelling library for GeoView maps",
   "private": true,
   "main": "src/index.tsx",
   "license": "MIT",
   "scripts": {
     "serve": "webpack serve --progress --color --config webpack.dev.js",
     "build": "webpack --progress --color --config webpack.prod.js",
-    "build-dev": "webpack --progress --color --config webpack.dev.js",
-    "host": "npm run build && npm run deploy",
-    "prepare-deploy": "node scripts/prepare-deploy.js",
-    "serve-deploy": "npx serve deploy -p 3001",
     "deploy": "gh-pages -d dist",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
-    "lint": "eslint src --ext .ts,.tsx"
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -35,6 +32,7 @@
     "copy-webpack-plugin": "^14.0.0",
     "css-loader": "^7.1.2",
     "eslint": "^9.0.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "fork-ts-checker-webpack-plugin": "^9.1.0",
     "gh-pages": "^6.3.0",
     "html-webpack-plugin": "^5.6.3",
@@ -49,7 +47,6 @@
     "webpack-merge": "^6.0.1"
   },
   "engines": {
-    "node": ">=20.11.0",
-    "pnpm": ">=8.15.0"
+    "node": ">=20.11.0"
   }
 }

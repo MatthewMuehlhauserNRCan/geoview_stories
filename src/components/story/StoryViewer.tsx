@@ -120,7 +120,7 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
   // Build TOC items (only meaningful once config has loaded). Derived straight from each slide's
   // own title/level (a document-outline-style auto TOC), unless a manual `tableOfContents`
   // overrides it - which can itself splice that auto tree back in via an `{ autoToc: true }` entry.
-  const tocItems: TocItem[] = useMemo(() => config ? resolveTableOfContents(config) : [], [config?.slides]);
+  const tocItems: TocItem[] = useMemo(() => config ? resolveTableOfContents(config) : [], [config]);
 
   return (
     <>

@@ -11,6 +11,12 @@ export const usePoiScrollObserver = (count: number, enabled: boolean, onActivate
   // Mirrors activePoiIndex for the observer callback, which reads it via ref (not the closured
   // state) so the observer never needs to be torn down and recreated when the active POI changes.
   const activePoiIndexRef = useRef<number | null>(null);
+  // Kept fresh every render (not a dependency of the effect below) so the observer-recreation
+  // effect only needs to depend on `enabled`/`count`, not a new function identity every render.
+  const onActivateRef = useRef(onActivate);
+  useEffect(() => {
+    onActivateRef.current = onActivate;
+  });
 
   useEffect(() => {
     if (!enabled || count === 0) return;
@@ -35,7 +41,7 @@ export const usePoiScrollObserver = (count: number, enabled: boolean, onActivate
             // (e.g. one POI exiting as another enters) sees the fresh value.
             activePoiIndexRef.current = index;
             setActivePoiIndex(index);
-            onActivate(index);
+            onActivateRef.current(index);
           }
         }
       });
