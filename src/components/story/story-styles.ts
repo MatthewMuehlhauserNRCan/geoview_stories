@@ -1,5 +1,5 @@
 import type { Theme } from '@mui/material/styles';
-import { HeadingStyle, Panel } from '@/types/StoryConfig';
+import { HeadingBorderStyle, HeadingStyle, HeadingUnderlineStyle, Panel } from '@/types/StoryConfig';
 
 // Slide vertical padding, in theme spacing units (top + bottom); kept as one
 // constant so the row/media height calcs below can never drift out of sync with it.
@@ -20,6 +20,44 @@ const resolveThemeColor = (theme: Theme, value: string): string => {
     if (result === undefined) return value;
   }
   return typeof result === 'string' ? result : value;
+};
+
+const toCssLength = (value: string | number | undefined, fallback: string): string =>
+  value === undefined ? fallback : typeof value === 'number' ? `${value}px` : value;
+
+const ALL_HEADING_SIDES: Array<'top' | 'right' | 'bottom' | 'left'> = ['top', 'right', 'bottom', 'left'];
+
+/** Longhand per-side border props (not a `border` shorthand string) so MUI's sx system can still
+ * resolve a theme token like 'divider' for color, and a partial `sides` list (e.g. just
+ * `['bottom']` for a simple rule under the title) only sets the sides actually wanted. */
+const getHeadingBorderSx = (border: boolean | HeadingBorderStyle | undefined) => {
+  const opts = typeof border === 'object' ? border : undefined;
+  const width = toCssLength(opts?.width, '1px');
+  const style = opts?.style || 'solid';
+  const color = opts?.color || 'divider';
+  const sides = opts?.sides || ALL_HEADING_SIDES;
+
+  const sx: Record<string, string> = {};
+  sides.forEach(side => {
+    const cap = side.charAt(0).toUpperCase() + side.slice(1);
+    sx[`border${cap}Width`] = width;
+    sx[`border${cap}Style`] = style;
+    sx[`border${cap}Color`] = color;
+  });
+
+  return { sx, sides, isFullBorder: sides.length === ALL_HEADING_SIDES.length };
+};
+
+/** `textDecoration*` props for a title's underline; color needs manual theme-token resolution
+ * since `textDecorationColor` isn't one of the props MUI's sx system resolves automatically. */
+const getHeadingUnderlineSx = (theme: Theme, underline: boolean | HeadingUnderlineStyle | undefined) => {
+  const opts = typeof underline === 'object' ? underline : undefined;
+  return {
+    textDecorationLine: 'underline',
+    textDecorationColor: resolveThemeColor(theme, opts?.color || 'currentColor'),
+    textDecorationThickness: toCssLength(opts?.thickness, '2px'),
+    textUnderlineOffset: toCssLength(opts?.offset, '4px'),
+  };
 };
 
 /** Shared sx classes for the story-level components (intro slide, slide layout, story viewer) */
@@ -51,7 +89,7 @@ export const getSxClasses = (theme: Theme) => ({
     // colors (WCAG) - a flat scrim alone can't cover every possible photo,
     // so it's paired with a text/icon shadow below for a local contrast halo.
     // Opacity is configurable per-story since how dark it needs to be depends on the image.
-    scrim: (opacity: number = 0.4) => ({
+    scrim: (opacity: number = 0.3) => ({
       position: 'absolute',
       inset: 0,
       backgroundColor: `rgba(0, 0, 0, ${opacity})`,
@@ -106,33 +144,8 @@ export const getSxClasses = (theme: Theme) => ({
     // margin when there are no panels below it - nothing to space the title away from.
     title: (style?: HeadingStyle, hasRows: boolean = true) => {
       const border = style?.border;
-      const borderWidth = typeof border === 'object' && border.width !== undefined
-        ? typeof border.width === 'number' ? `${border.width}px` : border.width
-        : '1px';
-      const borderStyleValue = (typeof border === 'object' && border.style) || 'solid';
-      // Longhand per-side props (not a `border` shorthand string) so MUI's sx system can still
-      // resolve a theme token like 'divider' for color, and so a partial `sides` list (e.g. just
-      // `['bottom']` for a simple rule under the title) only sets the sides actually wanted.
-      const borderColor = (typeof border === 'object' && border.color) || 'divider';
-      const allSides: Array<'top' | 'right' | 'bottom' | 'left'> = ['top', 'right', 'bottom', 'left'];
-      const borderSides = (typeof border === 'object' && border.sides) || allSides;
-      const isFullBorder = borderSides.length === allSides.length;
-      const borderSx: Record<string, string> = {};
-      borderSides.forEach(side => {
-        const cap = side.charAt(0).toUpperCase() + side.slice(1);
-        borderSx[`border${cap}Width`] = borderWidth;
-        borderSx[`border${cap}Style`] = borderStyleValue;
-        borderSx[`border${cap}Color`] = borderColor;
-      });
-
       const underline = style?.underline;
-      const underlineColor = resolveThemeColor(theme, (typeof underline === 'object' && underline.color) || 'currentColor');
-      const underlineThickness = typeof underline === 'object' && underline.thickness !== undefined
-        ? typeof underline.thickness === 'number' ? `${underline.thickness}px` : underline.thickness
-        : '2px';
-      const underlineOffset = typeof underline === 'object' && underline.offset !== undefined
-        ? typeof underline.offset === 'number' ? `${underline.offset}px` : underline.offset
-        : '4px';
+      const { sx: borderSx, sides: borderSides, isFullBorder } = getHeadingBorderSx(border);
 
       return {
         fontWeight: style?.fontWeight ?? 600,
@@ -146,12 +159,7 @@ export const getSxClasses = (theme: Theme) => ({
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }),
-        ...(underline && {
-          textDecorationLine: 'underline',
-          textDecorationColor: underlineColor,
-          textDecorationThickness: underlineThickness,
-          textUnderlineOffset: underlineOffset,
-        }),
+        ...(underline && getHeadingUnderlineSx(theme, underline)),
         ...(border && borderSx),
         // A full 4-side border gets the usual boxed-heading padding; a partial one (e.g.
         // bottom-only) just gets a little breathing room on the side(s) it's actually drawn on,

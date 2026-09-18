@@ -10,6 +10,7 @@ import { usePoiScrollObserver } from './poi/usePoiScrollObserver';
 import { zoomToPoiTarget } from './poi/poiZoom';
 import { getLayerLegendIconDataUrl } from './poi/legend-utils';
 import { PoiCard } from './poi/PoiCard';
+import { buildMapId } from './mapId';
 import '@/types/GeoView'; // Import GeoView global types
 
 interface ManualPoiMapPanelProps {
@@ -18,10 +19,7 @@ interface ManualPoiMapPanelProps {
 }
 
 export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, panelInstanceId }) => {
-  // Use stable ID based on config path. No hyphens: GeoView's legacy
-  // keyboard-focus code derives the map ID by splitting the shell element's
-  // DOM id on '-', so a hyphen here breaks it.
-  const mapId = `manualpoimap_${(panelInstanceId || 'panel').replace(/[^a-zA-Z0-9]/g, '_')}_${panel.config.replace(/[^a-zA-Z0-9]/g, '_')}`;
+  const mapId = buildMapId('manualpoimap', panelInstanceId, panel.config);
 
   const mapInstanceRef = useRef<any>(null);
   const featureDataRef = useRef<Map<number, { extent: Extent; fieldValue?: string; iconDataUrl?: string }>>(new Map());

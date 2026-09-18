@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { StoryController } from '@/core/controllers/StoryController';
+import { initStory } from '@/core/controllers/StoryController';
 
 /**
  * Hook to initialize story viewer using StoryController
@@ -18,8 +18,7 @@ export const useStoryInit = (configPath: string) => {
 
     if (!containerRef.current) return;
 
-    const controller = StoryController.getInstance();
-    controller.init(containerRef.current, configPath).catch(err => {
+    initStory(containerRef.current, configPath).catch(err => {
       console.error('[useStoryInit] Failed to initialize story:', err);
     });
   }, [configPath]);

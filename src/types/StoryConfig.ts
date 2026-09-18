@@ -12,7 +12,10 @@ export interface StoryConfig {
   tableOfContents?: TocItem[];
   tocOrientation?: 'vertical' | 'horizontal';
   tocHeading?: string; // TOC panel heading; default "Chapters" (e.g. "Chapitres" for a French story)
-  theme?: string | StoryThemeConfig; // Name of a built-in theme (e.g. 'light', 'dark'), or a custom theme definition
+  // Name of a built-in theme (e.g. 'light', 'dark'), or a custom theme definition. Can be
+  // overridden at the HTML level via a `data-theme` attribute on the story's container element,
+  // so multiple entry points can reuse one config file with different themes.
+  theme?: string | StoryThemeConfig;
   // Base title style applied to every slide, so a look (border/underline/alignment/etc.) doesn't
   // need repeating on each slide by hand. A slide's own `titleStyle` is shallow-merged on top -
   // each field it sets wins over this default; set a field to `false`/omit it to fall back here.
@@ -101,7 +104,11 @@ export interface Slide {
   // A flat array is one row (panels laid out side by side on desktop, stacked on mobile - the
   // usual case). Use an array of arrays to stack several such rows vertically under this same
   // slide/title instead of starting a new slide just to get a second title-less row of panels.
+  // e.g. one row:  "panel": [ {...}, {...} ]
+  //     two rows:  "panel": [ [ {...}, {...} ], [ {...} ] ]
   panel: Panel[] | Panel[][];
+  // Omitting an entry from the TOC also means it can't become the "section" that later level 2-4
+  // slides nest under (see Slide.level) - they fall back to their own top-level TOC entries instead.
   includeInToc?: boolean;
 }
 
@@ -141,13 +148,13 @@ export interface ImagePanel extends BasePanel {
 
 export interface MapPanel extends BasePanel {
   type: 'map';
-  config: string; // Path to map config or inline config
+  config: string; // Path to a GeoView map config JSON file (fetched at runtime, not inline JSON)
   scrollguard?: boolean;
 }
 
 export interface ManualPoiMapPanel extends BasePanel {
   type: 'manual-poi-map';
-  config: string;
+  config: string; // Path to a GeoView map config JSON file (fetched at runtime, not inline JSON)
   points: PointOfInterest[];
   linkLabel?: string; // Default link button label for points that don't set their own; defaults to "Learn more"
   duration?: number;
@@ -158,7 +165,7 @@ export interface ManualPoiMapPanel extends BasePanel {
 
 export interface AutoPoiMapPanel extends BasePanel {
   type: 'auto-poi-map';
-  config: string;
+  config: string; // Path to a GeoView map config JSON file (fetched at runtime, not inline JSON)
   layerId: string; // Layer whose features each become one POI
   titleField?: string; // Feature attribute -> card title; missing/empty -> no title rendered
   textField?: string; // Feature attribute -> card body text
@@ -192,6 +199,16 @@ export interface PoiFilterGroup {
   not?: PoiFilter;
 }
 
+// e.g. only active features in one of two provinces:
+//   {
+//     "all": [
+//       { "field": "STATUS", "operator": "equals", "value": "active" },
+//       { "any": [
+//         { "field": "PROVINCE", "operator": "equals", "value": "ON" },
+//         { "field": "PROVINCE", "operator": "equals", "value": "QC" }
+//       ] }
+//     ]
+//   }
 export type PoiFilter = PoiFilterCondition | PoiFilterGroup;
 
 export interface PointOfInterest {

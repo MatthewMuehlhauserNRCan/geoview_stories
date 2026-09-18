@@ -9,9 +9,9 @@ import { useMapLifecycle } from './hooks/useMapLifecycle';
 import { usePreserveScrollOnGrowth } from './hooks/usePreserveScrollOnGrowth';
 import { usePoiScrollObserver } from './poi/usePoiScrollObserver';
 import { zoomToPoiTarget } from './poi/poiZoom';
-import { getLayerLegendIconDataUrl } from './poi/legend-utils';
-import { evaluatePoiFilter } from './poi/poiFilter';
 import { PoiCard } from './poi/PoiCard';
+import { buildMapId } from './mapId';
+import { buildPoisFromLayer, ResolvedPoi } from './poi/buildPoisFromLayer';
 import '@/types/GeoView'; // Import GeoView global types
 
 interface AutoPoiMapPanelProps {
@@ -19,27 +19,8 @@ interface AutoPoiMapPanelProps {
   panelInstanceId?: string;
 }
 
-interface ResolvedPoi {
-  title?: string;
-  text?: string;
-  images?: string[]; // Parsed from imageField, which may hold several semicolon-separated URLs
-  linkUrl?: string;
-  iconDataUrl?: string; // This feature's own rendered style swatch, not a single shared layer icon
-  extent: Extent;
-  sortValue?: string | number;
-}
-
-// A feature's imageField value may hold multiple photos separated by ';' (e.g. "a.jpg;b.jpg")
-const parseImageField = (raw: unknown): string[] | undefined => {
-  if (typeof raw !== 'string' || !raw.trim()) return undefined;
-  const urls = raw.split(';').map((url) => url.trim()).filter(Boolean);
-  return urls.length > 0 ? urls : undefined;
-};
-
 export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelInstanceId }) => {
-  // No hyphens: GeoView's legacy keyboard-focus code derives the map ID by
-  // splitting the shell element's DOM id on '-', so a hyphen here breaks it.
-  const mapId = `autopoimap_${(panelInstanceId || 'panel').replace(/[^a-zA-Z0-9]/g, '_')}_${panel.config.replace(/[^a-zA-Z0-9]/g, '_')}`;
+  const mapId = buildMapId('autopoimap', panelInstanceId, panel.config);
 
   const mapInstanceRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -86,53 +67,7 @@ export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelIn
           console.warn('[AutoPoiMap] Layer loading timeout or error:', err);
         }
 
-        const layer = mapViewer.controllers.layerController.getGeoviewLayer(panel.layerId);
-        if (!layer) {
-          setFetchError(`Layer not found: ${panel.layerId}`);
-          return;
-        }
-
-        // triggerGetAllFeatureInfo (rather than reading the OL source directly) gives each feature
-        // its own rendered featureIcon, which correctly varies per uniqueValue/classBreaks style class -
-        // a single shared layer legend icon can't do that.
-        const { results } = await mapViewer.controllers.layerSetController.triggerGetAllFeatureInfo(panel.layerId, true);
-
-        // Fallback only for features triggerGetAllFeatureInfo couldn't style (e.g. no matching class)
-        const fallbackIconDataUrl = getLayerLegendIconDataUrl(layer);
-
-        const resolved: ResolvedPoi[] = [];
-        for (const entry of results) {
-          if (!entry.extent) continue;
-
-          const values: Record<string, unknown> = {};
-          for (const [fieldName, field] of Object.entries(entry.fieldInfo)) {
-            values[fieldName] = field?.value;
-          }
-
-          if (panel.filter && !evaluatePoiFilter(values, panel.filter)) continue;
-
-          resolved.push({
-            title: panel.titleField ? (values[panel.titleField] as string | undefined) : undefined,
-            text: panel.textField ? (values[panel.textField] as string | undefined) : undefined,
-            images: panel.imageField ? parseImageField(values[panel.imageField]) : undefined,
-            linkUrl: panel.linkField ? (values[panel.linkField] as string | undefined) : undefined,
-            iconDataUrl: entry.featureIcon ?? fallbackIconDataUrl,
-            extent: entry.extent,
-            sortValue: panel.sortField ? (values[panel.sortField] as string | number | undefined) : undefined,
-          });
-        }
-
-        if (panel.sortField) {
-          const direction = panel.sortDirection === 'desc' ? -1 : 1;
-          resolved.sort((a, b) => {
-            if (a.sortValue === undefined || b.sortValue === undefined) return 0;
-            if (a.sortValue < b.sortValue) return -1 * direction;
-            if (a.sortValue > b.sortValue) return 1 * direction;
-            return 0;
-          });
-        }
-
-        setPois(resolved);
+        setPois(await buildPoisFromLayer(mapViewer, panel));
       } catch (err) {
         console.error('[AutoPoiMap] Error building POIs from features:', err);
         setFetchError(err instanceof Error ? err.message : String(err));

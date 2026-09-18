@@ -44,22 +44,22 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
   // Subscribe to store for config and loading state
   const { config, loading, error } = useStoryStore();
 
-  const slideRefs = useRef<React.RefObject<HTMLElement | null>[]>([]);
   const scrollToSlide = useScrollToSlide(64);
   const [tocCollapsed, setTocCollapsed] = React.useState(false);
 
   const isHorizontalToc = config?.tocOrientation === 'horizontal' && isDesktop;
 
   // Generate slide IDs and refs
-  const slideIds = config?.slides.map((slide, index) => generateSlideId(index, slide.title, slide.id)) || [];
-  
-  useEffect(() => {
-    if (config) {
-      slideRefs.current = config.slides.map(() => React.createRef<HTMLElement | null>());
-    }
-  }, [config]);
+  const slideIds = useMemo(() => {
+    return config?.slides.map((slide, index) => generateSlideId(index, slide.title, slide.id)) || [];
+  }, [config?.slides]);
 
-  const activeIndex = useScrollSpy(slideRefs.current, slideIds, !loading);
+  // Built in the same render pass as the JSX that assigns these refs to each Slide (not in a
+  // useEffect) - otherwise the refs a Slide actually mounts with are always one render stale,
+  // since an effect-based reassignment only lands after that render's commit already happened.
+  const slideRefs = useMemo(() => slideIds.map(() => React.createRef<HTMLElement | null>()), [slideIds]);
+
+  const activeIndex = useScrollSpy(slideRefs, slideIds, !loading);
 
   // The browser's native "scroll to #hash on load" races the async config
   // fetch/render - slides don't exist in the DOM yet when it fires, so it
@@ -120,7 +120,7 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
   // Build TOC items (only meaningful once config has loaded). Derived straight from each slide's
   // own title/level (a document-outline-style auto TOC), unless a manual `tableOfContents`
   // overrides it - which can itself splice that auto tree back in via an `{ autoToc: true }` entry.
-  const tocItems: TocItem[] = config ? resolveTableOfContents(config) : [];
+  const tocItems: TocItem[] = useMemo(() => config ? resolveTableOfContents(config) : [], [config?.slides]);
 
   return (
     <>
@@ -172,7 +172,7 @@ const StoryViewerContent: React.FC<StoryViewerProps> = ({ configPath }) => {
               {config.slides.map((slide, index) => (
                 <Slide
                   key={index}
-                  ref={slideRefs.current[index]}
+                  ref={slideRefs[index]}
                   slide={slide}
                   slideId={slideIds[index]}
                   index={index}
