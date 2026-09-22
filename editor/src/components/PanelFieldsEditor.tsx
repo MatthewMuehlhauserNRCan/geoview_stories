@@ -10,6 +10,8 @@ import type {
   SlideshowItem,
 } from '@/types/StoryConfig';
 import type { DraftPanel } from '../state/editorModel';
+import { saveAsset } from '../state/assetStore';
+import { AssetField } from './AssetField';
 
 interface PanelFieldsProps {
   panel: DraftPanel;
@@ -101,14 +103,19 @@ export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange 
       return (
         <Stack gap={1.5}>
           <Field label="Content (Markdown)" value={panel.content} multiline onChange={(v) => onChange({ content: v })} />
-          <Field label="Content file path (overrides content if set)" value={panel.contentFile} onChange={(v) => onChange({ contentFile: v || undefined })} />
+          <AssetField
+            label="Content file (overrides content above if set)"
+            value={panel.contentFile}
+            onChange={(v) => onChange({ contentFile: v })}
+            accept=".md,.markdown,text/markdown"
+          />
         </Stack>
       );
 
     case 'image':
       return (
         <Stack gap={1.5}>
-          <Field label="Image src" value={panel.src} onChange={(v) => onChange({ src: v })} />
+          <AssetField label="Image" value={panel.src} onChange={(v) => onChange({ src: v ?? '' })} accept="image/*" />
           <Field label="Alt text" value={panel.altText} onChange={(v) => onChange({ altText: v })} />
           <Field label="Caption" value={panel.caption} onChange={(v) => onChange({ caption: v })} />
           <BoolField label="Fullscreen on click (default on)" value={panel.fullscreen ?? true} onChange={(v) => onChange({ fullscreen: v })} />
@@ -130,7 +137,11 @@ export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange 
             <MenuItem value="local">Local video file</MenuItem>
             <MenuItem value="external">External video file URL</MenuItem>
           </TextField>
-          <Field label="Src / embed URL" value={panel.src} onChange={(v) => onChange({ src: v })} />
+          {panel.videoType === 'local' ? (
+            <AssetField label="Video file" value={panel.src} onChange={(v) => onChange({ src: v ?? '' })} accept="video/*" />
+          ) : (
+            <Field label="Src / embed URL" value={panel.src} onChange={(v) => onChange({ src: v })} />
+          )}
           <Field label="Caption track src" value={panel.caption} onChange={(v) => onChange({ caption: v })} />
           <Field label="Transcript link" value={panel.transcript} onChange={(v) => onChange({ transcript: v })} />
           <Field label="Width" value={panel.width} onChange={(v) => onChange({ width: v })} />
@@ -142,11 +153,13 @@ export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange 
     case 'map':
       return (
         <Stack gap={1.5}>
-          <Field
-            label="Map config path"
+          <AssetField
+            kind="mapconfig"
+            label="Map config"
             value={panel.config}
-            onChange={(v) => onChange({ config: v })}
-            helperText="Path to a GeoView map config JSON - leave as a placeholder until one exists; this map will just show its own loading state until then."
+            onChange={(v) => onChange({ config: v ?? '' })}
+            accept="application/json,.json"
+            helperText="Path to a GeoView map config JSON, or attach the file to keep track of it - either way, this map just shows its own loading state in the preview until a real, reachable config exists."
           />
           <BoolField label="Scroll guard (Ctrl/Cmd + scroll to zoom)" value={panel.scrollguard} onChange={(v) => onChange({ scrollguard: v })} />
         </Stack>
@@ -155,7 +168,14 @@ export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange 
     case 'manual-poi-map':
       return (
         <Stack gap={1.5}>
-          <Field label="Map config path" value={panel.config} onChange={(v) => onChange({ config: v })} helperText="Placeholder is fine for now." />
+          <AssetField
+            kind="mapconfig"
+            label="Map config"
+            value={panel.config}
+            onChange={(v) => onChange({ config: v ?? '' })}
+            accept="application/json,.json"
+            helperText="Attach the file to keep track of it - it won't load in the preview until deployed with a real, reachable path."
+          />
           <Field label="Default link label" value={panel.linkLabel} onChange={(v) => onChange({ linkLabel: v })} />
           <Field label="Zoom duration (ms)" type="number" value={panel.duration} onChange={(v) => onChange({ duration: v ? Number(v) : undefined })} />
           <TextField
@@ -179,11 +199,33 @@ export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange 
               <Stack gap={1}>
                 <Field label="Title" value={point.title} onChange={(v) => update({ title: v })} />
                 <Field label="Text" value={point.text} onChange={(v) => update({ text: v })} multiline />
-                <Field
-                  label="Image (single URL, or comma-separated for a gallery)"
-                  value={Array.isArray(point.image) ? point.image.join(',') : point.image}
-                  onChange={(v) => update({ image: v.includes(',') ? v.split(',').map((s) => s.trim()) : v })}
-                />
+                <Stack direction="row" gap={1} alignItems="flex-end">
+                  <Field
+                    label="Image (single URL, or comma-separated for a gallery)"
+                    value={Array.isArray(point.image) ? point.image.join(',') : point.image}
+                    onChange={(v) => update({ image: v.includes(',') ? v.split(',').map((s) => s.trim()) : v })}
+                  />
+                  <Button
+                    size="small"
+                    component="label"
+                    sx={{ flexShrink: 0, mb: 0.5 }}
+                  >
+                    Upload
+                    <input
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        e.target.value = '';
+                        if (!file) return;
+                        const ref = `asset:${await saveAsset(file)}`;
+                        const existing = point.image ? (Array.isArray(point.image) ? point.image : [point.image]) : [];
+                        update({ image: [...existing, ref] });
+                      }}
+                    />
+                  </Button>
+                </Stack>
                 <Field label="Link URL" value={point.linkUrl} onChange={(v) => update({ linkUrl: v })} />
                 <Field label="Target layer id" value={point.target.layerId} onChange={(v) => update({ target: { ...point.target, layerId: v } })} />
                 <Field label="Target OID" value={point.target.oid} onChange={(v) => update({ target: { ...point.target, oid: v } })} />
@@ -208,7 +250,14 @@ export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange 
     case 'auto-poi-map':
       return (
         <Stack gap={1.5}>
-          <Field label="Map config path" value={panel.config} onChange={(v) => onChange({ config: v })} helperText="Placeholder is fine for now." />
+          <AssetField
+            kind="mapconfig"
+            label="Map config"
+            value={panel.config}
+            onChange={(v) => onChange({ config: v ?? '' })}
+            accept="application/json,.json"
+            helperText="Attach the file to keep track of it - it won't load in the preview until deployed with a real, reachable path."
+          />
           <Field label="Layer id" value={panel.layerId} onChange={(v) => onChange({ layerId: v })} />
           <Field label="Title field" value={panel.titleField} onChange={(v) => onChange({ titleField: v })} />
           <Field label="Text field" value={panel.textField} onChange={(v) => onChange({ textField: v })} />
@@ -282,7 +331,7 @@ export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange 
             createItem={() => ({ src: '' })}
             renderItem={(item, _i, update) => (
               <Stack gap={1}>
-                <Field label="Src" value={item.src} onChange={(v) => update({ src: v })} />
+                <AssetField label="Image" value={item.src} onChange={(v) => update({ src: v ?? '' })} accept="image/*" />
                 <Field label="Alt text" value={item.altText} onChange={(v) => update({ altText: v })} />
                 <Field label="Overlay text" value={item.text} onChange={(v) => update({ text: v })} multiline />
                 <TextField

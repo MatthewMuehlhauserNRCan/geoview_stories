@@ -21,7 +21,7 @@ interface ManualPoiMapPanelProps {
 export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, panelInstanceId }) => {
   const mapId = buildMapId('manualpoimap', panelInstanceId, panel.config);
 
-  const mapInstanceRef = useRef<any>(null);
+  const mapInstanceRef = useRef<GeoviewMapViewer>(null);
   const featureDataRef = useRef<Map<number, { extent: Extent; fieldValue?: string; iconDataUrl?: string }>>(new Map());
   // Mutating featureDataRef alone doesn't trigger a re-render; bump this after
   // populating it so the POI cards actually pick up the fetched field values/icons.
