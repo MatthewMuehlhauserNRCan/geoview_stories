@@ -37,7 +37,10 @@ module.exports = {
   output: {
     filename: 'geoview-story.js',
     path: path.resolve(__dirname, 'dist'),
-    clean: true,
+    // editor/ isn't a webpack output - it's copied in separately by `editor`'s own build (see
+    // editor/scripts/copy-to-site.cjs) - a plain `clean: true` would wipe it on every webpack
+    // rebuild (including `npm run serve`), since webpack has no idea it's meant to be kept.
+    clean: { keep: /^editor\// },
     library: {
       name: 'geoviewStory',
       type: 'umd',

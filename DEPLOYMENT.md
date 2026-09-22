@@ -23,7 +23,7 @@ cd ..
 npm run deploy              # 3. Publishes dist/, now including dist/editor/
 ```
 
-Order matters: the root webpack config has `output.clean: true`, so building root *after* the editor deletes `dist/editor/` again. See [editor/README.md](editor/README.md) for details on the editor itself.
+Build root first so `../dist` exists for the editor's build to copy into (its build script checks for this and fails loudly rather than silently doing nothing). After that, `dist/editor/` survives any further root rebuilds - `webpack.common.js`'s `output.clean` explicitly excludes `editor/` (`clean: { keep: /^editor\// }`) precisely because a plain `clean: true` would otherwise wipe it on every subsequent `npm run build` *or* `npm run serve` (the dev server also recompiles - and cleans - on startup). Re-run the editor's own `npm run build` any time you change the editor itself; a root rebuild alone won't touch it either way. See [editor/README.md](editor/README.md) for details on the editor itself.
 
 ## Deployment Structure
 
@@ -67,7 +67,7 @@ If changes aren't reflected after `npm run deploy`:
 
 ### "Config Builder" Link Not Working
 
-- **Locally, via `npm run serve`**: expected - the root dev server can't run the editor's separate Vite dev pipeline. Use `cd editor && npm run dev` and go to `localhost:5173` directly instead. See [editor/README.md](editor/README.md).
+- **Locally, via `npm run serve`**: expected, and not fixable by building the editor - the dev server serves the whole repo root as static files, so it always serves the raw, uncompiled `editor/index.html` straight off disk rather than the built `dist/editor/` (a different URL entirely). Use `cd editor && npm run dev` and go to `localhost:5173` directly instead, or serve `dist/` itself as a plain static site (e.g. `npx serve dist`) to test the real built link. See [editor/README.md](editor/README.md).
 - **On the deployed site**: the editor wasn't built/copied in before the last deploy - see "Including the Config Builder" above.
 
 

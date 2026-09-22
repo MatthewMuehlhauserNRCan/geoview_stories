@@ -6,9 +6,11 @@ import path from 'path';
 // setters) for real, but has its own build/dev server entirely decoupled from the root
 // package.json/webpack config, per project convention: this tool must not require touching those.
 export default defineConfig(({ command }) => ({
-  // Deployed alongside the main site at .../geoview_stories/editor/ (see webpack.prod.js's own
-  // matching publicPath) - only for the production build; the dev server still serves from root.
-  base: command === 'build' ? '/geoview_stories/editor/' : '/',
+  // Relative, not a hardcoded absolute path - the editor's own index.html/preview.html always
+  // load their own assets from wherever THEY are served, whether that's the real GitHub Pages
+  // path (.../geoview_stories/editor/), a local test folder, or anywhere else. An absolute base
+  // would only resolve correctly at one specific deployed path, breaking every other case.
+  base: command === 'build' ? './' : '/',
   plugins: [react()],
   resolve: {
     alias: {
