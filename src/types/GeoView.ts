@@ -31,6 +31,10 @@ declare global {
     // OpenLayers View; only what we need to cancel an in-progress fit/animate
     // before starting a new one, so back-to-back zoom requests don't fight each other.
     getView: () => { cancelAnimations: () => void };
+    // Zooms to a coordinate ([lon, lat]) or extent ([minLon, minLat, maxLon, maxLat]) given in
+    // plain lon/lat regardless of the map's own projection - GeoView reprojects internally, so
+    // callers (e.g. Interaction execution) never need to know/convert to the map's native CRS.
+    zoomToLonLatExtentOrCoordinate: (extentOrCoordinate: Extent | Coordinate, useAnimation?: boolean, options?: FitOptions) => Promise<void>;
     controllers: {
         mapController: {
             zoomToInitialExtent: () => Promise<void>;
@@ -50,6 +54,11 @@ declare global {
     };
     layer: {
         waitForLayersLoaded: () => Promise<number>;
+        // Sets (or, if `newValue` omitted, toggles) a layer's visibility; returns the resulting state.
+        setOrToggleLayerVisibility: (layerPath: string, newValue?: boolean) => boolean;
+        // Adds a GeoView layer to the map at runtime from a TypeGeoviewLayerConfig-shaped object.
+        addGeoviewLayer: (geoviewLayerConfig: Record<string, unknown>) => unknown;
+        zoomToLayerExtent: (layerPath: string, useAnimation?: boolean, fitOptions?: FitOptions) => Promise<void>;
     };
     delete: () => Promise<void>;
     waitForMapReady: () => Promise<void>;
@@ -93,9 +102,9 @@ declare global {
   type Coordinate = [number, number]; // [x, y]
 
   type FitOptions = {
-    padding: [number, number, number, number],
-    maxZoom: number,
-    duration: number,
+    padding?: [number, number, number, number],
+    maxZoom?: number,
+    duration?: number,
   };
 
 

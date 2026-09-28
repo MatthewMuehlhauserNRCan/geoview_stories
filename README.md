@@ -18,7 +18,9 @@ A React-based storytelling library for creating interactive stories with GeoView
 - 🎭 **Background images** - Full-page backgrounds with smooth crossfade transitions
 - 🖼️ **Image galleries** - Carousel with optional side-positioned captions and a full-screen lightbox
 - 📍 **Point of interest navigation** - Automatic map zooming/panning on scroll, by scale or explicit zoom level
-- 🧭 **Configurable table of contents** - Auto-derived from slides by default, or an explicit override with grouped sub-items and links to other pages (e.g. a language switcher)
+- � **Composable layouts** - `group` panels nest other panels (e.g. a map beside a column of text and buttons) for slide layouts beyond a single row
+- 🖱️ **Map interactions** - named, reusable map actions (zoom to an extent/point/feature, toggle a layer, add a layer, and more) triggered from buttons or inline text links
+- �🧭 **Configurable table of contents** - Auto-derived from slides by default, or an explicit override with grouped sub-items and links to other pages (e.g. a language switcher)
 - ♿ **Accessibility** - Keyboard-navigable focus management, ARIA labeling, and WCAG-conscious layout choices throughout
 
 ## Quick Start

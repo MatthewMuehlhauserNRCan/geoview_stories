@@ -2,6 +2,7 @@ import React from 'react';
 import { MenuItem, TextField, Typography } from '@mui/material';
 import { Stack } from './ui/Stack';
 import type { DraftConfig } from '../state/editorModel';
+import { InteractionsEditor } from './InteractionsEditor';
 
 interface TopLevelEditorProps {
   config: DraftConfig;
@@ -88,6 +89,8 @@ export const TopLevelEditor: React.FC<TopLevelEditorProps> = ({ config, onChange
           />
         </>
       )}
+
+      <InteractionsEditor interactions={config.interactions} onChange={(interactions) => onChange({ interactions })} />
     </Stack>
   );
 };

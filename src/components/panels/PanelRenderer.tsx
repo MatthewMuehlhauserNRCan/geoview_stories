@@ -10,6 +10,7 @@ import { QuotePanel } from './QuotePanel/QuotePanel';
 import { SlideshowPanel } from './SlideshowPanel/SlideshowPanel';
 import { DoormatPanel } from './DoormatPanel/DoormatPanel';
 import { GroupPanel } from './GroupPanel/GroupPanel';
+import { ButtonGroupPanel } from './ButtonGroupPanel/ButtonGroupPanel';
 import { Box, Typography } from '@mui/material';
 import { getSxClasses } from './PanelRenderer-style';
 
@@ -42,6 +43,8 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstan
       return <DoormatPanel panel={panel} />;
     case 'group':
       return <GroupPanel panel={panel} panelInstanceId={panelInstanceId} />;
+    case 'button-group':
+      return <ButtonGroupPanel panel={panel} />;
     default:
       return (
         <Box sx={classes.errorPlaceholder}>

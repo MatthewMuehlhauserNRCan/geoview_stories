@@ -5,6 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type {
   DoormatItem,
+  InteractionButton,
   ManualPoiMapPanel,
   PointOfInterest,
   SlideshowItem,
@@ -384,6 +385,56 @@ export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange,
           </Typography>
           <RowsEditor slideIndex={slideIndex} groupPath={groupPath} rows={panel.rows} actions={actions} />
         </Box>
+      );
+
+    case 'button-group':
+      return (
+        <Stack gap={1.5}>
+          <TextField
+            select
+            label="Direction"
+            value={panel.direction ?? 'row'}
+            onChange={(e) => onChange({ direction: e.target.value as 'row' | 'column' })}
+            size="small"
+            fullWidth
+          >
+            <MenuItem value="row">Row</MenuItem>
+            <MenuItem value="column">Column</MenuItem>
+          </TextField>
+          <RepeatableList<InteractionButton>
+            label="Buttons"
+            items={panel.buttons}
+            onChange={(buttons) => onChange({ buttons })}
+            createItem={() => ({ label: 'New button', interactionId: '' })}
+            renderItem={(item, _i, update) => (
+              <Stack gap={1}>
+                <Field label="Label" value={item.label} onChange={(v) => update({ label: v })} />
+                <Field
+                  label="Interaction id"
+                  value={item.interactionId}
+                  onChange={(v) => update({ interactionId: v })}
+                  helperText={
+                    actions.config.interactions?.length
+                      ? `Available: ${actions.config.interactions.map((i) => i.id).join(', ')}`
+                      : 'No interactions configured yet - add one in Story settings.'
+                  }
+                />
+                <TextField
+                  select
+                  label="Variant"
+                  value={item.variant ?? 'contained'}
+                  onChange={(e) => update({ variant: e.target.value as InteractionButton['variant'] })}
+                  size="small"
+                  fullWidth
+                >
+                  <MenuItem value="contained">Contained</MenuItem>
+                  <MenuItem value="outlined">Outlined</MenuItem>
+                  <MenuItem value="text">Text</MenuItem>
+                </TextField>
+              </Stack>
+            )}
+          />
+        </Stack>
       );
   }
 };

@@ -20,6 +20,9 @@ export interface StoryConfig {
   // need repeating on each slide by hand. A slide's own `titleStyle` is shallow-merged on top -
   // each field it sets wins over this default; set a field to `false`/omit it to fall back here.
   defaultTitleStyle?: HeadingStyle;
+  // Named, reusable map actions triggered from ButtonGroupPanel buttons or `#interaction:<id>`
+  // text links anywhere in the story (see Interaction below).
+  interactions?: Interaction[];
 }
 
 export interface StoryThemeConfig {
@@ -113,7 +116,7 @@ export interface Slide {
 }
 
 export interface BasePanel {
-  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'manual-poi-map' | 'auto-poi-map' | 'quote' | 'doormat' | 'group';
+  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'manual-poi-map' | 'auto-poi-map' | 'quote' | 'doormat' | 'group' | 'button-group';
   // Optional utility class(es) from src/styles/panels.css (e.g. "narrow right-align") for
   // width/alignment overrides - works on every panel type, not just text.
   cssClasses?: string;
@@ -160,6 +163,10 @@ export interface MapPanel extends BasePanel {
   type: 'map';
   config: string; // Path to a GeoView map config JSON file (fetched at runtime, not inline JSON)
   scrollguard?: boolean;
+  // Stable, author-chosen name for this map panel, referenced by Interaction.mapId (see
+  // `interactions` below) - the real GeoView mapId is auto-generated per panel instance and isn't
+  // predictable/authorable, so this is the only way to target a specific map from an interaction.
+  id?: string;
 }
 
 export interface ManualPoiMapPanel extends BasePanel {
@@ -171,6 +178,8 @@ export interface ManualPoiMapPanel extends BasePanel {
   scrollguard?: boolean;
   // Which side the sticky map sits on, with the POI list on the other side; default 'left'.
   mapPosition?: 'left' | 'right';
+  // Stable, author-chosen name for this map panel, referenced by Interaction.mapId (see MapPanel.id).
+  id?: string;
 }
 
 export interface AutoPoiMapPanel extends BasePanel {
@@ -192,6 +201,8 @@ export interface AutoPoiMapPanel extends BasePanel {
   scrollguard?: boolean;
   // Which side the sticky map sits on, with the POI list on the other side; default 'left'.
   mapPosition?: 'left' | 'right';
+  // Stable, author-chosen name for this map panel, referenced by Interaction.mapId (see MapPanel.id).
+  id?: string;
 }
 
 export type PoiFilterOperator = 'equals' | 'notEquals' | 'contains' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'isNull' | 'isNotNull';
@@ -275,6 +286,18 @@ export interface QuotePanelConfig extends BasePanel {
   organization?: string;
 }
 
+export interface InteractionButton {
+  label: string;
+  interactionId: string; // References Interaction.id (see `interactions` on StoryConfig)
+  variant?: 'contained' | 'outlined' | 'text'; // MUI button variant; default 'contained'
+}
+
+export interface ButtonGroupPanel extends BasePanel {
+  type: 'button-group';
+  buttons: InteractionButton[];
+  direction?: 'row' | 'column'; // Layout of the buttons themselves; default 'row'
+}
+
 export type Panel =
   | TextPanel
   | ImagePanel
@@ -285,7 +308,8 @@ export type Panel =
   | SlideshowPanel
   | QuotePanelConfig
   | DoormatPanel
-  | GroupPanel;
+  | GroupPanel
+  | ButtonGroupPanel;
 
 export interface TocItem {
   // Required unless `autoToc` is set.
@@ -304,3 +328,67 @@ export interface TocItem {
   // language groups) with this story's own real heading-based navigation.
   autoToc?: boolean;
 }
+
+interface BaseInteraction {
+  id: string; // Referenced by InteractionButton.interactionId and text links (`#interaction:<id>`)
+  // The target MapPanel/ManualPoiMapPanel/AutoPoiMapPanel's own `id` field - NOT the real GeoView
+  // mapId (which is auto-generated per panel instance and can't be authored/predicted).
+  mapId: string;
+}
+
+export interface ZoomToExtentInteraction extends BaseInteraction {
+  type: 'zoom-to-extent';
+  extent: [number, number, number, number]; // [minLon, minLat, maxLon, maxLat] - always lon/lat, regardless of the map's own projection
+  zoom?: number; // Caps how far in the zoom is allowed to go when fitting the extent
+  duration?: number; // Animation duration in ms; default 500
+}
+
+export interface ZoomToPointInteraction extends BaseInteraction {
+  type: 'zoom-to-point';
+  center: [number, number]; // [lon, lat]
+  zoom?: number;
+  duration?: number; // default 500
+}
+
+export interface ZoomToFeatureInteraction extends BaseInteraction {
+  type: 'zoom-to-feature';
+  layerId: string; // Format: 'geoviewLayerId/layerId', same as PointOfInterest.target.layerId
+  oid: string | number;
+  zoom?: number; // Takes precedence over scale if both are set
+  scale?: number; // Target map scale denominator (e.g. 50000 for 1:50,000)
+  duration?: number; // default 500
+}
+
+export interface ZoomToLayerExtentInteraction extends BaseInteraction {
+  type: 'zoom-to-layer-extent';
+  layerId: string;
+}
+
+export interface ZoomToInitialExtentInteraction extends BaseInteraction {
+  type: 'zoom-to-initial-extent';
+}
+
+export interface SetLayerVisibilityInteraction extends BaseInteraction {
+  type: 'set-layer-visibility';
+  layerId: string;
+  visible: boolean;
+}
+
+export interface AddLayerInteraction extends BaseInteraction {
+  type: 'add-layer';
+  // A GeoView TypeGeoviewLayerConfig object (geoviewLayerId/geoviewLayerType/metadataAccessPath/
+  // listOfLayerEntryConfig, etc.) - loosely typed since GeoView's own layer config shape is large
+  // and defined outside this project.
+  layerConfig: Record<string, unknown>;
+}
+
+// A named, reusable map action - configured once here and triggered from any number of
+// ButtonGroupPanel buttons or `#interaction:<id>` text links (see ButtonGroupPanel, TextPanel).
+export type Interaction =
+  | ZoomToExtentInteraction
+  | ZoomToPointInteraction
+  | ZoomToFeatureInteraction
+  | ZoomToLayerExtentInteraction
+  | ZoomToInitialExtentInteraction
+  | SetLayerVisibilityInteraction
+  | AddLayerInteraction;

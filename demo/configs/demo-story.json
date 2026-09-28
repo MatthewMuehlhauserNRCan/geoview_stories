@@ -123,14 +123,30 @@
       },
       "panel": [
         {
-          "type": "text",
-          "cssClasses": "narrow",
-          "content": "Here is a basic GeoView map showing Canada in Lambert Conformal Conic projection (EPSG:3978). This demonstrates the core map functionality."
+          "type": "group",
+          "panel": [
+            [
+              {
+                "type": "text",
+                "content": "Here is a basic GeoView map showing Canada in Lambert Conformal Conic projection (EPSG:3978). This demonstrates the core map functionality.\n\nThe buttons below trigger configured **interactions** - reusable, named map actions (zoom to an extent, return to the overview, and more) defined once in the story config and referenced by id from anywhere. A button isn't the only way to trigger one either: this [jump straight to Ontario](#interaction:zoom-ontario) link does the exact same thing from right inside the text."
+              }
+            ],
+            [
+              {
+                "type": "button-group",
+                "buttons": [
+                  { "label": "Zoom to Ontario", "interactionId": "zoom-ontario" },
+                  { "label": "Return to overview", "interactionId": "return-home", "variant": "outlined" }
+                ]
+              }
+            ]
+          ]
         },
         {
           "type": "map",
           "config": "./configs/default-map.json",
-          "scrollguard": true
+          "scrollguard": true,
+          "id": "canada-map"
         }
       ]
     },
@@ -309,6 +325,10 @@
         }
       ]
     }
+  ],
+  "interactions": [
+    { "id": "zoom-ontario", "type": "zoom-to-extent", "mapId": "canada-map", "extent": [-95, 42, -75, 57] },
+    { "id": "return-home", "type": "zoom-to-initial-extent", "mapId": "canada-map" }
   ],
   "tocOrientation": "vertical",
   "lang": "en",

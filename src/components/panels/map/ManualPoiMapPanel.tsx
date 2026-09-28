@@ -11,6 +11,7 @@ import { zoomToPoiTarget } from './poi/poiZoom';
 import { getLayerLegendIconDataUrl } from './poi/legend-utils';
 import { PoiCard } from './poi/PoiCard';
 import { buildMapId } from './mapId';
+import { registerMapAlias, unregisterMapAlias } from '@/core/interactions/mapRegistry';
 import '@/types/GeoView'; // Import GeoView global types
 
 interface ManualPoiMapPanelProps {
@@ -32,6 +33,12 @@ export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, pan
   const geoviewTheme = useTheme().geoviewTheme;
   const lang = useStoryConfig()?.lang ?? 'en';
   const { error, loading, showScrollGuard } = useMapLifecycle(mapId, panel.scrollguard, geoviewTheme);
+
+  useEffect(() => {
+    if (!panel.id) return undefined;
+    registerMapAlias(panel.id, mapId);
+    return () => unregisterMapAlias(panel.id!);
+  }, [panel.id, mapId]);
 
   // Once the map is ready, grab the viewer instance and fetch POI feature data
   useEffect(() => {

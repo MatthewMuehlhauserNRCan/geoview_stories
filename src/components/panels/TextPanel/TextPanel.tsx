@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import { TextPanel as TextPanelType } from '@/types/StoryConfig';
+import { runInteraction } from '@/core/interactions/runInteraction';
 import { getSxClasses } from './TextPanel-style';
+
+const INTERACTION_LINK_PREFIX = '#interaction:';
 
 interface TextPanelProps {
   panel: TextPanelType;
@@ -49,7 +52,36 @@ export const TextPanel: React.FC<TextPanelProps> = ({ panel }) => {
             {fileError}
           </Typography>
         )}
-        {!fileError && content && <ReactMarkdown>{content}</ReactMarkdown>}
+        {!fileError && content && (
+          <ReactMarkdown
+            components={{
+              // A link href of `#interaction:<id>` triggers a configured Interaction (see
+              // StoryConfig.interactions) instead of navigating - lets story text link directly
+              // to the same map actions a ButtonGroupPanel button can trigger.
+              a: ({ href, children, ...rest }) =>
+                href?.startsWith(INTERACTION_LINK_PREFIX) ? (
+                  <a
+                    href={href}
+                    {...rest}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      runInteraction(href.slice(INTERACTION_LINK_PREFIX.length)).catch((err) =>
+                        console.error('[TextPanel] Interaction failed:', err)
+                      );
+                    }}
+                  >
+                    {children}
+                  </a>
+                ) : (
+                  <a href={href} {...rest}>
+                    {children}
+                  </a>
+                ),
+            }}
+          >
+            {content}
+          </ReactMarkdown>
+        )}
       </Box>
     </Paper>
   );

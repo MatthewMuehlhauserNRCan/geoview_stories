@@ -12,6 +12,7 @@ export const PANEL_TYPE_LABELS: Record<Panel['type'], string> = {
   slideshow: 'Slideshow',
   doormat: 'Doormat (link grid)',
   group: 'Group (nested panels)',
+  'button-group': 'Button group (interactions)',
 };
 
 export const PANEL_TYPES = Object.keys(PANEL_TYPE_LABELS) as Panel['type'][];
@@ -40,5 +41,7 @@ export const createDefaultPanel = (type: Panel['type']): DraftPanel => {
       return { _key, type, items: [] };
     case 'group':
       return { _key, type, rows: [] };
+    case 'button-group':
+      return { _key, type, buttons: [] };
   }
 };

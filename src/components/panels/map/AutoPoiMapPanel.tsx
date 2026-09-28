@@ -11,6 +11,7 @@ import { usePoiScrollObserver } from './poi/usePoiScrollObserver';
 import { zoomToPoiTarget } from './poi/poiZoom';
 import { PoiCard } from './poi/PoiCard';
 import { buildMapId } from './mapId';
+import { registerMapAlias, unregisterMapAlias } from '@/core/interactions/mapRegistry';
 import { buildPoisFromLayer, ResolvedPoi } from './poi/buildPoisFromLayer';
 import '@/types/GeoView'; // Import GeoView global types
 
@@ -33,6 +34,12 @@ export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelIn
   const geoviewTheme = useTheme().geoviewTheme;
   const lang = useStoryConfig()?.lang ?? 'en';
   const { error, loading, showScrollGuard } = useMapLifecycle(mapId, panel.scrollguard, geoviewTheme);
+
+  useEffect(() => {
+    if (!panel.id) return undefined;
+    registerMapAlias(panel.id, mapId);
+    return () => unregisterMapAlias(panel.id!);
+  }, [panel.id, mapId]);
 
   // Registered as early (mount) as possible, well before the map/fetch below even starts - so a
   // scroll-to-slide waiting on `waitForPendingLoadsCleared` can never race ahead of this panel

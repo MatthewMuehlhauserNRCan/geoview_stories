@@ -23,6 +23,9 @@ Complete reference for GeoView Story Library config JSON files: story structure,
   - [quote](#quote)
   - [slideshow](#slideshow)
   - [doormat](#doormat)
+  - [group](#group)
+  - [button-group](#button-group)
+- [Interactions](#interactions)
 
 ## Story Config
 
@@ -38,6 +41,7 @@ interface StoryConfig {
   tocHeading?: string; // default "Chapters"
   lang?: "en" | "fr"; // default "en"
   defaultTitleStyle?: HeadingStyle;
+  interactions?: Interaction[]; // See Interactions
 
   // Required
   slides: Slide[];
@@ -67,6 +71,7 @@ An entry with neither `slideIndex` nor `href` (just a `title` and a `sublist`) r
 - **`tocHeading`** (Optional): TOC panel heading. Default `"Chapters"` - override for other languages (e.g. `"Chapitres"`).
 - **`lang`** (Optional): Drives the GeoView map viewer's own UI language (`data-lang` on each map element). Default `"en"`. GeoView map configs are already bilingual internally, so a single `config` JSON works for both languages - no need for separate French map configs.
 - **`defaultTitleStyle`** (Optional): A base [`HeadingStyle`](#slides) applied to every slide's title, so a look (border/underline/alignment/etc.) doesn't need repeating on each slide by hand. Each slide's own `titleStyle` is shallow-merged on top - only the fields it actually sets override this default, field by field (not a deep merge of nested `border`/`underline` objects - setting either of those on a slide replaces the whole thing). Set a field to `false` (e.g. `titleStyle: { border: false }`) on a slide to opt back out of a default for just that one. See the demo's `defaultTitleStyle` (a subtle bottom rule under every title) and how "Basic Map"/"Auto POI Photo Gallery Example" opt out of it with `border: false` to keep their own underline/plain look.
+- **`interactions`** (Optional): Named, reusable map actions (zoom to an extent, return to the initial view, toggle a layer, and more), triggered from a [`button-group`](#button-group) panel's buttons or a link inside any [`text`](#text) panel. See [Interactions](#interactions).
 
 ## Auto-Generated TOC & Sections
 
@@ -342,6 +347,7 @@ interface MapPanel {
   type: "map";
   config: string;       // Required, path to a GeoView map config JSON
   scrollguard?: boolean; // Requires Ctrl/Cmd + scroll to zoom
+  id?: string;           // Stable name for this map, referenced by Interaction.mapId - see Interactions
 }
 ```
 
@@ -360,6 +366,7 @@ interface ManualPoiMapPanel {
   duration?: number;         // ms, zoom animation duration for every point
   scrollguard?: boolean;     // Same as the map panel's
   mapPosition?: "left" | "right"; // Which side the sticky map sits on; default "left"
+  id?: string;               // Stable name for this map, referenced by Interaction.mapId - see Interactions
 }
 
 interface PointOfInterest {
@@ -406,6 +413,7 @@ interface AutoPoiMapPanel {
   duration?: number; // ms, zoom animation duration for every point
   scrollguard?: boolean;
   mapPosition?: "left" | "right"; // Which side the sticky map sits on; default "left"
+  id?: string; // Stable name for this map, referenced by Interaction.mapId - see Interactions
 }
 
 type PoiFilterOperator = "equals" | "notEquals" | "contains" | "gt" | "gte" | "lt" | "lte" | "in" | "isNull" | "isNotNull";
@@ -500,3 +508,117 @@ interface DoormatItem {
 ```
 
 > Prefer this over embedding raw HTML/CSS in a `text` panel's `content` for link grids - it's schema-validated, themed (light/dark) automatically, and doesn't depend on external CSS classes.
+
+### group
+
+A panel that itself holds other panels, laid out in rows exactly like `Slide.panel` (a flat array is one row; an array of arrays stacks several rows). Lets a single slide row contain a self-contained, multi-part block - e.g. a map next to a column of "description, then buttons, then more text" - instead of being limited to one flat row of panels per slide.
+
+```ts
+interface GroupPanel {
+  type: "group";
+  panel: Panel[] | Panel[][]; // Required - same convention as Slide.panel
+}
+```
+
+Groups can nest (a group's own rows can contain another group), and any panel type is valid inside one, including [`button-group`](#button-group) and further [`map`](#map)/[`manual-poi-map`](#manual-poi-map)/[`auto-poi-map`](#auto-poi-map) panels.
+
+A group counts as a "flowing" panel for sizing purposes, the same as `text` - so when a group sits beside a companion panel (image, map, quote, etc.) in a slide row, the companion gets the same sticky/pinned-in-view treatment a `text` panel next to a map already gets, and defaults to the same 33%/67% width split (override with `cssClasses`, e.g. `"grow full-width"` on both panels, for an even split instead - see [Panel Width & Alignment](#panel-width--alignment-cssclasses)).
+
+```json
+{
+  "panel": [
+    {
+      "type": "group",
+      "panel": [
+        [{ "type": "text", "content": "A description of what these buttons do." }],
+        [{ "type": "button-group", "buttons": [{ "label": "Zoom to Ontario", "interactionId": "zoom-ontario" }] }]
+      ]
+    },
+    { "type": "map", "config": "./configs/default-map.json", "id": "canada-map" }
+  ]
+}
+```
+
+> See the demo's "Basic Map" slide ([English](../demo/configs/demo-story.json) / [French](../demo/configs/demo-story-fr.json)) and "Panel Layout Example" slide for working examples.
+
+### button-group
+
+One or more buttons that each trigger a configured [Interaction](#interactions) when clicked.
+
+```ts
+interface ButtonGroupPanel {
+  type: "button-group";
+  buttons: InteractionButton[]; // Required
+  direction?: "row" | "column"; // Layout of the buttons themselves; default "row"
+}
+
+interface InteractionButton {
+  label: string;       // Required, button text
+  interactionId: string; // Required, references Interaction.id
+  variant?: "contained" | "outlined" | "text"; // default "contained"
+}
+```
+
+> See the demo's "Basic Map" slide for a working example (two buttons, one `"outlined"`) paired with an inline text link triggering the same interaction - see [Interactions](#interactions).
+
+## Interactions
+
+A story-wide list of named, reusable map actions - defined once at the top level (`StoryConfig.interactions`) and triggered from any number of [`button-group`](#button-group) buttons or a `#interaction:<id>` link inside any [`text`](#text) panel's Markdown, from anywhere in the story.
+
+```ts
+interface BaseInteraction {
+  id: string;    // Referenced by InteractionButton.interactionId and text links (#interaction:<id>)
+  mapId: string; // The target map panel's own `id` field - NOT the real GeoView mapId
+}
+
+type Interaction =
+  | (BaseInteraction & { type: "zoom-to-extent"; extent: [number, number, number, number]; zoom?: number; duration?: number })
+  | (BaseInteraction & { type: "zoom-to-point"; center: [number, number]; zoom?: number; duration?: number })
+  | (BaseInteraction & { type: "zoom-to-feature"; layerId: string; oid: string | number; zoom?: number; scale?: number; duration?: number })
+  | (BaseInteraction & { type: "zoom-to-layer-extent"; layerId: string })
+  | (BaseInteraction & { type: "zoom-to-initial-extent" })
+  | (BaseInteraction & { type: "set-layer-visibility"; layerId: string; visible: boolean })
+  | (BaseInteraction & { type: "add-layer"; layerConfig: Record<string, unknown> });
+```
+
+### Properties (all types)
+
+- **`id`** (Required): Unique across the whole story - what buttons and text links reference.
+- **`mapId`** (Required): The target [`map`](#map)/[`manual-poi-map`](#manual-poi-map)/[`auto-poi-map`](#auto-poi-map) panel's own `id` field, not the real GeoView `mapId` (which is auto-generated per panel instance and can't be predicted/authored). Set `id` on the panel you want to target, then reference that same string here.
+
+### Interaction types
+
+- **`zoom-to-extent`**: Fits the map to `extent` - always `[minLon, minLat, maxLon, maxLat]` in plain longitude/latitude, regardless of the map's own projection (GeoView reprojects internally, so a Lambert/EPSG:3978 map still just takes lon/lat here). `zoom` caps how far in the fit is allowed to go; `duration` is the animation length in ms (default `500`).
+- **`zoom-to-point`**: Same as `zoom-to-extent`, but zooms to a single `[lon, lat]` `center` coordinate instead of fitting an extent.
+- **`zoom-to-feature`**: Zooms to one feature's extent, looked up by `layerId` (e.g. `"geoviewLayerId/layerId"`, same format as `PointOfInterest.target.layerId`) and `oid` (its object id) - the same lookup `manual-poi-map` points already use. `zoom` takes precedence over `scale` if both are set.
+- **`zoom-to-layer-extent`**: Zooms to a whole layer's own full extent (`layerId`) - no coordinates to author by hand.
+- **`zoom-to-initial-extent`**: Returns the map to its own configured initial view (same as a `manual-poi-map` point's `target.returnHome`).
+- **`set-layer-visibility`**: Shows or hides a layer (`layerId`, `visible`).
+- **`add-layer`**: Adds a new GeoView layer to the map at runtime from `layerConfig` - a raw GeoView layer config object (`geoviewLayerId`, `geoviewLayerType`, `metadataAccessPath`, `listOfLayerEntryConfig`, etc., the same shape used in a map config's own `listOfGeoviewLayerConfig`). **Not shown in demo.**
+
+### Triggering an interaction
+
+**From a button** - add a [`button-group`](#button-group) panel and reference the interaction's `id`:
+
+```json
+{ "type": "button-group", "buttons": [{ "label": "Zoom to Ontario", "interactionId": "zoom-ontario" }] }
+```
+
+**From text** - use a Markdown link whose href is `#interaction:<id>` instead of a real URL; it's intercepted and runs the interaction instead of navigating, so it can sit right inline with an explanation:
+
+```json
+{ "type": "text", "content": "Or [jump straight to Ontario](#interaction:zoom-ontario) from right here in the text." }
+```
+
+### Example
+
+```json
+{
+  "interactions": [
+    { "id": "zoom-ontario", "type": "zoom-to-extent", "mapId": "canada-map", "extent": [-95, 42, -75, 57] },
+    { "id": "return-home", "type": "zoom-to-initial-extent", "mapId": "canada-map" }
+  ]
+}
+```
+
+Paired with a map panel set to `"id": "canada-map"` - see the demo's "Basic Map" slide for this full example, including both a button and an inline text link triggering `zoom-ontario`.
