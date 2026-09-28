@@ -89,14 +89,30 @@
             },
             "panel": [
                 {
-                    "type": "text",
-                    "cssClasses": "narrow",
-                    "content": "Voici une carte GeoView de base montrant le Canada en projection conique conforme de Lambert (EPSG:3978). Cela démontre les fonctionnalités cartographiques de base."
+                    "type": "group",
+                    "panel": [
+                        [
+                            {
+                                "type": "text",
+                                "content": "Voici une carte GeoView de base montrant le Canada en projection conique conforme de Lambert (EPSG:3978). Cela démontre les fonctionnalités cartographiques de base.\n\nLes boutons ci-dessous déclenchent des **interactions** configurées - des actions cartographiques nommées et réutilisables (zoomer sur une étendue, revenir à la vue d'ensemble, et plus encore) définies une seule fois dans la configuration de l'histoire et référencées par leur identifiant depuis n'importe où. Un bouton n'est pas le seul moyen d'en déclencher une : ce lien [aller directement en Ontario](#interaction:zoom-ontario) fait exactement la même chose, directement à partir du texte."
+                            }
+                        ],
+                        [
+                            {
+                                "type": "button-group",
+                                "buttons": [
+                                    { "label": "Zoomer sur l'Ontario", "interactionId": "zoom-ontario" },
+                                    { "label": "Retour à la vue d'ensemble", "interactionId": "return-home", "variant": "outlined" }
+                                ]
+                            }
+                        ]
+                    ]
                 },
                 {
                     "type": "map",
                     "config": "./configs/default-map.json",
-                    "scrollguard": true
+                    "scrollguard": true,
+                    "id": "canada-map"
                 }
             ]
         },
@@ -275,6 +291,10 @@
                 }
             ]
         }
+    ],
+    "interactions": [
+        { "id": "zoom-ontario", "type": "zoom-to-extent", "mapId": "canada-map", "extent": [-95, 42, -75, 57] },
+        { "id": "return-home", "type": "zoom-to-initial-extent", "mapId": "canada-map" }
     ],
     "tocOrientation": "vertical",
     "tocHeading": "Chapitres",
