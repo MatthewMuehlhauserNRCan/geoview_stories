@@ -29,7 +29,7 @@
           {
             "type": "text",
             "cssClasses": "right-align",
-            "content": "Every panel type - not just text - accepts an optional `cssClasses` field for extra control over its width and position, independent of the slide's usual layout:\n\n- `left-align` / `right-align` - shifts the panel to one side, capped at a moderate width\n- `center-align` - centers the panel with a moderate width cap\n- `full-width` - removes the width cap entirely, so the panel fills the available space\n- `narrow` / `wide` - a tighter or looser width cap; combine with an alignment class, e.g. `\"narrow right-align\"`\n\nThis panel itself is using `cssClasses: \"right-align\"`.\n\nThe title above shows `titleStyle`: a centered heading with a custom border and background. And this whole slide is two stacked rows (`panel` set to an array of arrays) instead of two separate slides - handy for grouping a few related, title-less blocks under one heading."
+            "content": "Every panel type - not just text - accepts an optional `cssClasses` field for extra control over its width and position, independent of the slide's usual layout:\n\n- `left-align` / `right-align` - shifts the panel to one side, capped at a moderate width\n- `center-align` - centers the panel with a moderate width cap\n- `full-width` - removes the width cap entirely, so the panel fills the available space\n- `narrow` / `wide` - a tighter or looser width cap; combine with an alignment class, e.g. `\"narrow right-align\"`\n\nThis panel itself is using `cssClasses: \"right-align\"`.\n\nThe title above shows `titleStyle`: a centered heading with a custom border and background. And this whole slide is three stacked rows (`panel` set to an array of arrays) instead of three separate slides - handy for grouping a few related, title-less blocks under one heading."
           }
         ],
         [
@@ -42,6 +42,39 @@
             "type": "text",
             "cssClasses": "grow",
             "content": "### Weighted & Fixed Widths\n\nTo make one side bigger, use `grow-2` or `grow-3` instead of plain `grow` on whichever panel should be larger - it works on either side, not just the left; whichever panel gets the higher number wins, regardless of its position.\n\nUse `no-grow` on a panel that should size to its own content instead of stretching, and combine any of these with `narrow` / `wide` / `full-width` to cap how far a panel is allowed to grow."
+          }
+        ],
+        [
+          {
+            "type": "group",
+            "panel": [
+              [
+                {
+                  "type": "text",
+                  "content": "### Group Panels\n\nA `group` panel holds its own nested rows of panels - `text`, `image`, `map`, even another `group` - stacked or side by side, using the exact same `panel` field convention as a slide. That makes it possible to bundle a self-contained, multi-part block (for example: a description, an image, and a closing note) into a single item that can still sit beside other panels in a row.\n\nA group counts as a \"flowing\" panel, just like text - so the image on the right sticks in place while you scroll through this block, the same way an image would stay put next to a long text panel."
+                }
+              ],
+              [
+                {
+                  "type": "image",
+                  "src": "https://cdn.photoswipe.com/photoswipe-demo-images/photos/2/img-2500.jpg",
+                  "altText": "A mountain landscape, one of the PhotoSwipe demo images used here to illustrate an image nested inside a group panel",
+                  "caption": "This image is the second of three rows stacked inside the group panel."
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "content": "The text you're reading now is the group's third stacked row. From the outside, this entire text/image/text block counts as a single panel - which is what lets it sit next to the standalone image on the right."
+                }
+              ]
+            ]
+          },
+          {
+            "type": "image",
+            "src": "https://cdn.photoswipe.com/photoswipe-demo-images/photos/4/img-2500.jpg",
+            "altText": "A separate PhotoSwipe demo image, placed as an ordinary sibling panel next to the group panel",
+            "caption": "An ordinary image panel, sitting beside the group panel in the same row - it stays in view while the group scrolls past."
           }
         ]
       ]

@@ -9,6 +9,7 @@ import { AutoPoiMapPanel } from './map/AutoPoiMapPanel';
 import { QuotePanel } from './QuotePanel/QuotePanel';
 import { SlideshowPanel } from './SlideshowPanel/SlideshowPanel';
 import { DoormatPanel } from './DoormatPanel/DoormatPanel';
+import { GroupPanel } from './GroupPanel/GroupPanel';
 import { Box, Typography } from '@mui/material';
 import { getSxClasses } from './PanelRenderer-style';
 
@@ -39,6 +40,8 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstan
       return <SlideshowPanel panel={panel} />;
     case 'doormat':
       return <DoormatPanel panel={panel} />;
+    case 'group':
+      return <GroupPanel panel={panel} panelInstanceId={panelInstanceId} />;
     default:
       return (
         <Box sx={classes.errorPlaceholder}>

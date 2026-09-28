@@ -1,4 +1,5 @@
 import type {
+  GroupPanel,
   Panel,
   Slide,
   StoryConfig,
@@ -11,8 +12,15 @@ import { getSlideRows } from '@/utils/configLoader';
  * (`Panel[][]`), even for the single-row common case - so the UI never has to special-case the
  * `Panel[] | Panel[][]` overload that the real schema allows. Both are stripped/collapsed back
  * out again in `toStoryConfig`.
+ *
+ * A `group` panel is recursive - it holds its own nested `panel: Panel[] | Panel[][]` - so its
+ * draft form gets the same `panel` -> `rows: DraftPanel[][]` treatment as a slide, rather than a
+ * flat `_key` tacked onto the raw `panel` field, letting the editor UI recurse into a group's own
+ * rows using the exact same row/panel editing components as a slide's top-level rows.
  */
-export type DraftPanel = Panel & { _key: string };
+export type DraftPanel =
+  | (Exclude<Panel, GroupPanel> & { _key: string })
+  | (Omit<GroupPanel, 'panel'> & { _key: string; rows: DraftPanel[][] });
 export interface DraftSlide extends Omit<Slide, 'panel'> {
   _key: string;
   rows: DraftPanel[][];
@@ -24,6 +32,26 @@ export interface DraftConfig extends Omit<StoryConfig, 'slides'> {
 let keyCounter = 0;
 /** Generates a stable-enough local id for React keys - never sent to the exported JSON. */
 export const nextKey = (): string => `k${++keyCounter}_${Date.now().toString(36)}`;
+
+/** Recursively converts a real Panel (including nested group rows) into its draft form. */
+const toDraftPanel = (panel: Panel): DraftPanel => {
+  if (panel.type === 'group') {
+    const { panel: nestedPanel, ...rest } = panel;
+    return { ...rest, _key: nextKey(), rows: getSlideRows(nestedPanel).map((row) => row.map(toDraftPanel)) };
+  }
+  return { ...panel, _key: nextKey() };
+};
+
+/** Recursively converts a draft panel (including nested group rows) back into a real Panel. */
+const toRealPanel = (draft: DraftPanel): Panel => {
+  if (draft.type === 'group') {
+    const { _key, rows, ...rest } = draft;
+    const cleanRows = rows.map((row) => row.map(toRealPanel));
+    return { ...rest, panel: cleanRows.length <= 1 ? cleanRows[0] ?? [] : cleanRows };
+  }
+  const { _key, ...rest } = draft;
+  return rest as Panel;
+};
 
 /** A minimal starter story so the preview isn't just blank/erroring on first load. */
 export const createBlankConfig = (): DraftConfig => ({
@@ -46,7 +74,7 @@ export const fromStoryConfig = (config: StoryConfig): DraftConfig => ({
     return {
       ...rest,
       _key: nextKey(),
-      rows: getSlideRows(panel).map((row) => row.map((p) => ({ ...p, _key: nextKey() }))),
+      rows: getSlideRows(panel).map((row) => row.map(toDraftPanel)),
     };
   }),
 });
@@ -56,7 +84,7 @@ export const toStoryConfig = (draft: DraftConfig): StoryConfig => ({
   ...draft,
   slides: draft.slides.map((slide): Slide => {
     const { _key, rows, ...rest } = slide;
-    const cleanRows = rows.map((row) => row.map(({ _key, ...panel }) => panel as Panel));
+    const cleanRows = rows.map((row) => row.map(toRealPanel));
     return {
       ...rest,
       // Collapse back to a flat Panel[] for the common single-row case, so exported JSON matches

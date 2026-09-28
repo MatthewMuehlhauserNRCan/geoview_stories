@@ -8,17 +8,35 @@ import type { Panel } from '@/types/StoryConfig';
 import type { DraftPanel } from '../state/editorModel';
 import { PANEL_TYPE_LABELS, PANEL_TYPES, createDefaultPanel } from '../state/panelDefaults';
 import { CommonPanelFields, PanelFieldsEditor } from './PanelFieldsEditor';
+import type { useEditorState } from '../state/useEditorState';
 
 interface PanelEditorProps {
+  slideIndex: number;
+  groupPath: number[];
+  rowIndex: number;
+  panelIndex: number;
   panel: DraftPanel;
-  onChange: (patch: Partial<DraftPanel>) => void;
+  actions: ReturnType<typeof useEditorState>;
   onRemove: () => void;
   onMove: (direction: -1 | 1) => void;
   canMoveUp: boolean;
   canMoveDown: boolean;
 }
 
-export const PanelEditor: React.FC<PanelEditorProps> = ({ panel, onChange, onRemove, onMove, canMoveUp, canMoveDown }) => {
+export const PanelEditor: React.FC<PanelEditorProps> = ({
+  slideIndex,
+  groupPath,
+  rowIndex,
+  panelIndex,
+  panel,
+  actions,
+  onRemove,
+  onMove,
+  canMoveUp,
+  canMoveDown,
+}) => {
+  const onChange = (patch: Partial<DraftPanel>) => actions.updatePanel(slideIndex, groupPath, rowIndex, panelIndex, patch);
+
   return (
     <Paper variant="outlined" sx={{ p: 1.5 }}>
       <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 1.5 }}>
@@ -47,7 +65,13 @@ export const PanelEditor: React.FC<PanelEditorProps> = ({ panel, onChange, onRem
         </IconButton>
       </Stack>
       <Stack gap={1.5}>
-        <PanelFieldsEditor panel={panel} onChange={onChange} />
+        <PanelFieldsEditor
+          panel={panel}
+          onChange={onChange}
+          slideIndex={slideIndex}
+          groupPath={[...groupPath, rowIndex, panelIndex]}
+          actions={actions}
+        />
         <Typography variant="caption" color="text.secondary">
           Layout
         </Typography>

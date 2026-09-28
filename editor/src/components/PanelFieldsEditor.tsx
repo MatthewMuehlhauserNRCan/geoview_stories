@@ -12,10 +12,17 @@ import type {
 import type { DraftPanel } from '../state/editorModel';
 import { saveAsset } from '../state/assetStore';
 import { AssetField } from './AssetField';
+import { RowsEditor } from './RowsEditor';
+import type { useEditorState } from '../state/useEditorState';
 
 interface PanelFieldsProps {
   panel: DraftPanel;
   onChange: (patch: Partial<DraftPanel>) => void;
+  // Only used by the 'group' case below, to recurse into the group's own nested rows with
+  // RowsEditor - unused (but harmless to pass) for every other panel type.
+  slideIndex: number;
+  groupPath: number[];
+  actions: ReturnType<typeof useEditorState>;
 }
 
 /** A labeled text input bound directly to one field of the panel being edited. */
@@ -97,7 +104,7 @@ function RepeatableList<T>({
 }
 
 /** Renders the field editor for whichever panel type this draft panel currently is. */
-export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange }) => {
+export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange, slideIndex, groupPath, actions }) => {
   switch (panel.type) {
     case 'text':
       return (
@@ -368,11 +375,24 @@ export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange 
           )}
         />
       );
+
+    case 'group':
+      return (
+        <Box>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+            A group holds its own nested rows of panels, laid out the same way as a slide's own rows.
+          </Typography>
+          <RowsEditor slideIndex={slideIndex} groupPath={groupPath} rows={panel.rows} actions={actions} />
+        </Box>
+      );
   }
 };
 
 /** Fields shared by every panel type, rendered above the type-specific fields. */
-export const CommonPanelFields: React.FC<PanelFieldsProps> = ({ panel, onChange }) => (
+export const CommonPanelFields: React.FC<{ panel: DraftPanel; onChange: (patch: Partial<DraftPanel>) => void }> = ({
+  panel,
+  onChange,
+}) => (
   <Field
     label='cssClasses (e.g. "narrow right-align")'
     value={panel.cssClasses}

@@ -171,7 +171,7 @@ export const getSxClasses = (theme: Theme) => ({
         ...(!border && (style?.backgroundColor || style?.backgroundImage) && { p: 2, borderRadius: 1 }),
       };
     },
-    row: (flexDirection: { xs: string; md: string } | string, hasTextAndImage: boolean, hasMedia: boolean) => ({
+    row: (flexDirection: { xs: string; md: string } | string, _hasPairing: boolean, hasMedia: boolean) => ({
       display: 'flex',
       flexDirection,
       gap: 4,
@@ -224,26 +224,30 @@ export const getSxClasses = (theme: Theme) => ({
 /** Per-panel sizing within a Slide, depends on panel type and slide layout */
 // Width caps, named so the reasoning behind each number lives in one place
 // instead of being re-derived from scattered percentages.
-const TEXT_WIDTH_PAIRED_WITH_MEDIA = '33.333%'; // squeeze so the media column can claim the rest
-const TEXT_WIDTH_STANDALONE = '50%'; // no media to make room for, so it can breathe more
+const FLOWING_WIDTH_PAIRED = '33.333%'; // squeeze so the companion column can claim the rest
+const TEXT_WIDTH_STANDALONE = '50%'; // no companion to make room for, so it can breathe more
 const QUOTE_WIDTH_STANDALONE = '66.666%'; // pull-quotes read better wide, but not full-bleed
 
-export const getPanelSx = (panel: Panel, hasTextAndImage: boolean, hasMultiplePanels: boolean) => {
-  const isTextPanel = panel.type === 'text';
-  const isMediaPanel = ['image', 'map', 'video', 'slideshow'].includes(panel.type);
+// `hasPairing` means this row pairs a "flowing" panel (text, or a group of any height) with a
+// "companion" panel of any other type (see rowHasFlowingPairing, configLoader.ts) - `isNested` is
+// true when this panel is a row of a group panel rather than a slide's own row - the
+// standalone-text/quote width caps below assume the row spans the slide's full content column,
+// which isn't true once that row is already confined to a group's (narrower) column.
+export const getPanelSx = (panel: Panel, hasPairing: boolean, hasMultiplePanels: boolean, isNested: boolean = false) => {
+  const isFlowingPanel = panel.type === 'text' || panel.type === 'group';
 
   const sx: any = {
-    flex: hasTextAndImage ? '1 1 auto' : '0 1 auto',
+    flex: hasPairing ? '1 1 auto' : '0 1 auto',
     width: '100%',
   };
 
-  if (hasTextAndImage) {
-    if (isTextPanel) {
-      // Fixed and doesn't grow, so the media column can claim the rest of the width
-      sx.flex = { xs: '1 1 auto', md: `0 0 ${TEXT_WIDTH_PAIRED_WITH_MEDIA}` };
-      sx.maxWidth = { xs: '100%', md: TEXT_WIDTH_PAIRED_WITH_MEDIA };
-    } else if (isMediaPanel) {
-      // Grow to fill whatever width is left after the text column, rather than
+  if (hasPairing) {
+    if (isFlowingPanel) {
+      // Fixed and doesn't grow, so the companion column can claim the rest of the width
+      sx.flex = { xs: '1 1 auto', md: `0 0 ${FLOWING_WIDTH_PAIRED}` };
+      sx.maxWidth = { xs: '100%', md: FLOWING_WIDTH_PAIRED };
+    } else {
+      // Grow to fill whatever width is left after the flowing column, rather than
       // a fixed 2/3 cap that left it looking cramped.
       sx.flex = { xs: '1 1 auto', md: '1 1 0%' };
       sx.maxWidth = { xs: '100%', md: 'none' };
@@ -251,19 +255,19 @@ export const getPanelSx = (panel: Panel, hasTextAndImage: boolean, hasMultiplePa
       sx.alignItems = { md: 'center' };
       sx.justifyContent = { md: 'center' };
 
-      // Sticky so the media stays visible next to a longer scrolling text
-      // column; if the media itself ends up taller than the text (a large
-      // image/map/video), it has nowhere to stick and just scrolls with the
-      // row instead, taking the shorter text along with it.
+      // Sticky so the companion panel stays visible next to a longer scrolling flowing
+      // column (text, or a group that stacks several panels); if the companion itself ends
+      // up taller than the flowing side, it has nowhere to stick and just scrolls with the
+      // row instead, taking the shorter flowing content along with it.
       sx.position = { md: 'sticky' };
       sx.top = { md: 0 };
       sx.alignSelf = { md: 'flex-start' };
     }
-  } else if (!hasMultiplePanels) {
+  } else if (!hasMultiplePanels && !isNested) {
     // cssClasses (applied to this same Box in Slide.tsx) uses !important, so it reliably
     // overrides these defaults regardless - no need to special-case it away here.
-    if (isTextPanel) {
-      // Single text panel: wider than the paired case since there's no media column to share with
+    if (panel.type === 'text') {
+      // Single text panel: wider than the paired case since there's no companion column to share with
       sx.maxWidth = { xs: '100%', md: TEXT_WIDTH_STANDALONE };
     } else if (panel.type === 'quote') {
       // Pull-quotes shouldn't stretch edge-to-edge; cap and center so short

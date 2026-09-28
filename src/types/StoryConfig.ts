@@ -113,10 +113,20 @@ export interface Slide {
 }
 
 export interface BasePanel {
-  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'manual-poi-map' | 'auto-poi-map' | 'quote' | 'doormat';
+  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'manual-poi-map' | 'auto-poi-map' | 'quote' | 'doormat' | 'group';
   // Optional utility class(es) from src/styles/panels.css (e.g. "narrow right-align") for
   // width/alignment overrides - works on every panel type, not just text.
   cssClasses?: string;
+}
+
+// A panel that itself holds other panels, laid out in rows exactly like Slide.panel (a flat
+// Panel[] is one row; Panel[][] stacks several rows). Lets a single slide row contain a
+// self-contained block of arbitrarily arranged panels (e.g. a map beside a column of buttons,
+// then a description row, then more buttons) instead of being limited to one flat row of panels
+// per slide. Groups can nest (a group's own rows can contain another group).
+export interface GroupPanel extends BasePanel {
+  type: 'group';
+  panel: Panel[] | Panel[][];
 }
 
 export interface TextPanel extends BasePanel {
@@ -274,7 +284,8 @@ export type Panel =
   | VideoPanel
   | SlideshowPanel
   | QuotePanelConfig
-  | DoormatPanel;
+  | DoormatPanel
+  | GroupPanel;
 
 export interface TocItem {
   // Required unless `autoToc` is set.

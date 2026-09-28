@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Paper, Modal, IconButton } from '@mui/material';
+import { Box, Typography, Modal, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { ImagePanel as ImagePanelType } from '@/types/StoryConfig';
 import { getSxClasses } from './ImagePanel-style';
@@ -21,7 +21,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ panel }) => {
 
   return (
     <Box sx={classes.wrapper}>
-      <Paper elevation={0} sx={classes.paper}>
+      <Box component="figure" sx={classes.figure}>
         <Box
           component="img"
           src={panel.src}
@@ -43,13 +43,13 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ panel }) => {
           }
         />
         {panel.caption && (
-          <Box sx={classes.caption}>
+          <Box component="figcaption" sx={classes.caption}>
             <Typography variant="body2" color="text.secondary">
               {panel.caption}
             </Typography>
           </Box>
         )}
-      </Paper>
+      </Box>
       {fullscreenEnabled && (
         <Modal open={lightboxOpen} onClose={closeLightbox} sx={classes.lightboxModal}>
           <Box sx={classes.lightboxBackdrop} onClick={closeLightbox}>

@@ -10,6 +10,21 @@ export const getSlideRows = (panel: Panel[] | Panel[][]): Panel[][] => {
   return Array.isArray(panel[0]) ? (panel as Panel[][]) : [panel as Panel[]];
 };
 
+/** Panel types whose height varies with their own (possibly long) content - the opposite of a
+ * "companion" panel type below. */
+const isFlowingPanel = (panel: Panel): boolean => panel.type === 'text' || panel.type === 'group';
+
+/**
+ * Whether a row pairs at least one "flowing" panel (text, or a group - which can itself be an
+ * arbitrarily tall stack of panels) with at least one other ("companion") panel of any other
+ * type. Rows like this get the classic sticky-media-beside-scrolling-text treatment in
+ * `getPanelSx` (story-styles.ts): the companion panel(s) stay pinned in view while the flowing
+ * panel(s) scroll past, generalized to work for any companion type (image, map, video, quote,
+ * doormat, etc.), not just media - and for a group standing in for text as the flowing side.
+ */
+export const rowHasFlowingPairing = (row: Panel[]): boolean =>
+  row.length > 1 && row.some(isFlowingPanel) && row.some(p => !isFlowingPanel(p));
+
 
 /**
  * Load and parse story configuration from JSON file
@@ -42,15 +57,18 @@ export const validateStoryConfig = (config: StoryConfig): boolean => {
   return true;
 };
 
+/** Whether a single panel is (or, for a group panel, recursively contains) a map panel. */
+const panelHasMap = (panel: Panel): boolean =>
+  panel.type === 'map' || panel.type === 'manual-poi-map' || panel.type === 'auto-poi-map' ||
+  (panel.type === 'group' && getSlideRows(panel.panel).some(row => row.some(panelHasMap)));
+
 /**
  * Whether any slide panel needs a GeoView map, so callers can skip
- * cgpv setup entirely for map-free stories. Only checks top-level panels
- * since the slideshow panel type doesn't support maps.
+ * cgpv setup entirely for map-free stories. Recurses into group panels
+ * since a map can be nested arbitrarily deep inside one.
  */
 export const configHasMaps = (config: StoryConfig): boolean =>
   config.slides.some(slide =>
-    getSlideRows(slide.panel).some(row =>
-      row.some(panel => panel.type === 'map' || panel.type === 'manual-poi-map' || panel.type === 'auto-poi-map')
-    )
+    getSlideRows(slide.panel).some(row => row.some(panelHasMap))
   );
 

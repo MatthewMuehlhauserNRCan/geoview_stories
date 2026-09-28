@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { Slide as SlideType } from '@/types/StoryConfig';
 import { PanelRenderer } from '../panels/PanelRenderer';
-import { getSlideRows } from '@/utils/configLoader';
+import { getSlideRows, rowHasFlowingPairing } from '@/utils/configLoader';
 import { useStoryConfig } from '@/core/stores/StoryStore';
 import { getSxClasses, getPanelSx } from './story-styles';
 
@@ -57,20 +57,20 @@ export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideI
               // row, since each stacked row lays out independently of its siblings.
               const hasMultiplePanels = row.length > 1;
               const rowHasMedia = row.some(p => ['image', 'map', 'video', 'slideshow'].includes(p.type));
-              const hasTextAndImage = hasMultiplePanels && row.some(p => p.type === 'text') && rowHasMedia;
+              const hasPairing = rowHasFlowingPairing(row);
               // Any multi-panel row can lay out side by side on desktop (stacked on mobile), not
-              // just the text+media pairing - that's what lets cssClasses (grow/grow-2/no-grow)
-              // split a row between any combination of panels, not only a paired text+media one.
+              // just the text/group+companion pairing - that's what lets cssClasses (grow/grow-2/
+              // no-grow) split a row between any combination of panels, not only a paired one.
               const flexDirection = hasMultiplePanels ? { xs: 'column', md: 'row' } : 'column';
 
               return (
-                <Box key={rowIndex} sx={classes.row(flexDirection, hasTextAndImage, rowHasMedia)}>
+                <Box key={rowIndex} sx={classes.row(flexDirection, hasPairing, rowHasMedia)}>
                   {row.map((panel, panelIndex) => (
                     // cssClasses goes here (the actual flex item in the row), not inside the panel's own
                     // component - flex-grow/basis classes only mean anything on a direct flex child.
                     <Box
                       key={panelIndex}
-                      sx={getPanelSx(panel, hasTextAndImage, hasMultiplePanels)}
+                      sx={getPanelSx(panel, hasPairing, hasMultiplePanels)}
                       className={panel.cssClasses}
                     >
                       <PanelRenderer panel={panel} panelInstanceId={`${slideId}-row-${rowIndex}-panel-${panelIndex}`} />
