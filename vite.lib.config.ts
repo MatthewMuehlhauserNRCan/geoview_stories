@@ -14,6 +14,12 @@ export default defineConfig(({ mode }) => ({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  // React/MUI check `process.env.NODE_ENV` at runtime - webpack replaced this automatically via
+  // its `mode` option, but a plain browser UMD bundle has no real `process` global, so without an
+  // explicit replacement here it throws `ReferenceError: process is not defined` once loaded.
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(mode === 'production' ? 'production' : 'development'),
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,

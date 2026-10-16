@@ -13,7 +13,6 @@
     "build:lib": "vite build --config vite.lib.config.ts",
     "build:editor": "vite build --config vite.editor.config.ts",
     "build": "npm run build:lib && npm run build:editor && node scripts/copy-static.mjs",
-    "deploy": "gh-pages -d dist",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"editor/src/**/*.{ts,tsx,css}\"",
     "lint": "eslint src editor/src",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p editor/tsconfig.json"
@@ -40,7 +39,6 @@
     "eslint": "^9.0.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "geoview-core-types": "github:Canadian-Geospatial-Platform/geoview#types",
-    "gh-pages": "^6.3.0",
     "ol": "^10.9.0",
     "prettier": "^3.4.2",
     "serve": "^14.2.0",

@@ -109,7 +109,7 @@ One command builds the library (`dist/geoview-story.js`), the config builder (`d
 
 ### Deploy
 
-Pushing to `main` triggers [.github/workflows/deploy.yml](.github/workflows/deploy.yml), which builds and publishes the site automatically - no local steps needed. See [DEPLOYMENT.md](DEPLOYMENT.md) for the one-time repo settings change required, and for the manual/local fallback (`npm run build && npm run deploy`).
+Pushing to `main` triggers [.github/workflows/deploy.yml](.github/workflows/deploy.yml), which builds and publishes the site automatically - no local steps needed. See [DEPLOYMENT.md](DEPLOYMENT.md) for the one-time repo settings change required.
 
 ## GitHub Pages Deployment
 
