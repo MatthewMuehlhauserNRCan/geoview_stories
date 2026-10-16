@@ -1,3 +1,5 @@
+import type { Extent, MapViewer } from '@/types/GeoView';
+
 export interface PoiZoomTarget {
   extent?: Extent;
   zoom?: number;
@@ -8,7 +10,7 @@ export interface PoiZoomTarget {
  * Cancels any in-flight animation before starting the next one, so back-to-back POI activations
  * (e.g. a fast scroll) don't fight each other instead of the latest one cleanly winning.
  */
-export const zoomToPoiTarget = (mapViewer: GeoviewMapViewer, target: PoiZoomTarget, duration: number): Promise<void> => {
+export const zoomToPoiTarget = (mapViewer: MapViewer, target: PoiZoomTarget, duration: number): Promise<void> => {
   mapViewer.getView().cancelAnimations();
 
   if (target.returnHome) {

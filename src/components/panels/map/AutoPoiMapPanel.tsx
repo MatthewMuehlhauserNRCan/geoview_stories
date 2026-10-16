@@ -10,10 +10,9 @@ import { usePreserveScrollOnGrowth } from './hooks/usePreserveScrollOnGrowth';
 import { usePoiScrollObserver } from './poi/usePoiScrollObserver';
 import { zoomToPoiTarget } from './poi/poiZoom';
 import { PoiCard } from './poi/PoiCard';
-import { buildMapId } from './mapId';
-import { registerMapAlias, unregisterMapAlias } from '@/core/interactions/mapRegistry';
+import { resolveMapId } from './mapId';
 import { buildPoisFromLayer, ResolvedPoi } from './poi/buildPoisFromLayer';
-import '@/types/GeoView'; // Import GeoView global types
+import type { MapViewer } from '@/types/GeoView';
 
 interface AutoPoiMapPanelProps {
   panel: AutoPoiMapPanelType;
@@ -21,9 +20,9 @@ interface AutoPoiMapPanelProps {
 }
 
 export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelInstanceId }) => {
-  const mapId = buildMapId('autopoimap', panelInstanceId, panel.config);
+  const mapId = resolveMapId('autopoimap', panelInstanceId, panel);
 
-  const mapInstanceRef = useRef<any>(null);
+  const mapInstanceRef = useRef<MapViewer | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const pendingLoadRegisteredRef = useRef(false);
   const [pois, setPois] = useState<ResolvedPoi[]>([]);
@@ -34,12 +33,6 @@ export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelIn
   const geoviewTheme = useTheme().geoviewTheme;
   const lang = useStoryConfig()?.lang ?? 'en';
   const { error, loading, showScrollGuard } = useMapLifecycle(mapId, panel.scrollguard, geoviewTheme);
-
-  useEffect(() => {
-    if (!panel.id) return undefined;
-    registerMapAlias(panel.id, mapId);
-    return () => unregisterMapAlias(panel.id!);
-  }, [panel.id, mapId]);
 
   // Registered as early (mount) as possible, well before the map/fetch below even starts - so a
   // scroll-to-slide waiting on `waitForPendingLoadsCleared` can never race ahead of this panel

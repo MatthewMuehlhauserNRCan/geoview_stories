@@ -5,7 +5,7 @@ A React-based storytelling library for creating interactive stories with GeoView
 **📦 CDN Link:** `https://matthewmuehlhausernrcan.github.io/geoview_stories/geoview-story.js`  
 **🌐 Demo:** [https://matthewmuehlhausernrcan.github.io/geoview_stories/demo/](https://matthewmuehlhausernrcan.github.io/geoview_stories/demo/)  
 **📄 Template:** [demo/index.html](demo/index.html)  
-**🛠️ Config Builder:** [editor/](editor/) - a visual editor with a live preview, for authoring a config without hand-writing JSON (see [editor/README.md](editor/README.md))
+**🛠️ Config Builder:** [editor/](editor/) - a visual editor with a live preview, for authoring a config without hand-writing JSON, built from the same project/toolchain as the library (see [editor/README.md](editor/README.md))
 
 ## Features
 
@@ -95,34 +95,27 @@ npm install
 npm run serve
 ```
 
-This starts the dev server at `http://localhost:3000` with:
-- `/` - Library documentation page
-- `/demo/` - Demo story
+This builds the library in watch mode and serves the whole repo root (port 3000) statically, same as before - browse `/demo/` for the demo story. Note: since this now rebuilds `dist/geoview-story.js` on change rather than doing true HMR, refresh the browser after a change finishes rebuilding.
 
-### Build Library
+For the config builder's own dev server (port 5173, real HMR), use `npm run dev:editor` instead.
+
+### Build Everything
 
 ```bash
 npm run build
 ```
 
-Outputs `dist/geoview-story.js` - a bundled library ready for distribution.
+One command builds the library (`dist/geoview-story.js`), the config builder (`dist/editor/`), and copies `demo/`/`public/` into `dist/` - `dist/` is the complete, ready-to-deploy site, no separate editor build step or ordering to remember.
 
 ### Deploy
 
-```bash
-npm run build
-npm run deploy
-```
-
-`deploy` publishes the current `dist/` folder to the `gh-pages` branch (via the `gh-pages` package) - run `build` first so it publishes a fresh bundle, since `deploy` on its own doesn't rebuild anything.
-
-To also include the [Config Builder](editor/) in the deployed site, see [DEPLOYMENT.md](DEPLOYMENT.md#including-the-config-builder) - it's a separate build step, in a specific order.
+Pushing to `main` triggers [.github/workflows/deploy.yml](.github/workflows/deploy.yml), which builds and publishes the site automatically - no local steps needed. See [DEPLOYMENT.md](DEPLOYMENT.md) for the one-time repo settings change required, and for the manual/local fallback (`npm run build && npm run deploy`).
 
 ## GitHub Pages Deployment
 
-This is a library - the GitHub Pages site built from this repo (the CDN-hosted `geoview-story.js`, its docs, and the `demo/` story) exists to demonstrate and distribute the package, not as a hosted application in its own right.
+This is a library - the GitHub Pages site built from this repo (the CDN-hosted `geoview-story.js`, its docs, the `demo/` story, and the config builder) exists to demonstrate and distribute the package, not as a hosted application in its own right.
 
-`npm run deploy` publishes it: `webpack.common.js` already copies `demo/`, `public/index.html`, and `public/docs/` into `dist/` alongside `geoview-story.js` (see [webpack.common.js](webpack.common.js)), so `dist/` after a build *is* the full site. `gh-pages -d dist` (what `deploy` runs) pushes that folder's contents to the `gh-pages` branch, which GitHub Pages serves directly - matching the CDN link at the top of this README.
+`npm run build` runs three steps in order (see the root `package.json`'s `build` script): the library build (`vite.lib.config.ts`), the editor build (`vite.editor.config.ts`), then [scripts/copy-static.mjs](scripts/copy-static.mjs), which copies `demo/`, `public/index.html`, and `public/docs/` into `dist/`. The result is the complete site. [.github/workflows/deploy.yml](.github/workflows/deploy.yml) runs this build in CI on every push to `main` and publishes `dist/` directly via GitHub's Pages deployment action - matching the CDN link at the top of this README.
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
 
@@ -233,7 +226,7 @@ See [public/docs/README.md](public/docs/README.md#auto-generated-toc--sections) 
 │   └── images/        # Story assets
 ├── dist/              # Built library (generated)
 │   └── geoview-story.js
-├── editor/            # Config builder - separate app/build, see editor/README.md
+├── editor/            # Config builder - own src/, built from the same toolchain, see editor/README.md
 ├── public/            # Static public files
 │   ├── index.html     # Library landing/documentation page
 │   └── docs/          # Full configuration reference (docsify)
@@ -245,7 +238,8 @@ See [public/docs/README.md](public/docs/README.md#auto-generated-toc--sections) 
 │   ├── types/         # TypeScript types
 │   ├── utils/         # Utilities
 │   └── index.tsx      # Library entry point
-└── webpack.*.js       # Build configuration
+├── vite.lib.config.ts # Library build config
+└── vite.editor.config.ts # Config builder build config
 ```
 
 ## API Reference
@@ -302,4 +296,4 @@ Built with:
 - Material-UI v9
 - GeoView (OpenLayers)
 - TypeScript
-- Webpack
+- Vite

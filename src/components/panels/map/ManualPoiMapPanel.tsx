@@ -10,9 +10,9 @@ import { usePoiScrollObserver } from './poi/usePoiScrollObserver';
 import { zoomToPoiTarget } from './poi/poiZoom';
 import { getLayerLegendIconDataUrl } from './poi/legend-utils';
 import { PoiCard } from './poi/PoiCard';
-import { buildMapId } from './mapId';
-import { registerMapAlias, unregisterMapAlias } from '@/core/interactions/mapRegistry';
-import '@/types/GeoView'; // Import GeoView global types
+import { resolveMapId } from './mapId';
+import type { Extent, MapViewer } from '@/types/GeoView';
+import type VectorSource from 'ol/source/Vector';
 
 interface ManualPoiMapPanelProps {
   panel: ManualPoiMapPanelType;
@@ -20,9 +20,9 @@ interface ManualPoiMapPanelProps {
 }
 
 export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, panelInstanceId }) => {
-  const mapId = buildMapId('manualpoimap', panelInstanceId, panel.config);
+  const mapId = resolveMapId('manualpoimap', panelInstanceId, panel);
 
-  const mapInstanceRef = useRef<GeoviewMapViewer>(null);
+  const mapInstanceRef = useRef<MapViewer | null>(null);
   const featureDataRef = useRef<Map<number, { extent: Extent; fieldValue?: string; iconDataUrl?: string }>>(new Map());
   // Mutating featureDataRef alone doesn't trigger a re-render; bump this after
   // populating it so the POI cards actually pick up the fetched field values/icons.
@@ -33,12 +33,6 @@ export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, pan
   const geoviewTheme = useTheme().geoviewTheme;
   const lang = useStoryConfig()?.lang ?? 'en';
   const { error, loading, showScrollGuard } = useMapLifecycle(mapId, panel.scrollguard, geoviewTheme);
-
-  useEffect(() => {
-    if (!panel.id) return undefined;
-    registerMapAlias(panel.id, mapId);
-    return () => unregisterMapAlias(panel.id!);
-  }, [panel.id, mapId]);
 
   // Once the map is ready, grab the viewer instance and fetch POI feature data
   useEffect(() => {
@@ -105,13 +99,13 @@ export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, pan
 
         try {
           // Get the layer (format: 'geoviewLayerId/layerId')
-          const layer = mapViewer.controllers.layerController.getGeoviewLayer(poi.target.layerId);
+          const layer = mapViewer.controllers.layerController.getGeoviewLayerRegularIfExists(poi.target.layerId);
           if (!layer) {
             console.warn(`Layer not found: ${poi.target.layerId}`);
             continue;
           }
 
-          const source = layer.getOLSource();
+          const source = layer.getOLLayer().getSource() as VectorSource | null;
           if (!source) {
             console.warn(`Source not found for layer: ${poi.target.layerId}`);
             continue;
@@ -125,8 +119,8 @@ export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, pan
 
           // Extract field value if field is specified
           let fieldValue: string | undefined;
-          if (poi.field && feature.values_) {
-            fieldValue = feature.values_[poi.field];
+          if (poi.field && feature.get(poi.field) !== undefined) {
+            fieldValue = feature.get(poi.field);
           }
 
           const geom = feature.getGeometry();

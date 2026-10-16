@@ -1,7 +1,7 @@
 import { AutoPoiMapPanel as AutoPoiMapPanelType } from '@/types/StoryConfig';
 import { getLayerLegendIconDataUrl } from './legend-utils';
 import { evaluatePoiFilter } from './poiFilter';
-import '@/types/GeoView'; // Import GeoView global types
+import type { Extent, MapViewer, TypeFieldEntry } from '@/types/GeoView';
 
 export interface ResolvedPoi {
   title?: string;
@@ -36,8 +36,8 @@ const sortPois = (pois: ResolvedPoi[], panel: AutoPoiMapPanelType): ResolvedPoi[
  * Split out of AutoPoiMapPanel's feature-fetch effect so the transform logic is testable/readable
  * on its own, separate from the effect's mount/loading/pending-load plumbing.
  */
-export const buildPoisFromLayer = async (mapViewer: GeoviewMapViewer, panel: AutoPoiMapPanelType): Promise<ResolvedPoi[]> => {
-  const layer = mapViewer.controllers.layerController.getGeoviewLayer(panel.layerId);
+export const buildPoisFromLayer = async (mapViewer: MapViewer, panel: AutoPoiMapPanelType): Promise<ResolvedPoi[]> => {
+  const layer = mapViewer.controllers.layerController.getGeoviewLayerRegularIfExists(panel.layerId);
   if (!layer) {
     throw new Error(`Layer not found: ${panel.layerId}`);
   }
@@ -55,7 +55,8 @@ export const buildPoisFromLayer = async (mapViewer: GeoviewMapViewer, panel: Aut
     if (!entry.extent) continue;
 
     const values: Record<string, unknown> = {};
-    for (const [fieldName, field] of Object.entries(entry.fieldInfo)) {
+    // TS can't infer values of a `Partial<Record<K, V>>` through Object.entries on its own.
+    for (const [fieldName, field] of Object.entries(entry.fieldInfo) as [string, TypeFieldEntry | undefined][]) {
       values[fieldName] = field?.value;
     }
 

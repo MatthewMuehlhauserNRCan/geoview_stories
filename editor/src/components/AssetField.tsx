@@ -29,7 +29,7 @@ export const AssetField: React.FC<AssetFieldProps> = ({ label, value, onChange, 
   const previewUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
-    previewUrlRef.current && URL.revokeObjectURL(previewUrlRef.current);
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
     previewUrlRef.current = null;
     setAsset(null);
 

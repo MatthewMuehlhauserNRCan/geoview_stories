@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Typography, Paper, useTheme } from '@mui/material';
 import { MapPanel as MapPanelType } from '@/types/StoryConfig';
 import { useStoryConfig } from '@/core/stores/StoryStore';
@@ -6,9 +6,7 @@ import { MapLoadingOverlay, MapScrollGuardOverlay } from './MapOverlays';
 import { getSxClasses as getSharedSxClasses } from './map-shared-style';
 import { getSxClasses } from './MapPanel-style';
 import { useMapLifecycle } from './hooks/useMapLifecycle';
-import { buildMapId } from './mapId';
-import { registerMapAlias, unregisterMapAlias } from '@/core/interactions/mapRegistry';
-import '@/types/GeoView'; // Import GeoView global types
+import { resolveMapId } from './mapId';
 
 interface MapPanelProps {
   panel: MapPanelType;
@@ -16,18 +14,12 @@ interface MapPanelProps {
 }
 
 export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) => {
-  const mapId = buildMapId('map', panelInstanceId, panel.config);
+  const mapId = resolveMapId('map', panelInstanceId, panel);
   const shared = getSharedSxClasses();
   const classes = getSxClasses();
   const geoviewTheme = useTheme().geoviewTheme;
   const lang = useStoryConfig()?.lang ?? 'en';
   const { error, loading, showScrollGuard } = useMapLifecycle(mapId, panel.scrollguard, geoviewTheme);
-
-  useEffect(() => {
-    if (!panel.id) return undefined;
-    registerMapAlias(panel.id, mapId);
-    return () => unregisterMapAlias(panel.id!);
-  }, [panel.id, mapId]);
 
   if (error) {
     return (

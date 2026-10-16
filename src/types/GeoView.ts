@@ -1,113 +1,20 @@
-/**
- * GeoView (cgpv) global type definitions
- * Shared across all components that use GeoView
- */
+// Re-exports the subset of GeoView's own (real) types this app uses, instead of hand-rolled
+// duck types - sourced from the `geoview-core-types` devDependency (package.json), a types-only
+// package built straight from geoview-core's source (see the geoview repo's
+// docs/app/accessing-types.md for how it's published/kept in sync). GeoView itself still has no
+// runtime npm package here - it's loaded as a global script (see StoryController.ts) - so these
+// are compile-time-only `import type`s/re-exports, erased entirely before bundling. `ol` is a
+// devDependency purely so these types (which reference OpenLayers internally) resolve; it's never
+// imported by our own runtime code.
+export type { MapViewer } from 'geoview-core-types/src/geo/map/map-viewer';
+export type { AbstractGVLayer } from 'geoview-core-types/src/geo/layer/gv-layers/abstract-gv-layer';
+export type { TypeFeatureInfoEntry, TypeFeatureInfoResult, TypeFieldEntry } from 'geoview-core-types/src/api/types/map-schema-types';
+export type { DomainLayerStatusChangedDelegate } from 'geoview-core-types/src/core/domains/layer-domain';
+// The real fit-options type used by zoom/fit calls (padding/maxZoom/duration, all optional).
+export type { GVFitOptions as FitOptions } from 'geoview-core-types/src/core/utils/constant';
+export type { Extent } from 'ol/extent';
+export type { Coordinate } from 'ol/coordinate';
+// Importing TypeWindow also pulls in geoview-core-types' own `declare global` augmentation of
+// `Window.cgpv`, so this app doesn't need to (re-)declare that global itself.
+export type { TypeWindow } from 'geoview-core-types/src/core/types/global-types';
 
-declare global {
-  interface Window {
-    cgpv: {
-      init: (callback?: () => void) => Promise<void>;
-      // Note: these do not reliably return an unsubscribe function at runtime; guard with `?.()` when calling
-      onMapInit: (callback: (mapViewer: any) => void) => (() => void) | void;
-      onMapReady: (callback: (mapViewer: any) => void) => (() => void) | void;
-      onceMapViewerSet: (filter?: (event: any) => boolean) => Promise<GeoviewMapViewer>;
-      api: {
-        getMapViewerIds: () => string[];
-        hasMapViewer: (mapId: string) => boolean;
-        deleteMapViewer?: (mapId: string, deleteContainer: boolean) => Promise<void>;
-        getMapViewer: (mapId: string) => GeoviewMapViewer | undefined;
-        waitForMapViewer: (mapId: string) => Promise<GeoviewMapViewer>;
-      };
-    };
-  }
-
-  interface GeoviewMapViewer {
-    mapId: string;
-    getZoomFromScale: (scale: number) => number | undefined;
-    getMapScaleFromZoom: (zoom: number) => number | undefined;
-    // GeoView has no data-theme div attribute, only a config field (default
-    // 'geo.ca'); this lets us sync the map to our own story-level theme at runtime.
-    setTheme: (theme: 'dark' | 'light' | 'geo.ca' | 'canada.ca') => void;
-    // OpenLayers View; only what we need to cancel an in-progress fit/animate
-    // before starting a new one, so back-to-back zoom requests don't fight each other.
-    getView: () => { cancelAnimations: () => void };
-    // Zooms to a coordinate ([lon, lat]) or extent ([minLon, minLat, maxLon, maxLat]) given in
-    // plain lon/lat regardless of the map's own projection - GeoView reprojects internally, so
-    // callers (e.g. Interaction execution) never need to know/convert to the map's native CRS.
-    zoomToLonLatExtentOrCoordinate: (extentOrCoordinate: Extent | Coordinate, useAnimation?: boolean, options?: FitOptions) => Promise<void>;
-    controllers: {
-        mapController: {
-            zoomToInitialExtent: () => Promise<void>;
-            zoomToExtent: (extent: Extent, animate?: boolean, options?: FitOptions) => Promise<void>;
-        };
-        layerController: {
-            getGeoviewLayerPaths: () => string[];
-            getGeoviewLayer: (layerPath: string) => GeoviewLayer | undefined;
-        };
-        // Queries every feature of a layer at once (vs. layerController which only reads config/instances).
-        layerSetController: {
-            triggerGetAllFeatureInfo: (layerPath: string, waitForLayer?: boolean) => Promise<TypeFeatureInfoResult>;
-        };
-        uiController: {
-            setCrosshairActive: (active: boolean) => void;
-        };
-    };
-    layer: {
-        waitForLayersLoaded: () => Promise<number>;
-        // Sets (or, if `newValue` omitted, toggles) a layer's visibility; returns the resulting state.
-        setOrToggleLayerVisibility: (layerPath: string, newValue?: boolean) => boolean;
-        // Adds a GeoView layer to the map at runtime from a TypeGeoviewLayerConfig-shaped object.
-        addGeoviewLayer: (geoviewLayerConfig: Record<string, unknown>) => unknown;
-        zoomToLayerExtent: (layerPath: string, useAnimation?: boolean, fitOptions?: FitOptions) => Promise<void>;
-    };
-    delete: () => Promise<void>;
-    waitForMapReady: () => Promise<void>;
-    map?: {
-        getSize: () => [number, number] | undefined;
-    };
-    createMapConfigFromMapState: (maintainGeocoreLayerNames?: boolean) => any;
-  }
-
-  interface GeoviewLayer {
-    getOLSource: () => any;
-    // Shape varies by layer type: a single canvas for raster/WMS/WMTS, or an
-    // object keyed by geometry type (Point/LineString/Polygon) with canvases
-    // for vector layers - kept loose since exact structure is internal to GeoView.
-    getLegend: () => { legend?: unknown } | undefined;
-  }
-
-  // A single field's value from a feature query (see TypeFeatureInfoEntry below).
-  type TypeFieldEntry = {
-    fieldKey: number;
-    value: unknown;
-    dataType: string;
-    alias?: string;
-  };
-
-  // One feature returned by layerSetController.triggerGetAllFeatureInfo - featureIcon is the
-  // feature's own rendered style swatch (correct even for uniqueValue/classBreaks-styled layers),
-  // unlike a layer-level legend icon which only ever reflects one style class.
-  type TypeFeatureInfoEntry = {
-    extent?: Extent;
-    featureIcon?: string;
-    fieldInfo: Partial<Record<string, TypeFieldEntry>>;
-    nameField?: string;
-  };
-
-  type TypeFeatureInfoResult = {
-    results: TypeFeatureInfoEntry[];
-  };
-
-  type Extent = [number, number, number, number]; // [minX, minY, maxX, maxY]
-  type Coordinate = [number, number]; // [x, y]
-
-  type FitOptions = {
-    padding?: [number, number, number, number],
-    maxZoom?: number,
-    duration?: number,
-  };
-
-
-}
-
-export {};

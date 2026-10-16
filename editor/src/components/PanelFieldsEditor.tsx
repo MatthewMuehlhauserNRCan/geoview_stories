@@ -3,13 +3,7 @@ import { Box, Button, IconButton, MenuItem, Switch, TextField, Typography } from
 import { Stack } from './ui/Stack';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import type {
-  DoormatItem,
-  InteractionButton,
-  ManualPoiMapPanel,
-  PointOfInterest,
-  SlideshowItem,
-} from '@/types/StoryConfig';
+import type { DoormatItem, InteractionButton, PointOfInterest, SlideshowItem } from '@/types/StoryConfig';
 import type { DraftPanel } from '../state/editorModel';
 import { saveAsset } from '../state/assetStore';
 import { AssetField } from './AssetField';

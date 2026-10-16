@@ -1,6 +1,5 @@
 import { setStoryLoading, setStoryError, setStoryConfig, setStoryInitialized, setMapReady, resetStoryStore } from '../stores/StoryStore';
 import { loadStoryConfig, configHasMaps } from '@/utils/configLoader';
-import '@/types/GeoView'; // Import GeoView global types
 
 // Only one story runs per page for now (matching StoryStore, which is a single module-level
 // store rather than a registry) - so this is a set of plain functions, not a class/singleton.
