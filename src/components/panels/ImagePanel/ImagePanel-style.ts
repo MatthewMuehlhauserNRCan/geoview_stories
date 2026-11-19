@@ -20,11 +20,13 @@ export const getSxClasses = () => ({
   image: { display: 'block', maxWidth: '100%', maxHeight: { md: '70vh' }, width: 'auto', height: 'auto' },
   imageClickable: { cursor: 'zoom-in' },
   // Sits flush under the image (same rendered width, no gap) with a hairline divider so it
-  // reads as one attached unit rather than a separate floating label.
+  // reads as one attached unit rather than a separate floating label. `action.hover` (not a
+  // hardcoded grey) so this stays legible in dark mode too - a fixed light grey paired with
+  // theme-aware text would otherwise go white-on-white once the theme flips to dark.
   caption: {
     px: 2,
     py: 1,
-    backgroundColor: 'grey.100',
+    backgroundColor: 'action.hover',
     borderTop: '1px solid',
     borderColor: 'divider',
     textAlign: 'center',

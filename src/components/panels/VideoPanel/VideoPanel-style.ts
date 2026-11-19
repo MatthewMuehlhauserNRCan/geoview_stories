@@ -21,5 +21,6 @@ export const getSxClasses = () => ({
     height: 'auto',
     borderRadius: 1,
   }),
-  transcript: { p: 2, backgroundColor: 'grey.100' },
+  // `action.hover` (not a hardcoded grey) so this stays legible in dark mode - see ImagePanel caption.
+  transcript: { p: 2, backgroundColor: 'action.hover' },
 });

@@ -44,7 +44,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ panel }) => {
         />
         {panel.caption && (
           <Box component="figcaption" sx={classes.caption}>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.primary">
               {panel.caption}
             </Typography>
           </Box>

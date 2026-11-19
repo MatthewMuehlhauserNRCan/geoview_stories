@@ -62,7 +62,7 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({ panel }) => {
         <Box sx={classes.videoBody}>{renderVideo()}</Box>
         {panel.transcript && (
           <Box sx={classes.transcript}>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.primary">
               <strong>Transcript: </strong>
               <a href={panel.transcript} target="_blank" rel="noopener noreferrer">
                 View transcript
