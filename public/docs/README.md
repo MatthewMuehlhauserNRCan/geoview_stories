@@ -324,6 +324,8 @@ A whole paragraph rendered larger, e.g. as an intro/lead-in line.
 
 Allowed classes: `lead` (larger body text), `small`, `accent` (primary theme color), `muted` (secondary/dimmer text), `highlight` (background highlight). Any other class name, or any attribute other than `class`, is silently dropped rather than applied - see `STYLE_DIRECTIVE_CLASSES` in `src/components/panels/TextPanel/remarkStyleDirective.ts` for the definitive list and `src/components/panels/TextPanel/TextPanel-style.ts` for how each one looks. Keeping the set fixed (instead of allowing arbitrary CSS) means every style stays theme-aware (adapts to light/dark/custom themes) and keeps colour contrast/sizing choices reviewed up front.
 
+See the demo's "Panel Layout Example" slide ([English](../demo/configs/demo-story.json) / [French](../demo/configs/demo-story-fr.json)) for a working example.
+
 ### image
 
 ```ts
