@@ -3,6 +3,7 @@ import { Box, Card, CardActionArea, Typography } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { DoormatPanel as DoormatPanelType } from '@/types/StoryConfig';
 import { getSxClasses } from './DoormatPanel-style';
+import { usePanelFrameSx } from '../panelStyle';
 
 interface DoormatPanelProps {
   panel: DoormatPanelType;
@@ -10,13 +11,14 @@ interface DoormatPanelProps {
 
 export const DoormatPanel: React.FC<DoormatPanelProps> = ({ panel }) => {
   const classes = getSxClasses();
+  const frameSx = usePanelFrameSx();
   return (
     <Box>
       <Box sx={classes.list}>
         {panel.items.map((item, index) => {
           const external = item.external ?? true;
           return (
-            <Card key={index} elevation={0} sx={classes.card}>
+            <Card key={index} elevation={0} sx={[classes.card, frameSx]}>
               <CardActionArea
                 component="a"
                 href={item.href}

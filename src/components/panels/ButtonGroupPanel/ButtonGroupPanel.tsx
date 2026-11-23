@@ -3,6 +3,7 @@ import { Box, Button } from '@mui/material';
 import type { ButtonGroupPanel as ButtonGroupPanelType } from '@/types/StoryConfig';
 import { runInteraction } from '@/core/interactions/runInteraction';
 import { getSxClasses } from './ButtonGroupPanel-style';
+import { usePanelFrameSx } from '../panelStyle';
 
 interface ButtonGroupPanelProps {
   panel: ButtonGroupPanelType;
@@ -10,6 +11,7 @@ interface ButtonGroupPanelProps {
 
 export const ButtonGroupPanel: React.FC<ButtonGroupPanelProps> = ({ panel }) => {
   const classes = getSxClasses();
+  const frameSx = usePanelFrameSx();
   // Tracks just the one button currently awaiting its interaction, so only that button disables.
   const [runningIndex, setRunningIndex] = useState<number | null>(null);
 
@@ -23,7 +25,7 @@ export const ButtonGroupPanel: React.FC<ButtonGroupPanelProps> = ({ panel }) => 
   };
 
   return (
-    <Box sx={classes.root(panel.direction ?? 'row')}>
+    <Box sx={[classes.root(panel.direction ?? 'row'), frameSx]}>
       {panel.buttons.map((button, index) => (
         <Button
           key={index}

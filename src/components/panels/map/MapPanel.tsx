@@ -7,6 +7,7 @@ import { getSxClasses as getSharedSxClasses } from './map-shared-style';
 import { getSxClasses } from './MapPanel-style';
 import { useMapLifecycle } from './hooks/useMapLifecycle';
 import { resolveMapId } from './mapId';
+import { usePanelFrameSx } from '../panelStyle';
 
 interface MapPanelProps {
   panel: MapPanelType;
@@ -17,6 +18,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
   const mapId = resolveMapId('map', panelInstanceId, panel);
   const shared = getSharedSxClasses();
   const classes = getSxClasses();
+  const frameSx = usePanelFrameSx();
   const geoviewTheme = useTheme().geoviewTheme;
   const lang = useStoryConfig()?.lang ?? 'en';
   const { error, loading, showScrollGuard } = useMapLifecycle(mapId, panel.scrollguard, geoviewTheme);
@@ -37,7 +39,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({ panel, panelInstanceId }) =>
 
   return (
     <Box sx={classes.wrapper}>
-      <Paper elevation={2} sx={shared.paper}>
+      <Paper elevation={2} sx={[shared.paper, frameSx]}>
         <Box sx={{ position: 'relative' }}>
           <Box
             id={mapId}

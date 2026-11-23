@@ -29,7 +29,7 @@
           {
             "type": "text",
             "cssClasses": "right-align",
-            "content": "Every panel type - not just text - accepts an optional `cssClasses` field for extra control over its width and position, independent of the slide's usual layout:\n\n- `left-align` / `right-align` - shifts the panel to one side, capped at a moderate width\n- `center-align` - centers the panel with a moderate width cap\n- `full-width` - removes the width cap entirely, so the panel fills the available space\n- `narrow` / `wide` - a tighter or looser width cap; combine with an alignment class, e.g. `\"narrow right-align\"`\n\nThis panel itself is using `cssClasses: \"right-align\"`.\n\nThe title above shows `titleStyle`: a centered heading with a custom border and background. And this whole slide is four stacked rows (`panel` set to an array of arrays) instead of four separate slides - handy for grouping a few related, title-less blocks under one heading."
+            "content": "Every panel type - not just text - accepts an optional `cssClasses` field for extra control over its width and position, independent of the slide's usual layout:\n\n- `left-align` / `right-align` - shifts the panel to one side, capped at a moderate width\n- `center-align` - centers the panel with a moderate width cap\n- `full-width` - removes the width cap entirely, so the panel fills the available space\n- `narrow` / `wide` - a tighter or looser width cap; combine with an alignment class, e.g. `\"narrow right-align\"`\n\nThis panel itself is using `cssClasses: \"right-align\"`.\n\nThe title above shows `titleStyle`: a centered heading with a custom border and background. And this whole slide is five stacked rows (`panel` set to an array of arrays) instead of five separate slides - handy for grouping a few related, title-less blocks under one heading."
           }
         ],
         [
@@ -52,7 +52,19 @@
         ],
         [
           {
-            "type": "group",
+                        "type": "text",
+                        "cssClasses": "narrow center-align",
+                        "style": {
+                          "border": { "width": 4, "color": "primary.main", "sides": ["left"] },
+                          "borderRadius": 0,
+                          "fontFamily": "Georgia, 'Times New Roman', serif"
+                        },
+                        "content": "### Per-Panel Style Overrides\n\nAny panel can also take a `style` object to change its own look without touching the story theme: `border` (`false` to remove one, or the same border object a `titleStyle` uses), `shadow`, `borderRadius`, `padding`, `backgroundColor`, `color`, `accentColor`, `fontFamily`, and `overlayColor` / `overlayHoverColor` for buttons drawn over photos.\n\nThis panel uses a left accent rule, square corners and a serif font. Colours and font set on a `group` panel also carry into the panels inside it."
+                      }
+                    ],
+                    [
+                      {
+                        "type": "group",
             "panel": [
               [
                 {

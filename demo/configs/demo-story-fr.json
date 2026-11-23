@@ -29,7 +29,7 @@
                     {
                         "type": "text",
                         "cssClasses": "right-align",
-                        "content": "Chaque type de panneau - pas seulement le texte - accepte un champ optionnel `cssClasses` pour contrôler sa largeur et sa position, indépendamment de la mise en page habituelle de la diapositive :\n\n- `left-align` / `right-align` - décale le panneau d'un côté, avec une largeur maximale modérée\n- `center-align` - centre le panneau avec une largeur maximale modérée\n- `full-width` - supprime complètement la limite de largeur\n- `narrow` / `wide` - une limite de largeur plus étroite ou plus large; combinable avec une classe d'alignement, par exemple `\"narrow right-align\"`\n\nCe panneau utilise lui-même `cssClasses: \"right-align\"`.\n\nLe titre ci-dessus utilise `titleStyle` : un titre centré avec une bordure et un arrière-plan personnalisés. Et cette diapositive entière est composée de trois rangées empilées (`panel` défini comme un tableau de tableaux) au lieu de trois diapositives distinctes - pratique pour regrouper quelques blocs sans titre sous un même en-tête."
+                        "content": "Chaque type de panneau - pas seulement le texte - accepte un champ optionnel `cssClasses` pour contrôler sa largeur et sa position, indépendamment de la mise en page habituelle de la diapositive :\n\n- `left-align` / `right-align` - décale le panneau d'un côté, avec une largeur maximale modérée\n- `center-align` - centre le panneau avec une largeur maximale modérée\n- `full-width` - supprime complètement la limite de largeur\n- `narrow` / `wide` - une limite de largeur plus étroite ou plus large; combinable avec une classe d'alignement, par exemple `\"narrow right-align\"`\n\nCe panneau utilise lui-même `cssClasses: \"right-align\"`.\n\nLe titre ci-dessus utilise `titleStyle` : un titre centré avec une bordure et un arrière-plan personnalisés. Et cette diapositive entière est composée de quatre rangées empilées (`panel` défini comme un tableau de tableaux) au lieu de quatre diapositives distinctes - pratique pour regrouper quelques blocs sans titre sous un même en-tête."
                     }
                 ],
                 [
@@ -49,9 +49,21 @@
                         "type": "text",
                         "content": "### Mise en forme du texte en ligne\n\nLe Markdown seul ne permet pas de mettre en forme un mot ou deux au milieu d'une phrase - le recours habituel, le HTML brut (par exemple `<span style=\"...\">`), n'est pas pris en charge ici, et insérer une balise de titre au milieu d'un paragraphe briserait la hiérarchie des titres pour les utilisateurs de lecteurs d'écran. Une directive `style` comble cet écart : du texte :style[accentué]{.accent}, :style[atténué]{.muted}, :style[petit]{.small} et :style[surligné]{.highlight} s'écrit en ligne sous la forme `:style[texte]{.classe}`.\n\nUn paragraphe entier peut utiliser la même directive sous forme de bloc plutôt que de portion de texte :\n\n:::style{.lead}\nCe paragraphe utilise la classe `.lead` pour un rendu plus grand, en style d'introduction.\n:::\n\nSeul cet ensemble fixe de classes est autorisé, afin que le texte stylisé reste toujours conforme aux couleurs et au contraste du thème."
                     }
-                ]
-            ]
-        },
+                                        ],
+                                        [
+                                            {
+                                                "type": "text",
+                                                "cssClasses": "narrow center-align",
+                                                "style": {
+                                                    "border": { "width": 4, "color": "primary.main", "sides": ["left"] },
+                                                    "borderRadius": 0,
+                                                    "fontFamily": "Georgia, 'Times New Roman', serif"
+                                                },
+                                                "content": "### Styles propres à un panneau\n\nTout panneau accepte aussi un objet `style` pour modifier sa propre apparence sans toucher au thème de l'histoire : `border` (`false` pour retirer la bordure, ou le même objet de bordure que `titleStyle`), `shadow`, `borderRadius`, `padding`, `backgroundColor`, `color`, `accentColor`, `fontFamily`, ainsi que `overlayColor` / `overlayHoverColor` pour les boutons affichés par-dessus les photos.\n\nCe panneau utilise un filet d'accent à gauche, des coins carrés et une police à empattements. Les couleurs et la police définies sur un panneau `group` s'appliquent aussi aux panneaux qu'il contient."
+                                            }
+                                        ]
+                                    ]
+                                },
         {
             "title": "Principes directeurs de collaboration",
             "id": "guiding-principles",

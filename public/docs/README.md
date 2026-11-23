@@ -145,6 +145,8 @@ interface StoryThemeConfig {
   paperColor?: string;      // Card/panel background, CSS color
   textColor?: string;       // Primary text color, CSS color
   fontFamily?: string;      // CSS font-family stack
+  overlayColor?: string;      // Background of controls drawn over photos/video (slideshow/lightbox buttons, POI badges, map scroll guard); default rgba(0,0,0,0.55)
+  overlayHoverColor?: string; // Hover state of the same controls; default rgba(0,0,0,0.75)
   geoviewTheme?: "dark" | "light" | "geo.ca" | "canada.ca";
 }
 ```
@@ -261,7 +263,7 @@ This renders as one slide/heading ("Project Photos") with three rows stacked ver
 
 ## Panel Types
 
-Every slide's own `title` (see [Slides](#slides) above) is the section's heading - panels themselves don't have a `title` field, so there's exactly one heading per slide regardless of how many panels it has. Every panel type also accepts an optional `cssClasses` for width/alignment overrides - see [Panel Width & Alignment](#panel-width--alignment-cssclasses) below.
+Every slide's own `title` (see [Slides](#slides) above) is the section's heading - panels themselves don't have a `title` field, so there's exactly one heading per slide regardless of how many panels it has. Every panel type also accepts an optional `cssClasses` for width/alignment overrides - see [Panel Width & Alignment](#panel-width--alignment-cssclasses) below - and an optional `style` for look overrides - see [Panel Style Overrides](#panel-style-overrides-style).
 
 ### Panel Width & Alignment (`cssClasses`)
 
@@ -294,6 +296,44 @@ Every panel type accepts an optional `cssClasses` field - one or more space-sepa
 Classes combine freely, e.g. `"narrow right-align"` narrows a panel and pushes it to the right. For two or more panels sharing a row, put `grow` (or `grow-2`/`grow-3`) on each one that should participate in the split - e.g. `grow` on both a text and image panel gives an even 50/50 split instead of the default 33/66; adding `narrow` to both leaves a gap in the middle (and around the edges) where the slide's own `backgroundImage` can show through.
 
 See the demo's "Panel Layout Example" slide ([English](../demo/configs/demo-story.json) / [French](../demo/configs/demo-story-fr.json)) for a working example.
+
+### Panel Style Overrides (`style`)
+
+Every panel type accepts an optional `style` object that changes just that panel's look, without touching the story [theme](#theming). Unset fields keep the panel's normal look.
+
+```json
+{
+  "type": "text",
+  "style": {
+    "border": { "width": 4, "color": "primary.main", "sides": ["left"] },
+    "borderRadius": 0,
+    "fontFamily": "Georgia, 'Times New Roman', serif"
+  },
+  "content": "..."
+}
+```
+
+```ts
+interface PanelStyle {
+  border?: boolean | HeadingBorderStyle; // false removes the panel's own border (e.g. a map's); true/object adds one - same shape as titleStyle.border
+  shadow?: boolean;                      // false removes any elevation shadow; true adds a soft one
+  borderRadius?: string | number;        // number = px
+  padding?: string | number;             // number = px
+  backgroundColor?: string;              // Panel/card background (the theme's paperColor within this panel)
+  color?: string;                        // Primary text color within this panel
+  accentColor?: string;                  // Theme primary color within this panel (links, buttons, highlights)
+  fontFamily?: string;                   // CSS font-family stack
+  overlayColor?: string;                 // See the theme's overlayColor
+  overlayHoverColor?: string;            // See the theme's overlayHoverColor
+}
+```
+
+There are two kinds of field:
+
+- **Frame fields** (`border`, `shadow`, `borderRadius`, `padding`) apply to the panel's own outer frame: a text/quote/video panel's card, an image's figure, a slideshow's carousel, a map's bordered card (not its POI cards), each doormat card, a button group's container, or a group's container. On a `group` they apply only to the group itself, not to the panels inside it.
+- **Color and font fields** apply as a nested theme scoped to the panel, so anything inside it drawn from theme colors follows along. On a `group` they also carry into every panel inside it (a child panel's own `style` wins). Use plain CSS colors here (theme tokens like `primary.main` only work in `border.color`).
+
+Custom colors aren't checked for contrast - the built-in themes meet WCAG AA, but overrides are the author's responsibility. The GeoView map's own UI isn't affected (it follows `geoviewTheme`).
 
 ### text
 

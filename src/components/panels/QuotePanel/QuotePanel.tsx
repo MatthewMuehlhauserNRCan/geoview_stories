@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import { getSxClasses } from './QuotePanel-style';
+import { usePanelFrameSx } from '../panelStyle';
 
 interface QuotePanelProps {
   quote: string;
@@ -12,8 +13,9 @@ interface QuotePanelProps {
 
 export const QuotePanel: React.FC<QuotePanelProps> = ({ quote, author, role, organization }) => {
   const classes = getSxClasses();
+  const frameSx = usePanelFrameSx();
   return (
-    <Paper elevation={0} sx={classes.paper}>
+    <Paper elevation={0} sx={[classes.paper, frameSx]}>
       <FormatQuoteIcon sx={classes.quoteIcon} />
       <Box sx={classes.body}>
         <Typography variant="h6" component="blockquote" sx={classes.quoteText}>

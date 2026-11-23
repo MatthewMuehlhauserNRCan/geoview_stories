@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 import { VideoPanel as VideoPanelType } from '@/types/StoryConfig';
 import { getSxClasses } from './VideoPanel-style';
+import { usePanelFrameSx } from '../panelStyle';
 
 const VIDEO_MIME_TYPES: Record<string, string> = {
   mp4: 'video/mp4',
@@ -30,6 +31,7 @@ interface VideoPanelProps {
 
 export const VideoPanel: React.FC<VideoPanelProps> = ({ panel }) => {
   const classes = getSxClasses();
+  const frameSx = usePanelFrameSx();
 
   const renderVideo = () => {
     // No platform-specific logic here - any iframe-embeddable URL (YouTube, Vimeo, etc.) works the same way.
@@ -58,7 +60,7 @@ export const VideoPanel: React.FC<VideoPanelProps> = ({ panel }) => {
 
   return (
     <Box sx={classes.wrapper}>
-      <Paper elevation={0} sx={classes.paper}>
+      <Paper elevation={0} sx={[classes.paper, frameSx]}>
         <Box sx={classes.videoBody}>{renderVideo()}</Box>
         {panel.transcript && (
           <Box sx={classes.transcript}>

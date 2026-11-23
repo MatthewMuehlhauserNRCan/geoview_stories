@@ -3,6 +3,12 @@ import { StoryThemeConfig } from '@/types/StoryConfig';
 
 export type GeoviewThemeName = 'dark' | 'light' | 'geo.ca' | 'canada.ca';
 
+export interface OverlayPaletteColor {
+  main: string;
+  hover: string;
+  contrastText: string;
+}
+
 declare module '@mui/material/styles' {
   interface Theme {
     // The GeoView map theme to sync to, resolved from the story's own theme config
@@ -11,9 +17,24 @@ declare module '@mui/material/styles' {
   interface ThemeOptions {
     geoviewTheme?: GeoviewThemeName;
   }
+  // Background for controls drawn on top of photos/video - usable in sx as 'overlay.main' etc.
+  interface Palette {
+    overlay: OverlayPaletteColor;
+  }
+  interface PaletteOptions {
+    overlay?: Partial<OverlayPaletteColor>;
+  }
 }
 
 const DEFAULT_THEME_NAME = 'light';
+
+// Dark in both light and dark mode, since it sits over an arbitrary photo rather than the page -
+// 0.55 keeps white text on it at >= 4.5:1 even over a pure white image.
+const DEFAULT_OVERLAY: OverlayPaletteColor = {
+  main: 'rgba(0, 0, 0, 0.55)',
+  hover: 'rgba(0, 0, 0, 0.75)',
+  contrastText: '#ffffff',
+};
 
 /** Built-in themes, selectable by name from a story config's `theme` field. */
 export const namedThemes: Record<string, StoryThemeConfig> = {
@@ -69,6 +90,11 @@ export const buildStoryTheme = (themeConfig?: string | StoryThemeConfig): Theme 
         ...(resolved.paperColor && { paper: resolved.paperColor }),
       },
       ...(resolved.textColor && { text: { primary: resolved.textColor } }),
+      overlay: {
+        ...DEFAULT_OVERLAY,
+        ...(resolved.overlayColor && { main: resolved.overlayColor }),
+        ...(resolved.overlayHoverColor && { hover: resolved.overlayHoverColor }),
+      },
     },
     typography: {
       fontFamily: resolved.fontFamily ?? DEFAULT_FONT_FAMILY,

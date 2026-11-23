@@ -11,6 +11,7 @@ import { usePoiScrollObserver } from './poi/usePoiScrollObserver';
 import { zoomToPoiTarget } from './poi/poiZoom';
 import { PoiCard } from './poi/PoiCard';
 import { resolveMapId } from './mapId';
+import { usePanelFrameSx } from '../panelStyle';
 import { buildPoisFromLayer, ResolvedPoi } from './poi/buildPoisFromLayer';
 import type { MapViewer } from '@/types/GeoView';
 
@@ -30,6 +31,7 @@ export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelIn
 
   const shared = getSharedSxClasses();
   const ownClasses = getSxClasses();
+  const frameSx = usePanelFrameSx();
   const geoviewTheme = useTheme().geoviewTheme;
   const lang = useStoryConfig()?.lang ?? 'en';
   const { error, loading, showScrollGuard } = useMapLifecycle(mapId, panel.scrollguard, geoviewTheme);
@@ -114,7 +116,7 @@ export const AutoPoiMapPanel: React.FC<AutoPoiMapPanelProps> = ({ panel, panelIn
     <Box ref={containerRef} sx={ownClasses.root(panel.mapPosition)}>
       {/* Map Container - Sticky on mobile and desktop */}
       <Box sx={ownClasses.mapWrapper}>
-        <Paper elevation={2} sx={[shared.paper, ownClasses.mapPaper]}>
+        <Paper elevation={2} sx={[shared.paper, ownClasses.mapPaper, frameSx]}>
           <Box sx={ownClasses.mapBody}>
             <Box
               id={mapId}

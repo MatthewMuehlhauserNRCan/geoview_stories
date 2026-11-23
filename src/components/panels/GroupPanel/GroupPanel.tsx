@@ -5,6 +5,7 @@ import { getSlideRows, rowHasFlowingPairing } from '@/utils/configLoader';
 import { getPanelSx } from '@/components/story/story-styles';
 import { PanelRenderer } from '../PanelRenderer';
 import { getSxClasses } from './GroupPanel-style';
+import { usePanelFrameSx } from '../panelStyle';
 
 interface GroupPanelProps {
   panel: GroupPanelConfig;
@@ -16,10 +17,11 @@ interface GroupPanelProps {
 // per-panel sizing (getPanelSx) so a group behaves like a nested mini-slide-body.
 export const GroupPanel: React.FC<GroupPanelProps> = ({ panel, panelInstanceId }) => {
   const classes = getSxClasses();
+  const frameSx = usePanelFrameSx();
   const rows = getSlideRows(panel.panel);
 
   return (
-    <Box sx={classes.rows}>
+    <Box sx={[classes.rows, frameSx]}>
       {rows.map((row, rowIndex) => {
         const hasMultiplePanels = row.length > 1;
         const hasPairing = rowHasFlowingPairing(row);

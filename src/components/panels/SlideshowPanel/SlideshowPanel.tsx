@@ -6,6 +6,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import CloseIcon from '@mui/icons-material/Close';
 import { SlideshowPanel as SlideshowPanelType } from '@/types/StoryConfig';
 import { getSxClasses } from './SlideshowPanel-style';
+import { usePanelFrameSx } from '../panelStyle';
 
 interface SlideshowPanelProps {
   panel: SlideshowPanelType;
@@ -13,6 +14,7 @@ interface SlideshowPanelProps {
 
 export const SlideshowPanel: React.FC<SlideshowPanelProps> = ({ panel }) => {
   const classes = getSxClasses();
+  const frameSx = usePanelFrameSx();
   const [activeIndex, setActiveIndex] = useState(0);
   const [fullscreenOpen, setFullscreenOpen] = useState(false);
   const { items, loop = false, objectFit = 'cover' } = panel;
@@ -51,7 +53,7 @@ export const SlideshowPanel: React.FC<SlideshowPanelProps> = ({ panel }) => {
   return (
     <Box sx={classes.wrapper}>
       <Box
-        sx={classes.carousel}
+        sx={[classes.carousel, frameSx]}
         role="region"
         aria-roledescription="carousel"
         aria-label="Image gallery"

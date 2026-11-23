@@ -46,9 +46,9 @@ export const getSxClasses = () => ({
     position: 'absolute',
     top: 16,
     right: 16,
-    color: 'common.white',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.7)' },
+    color: 'overlay.contrastText',
+    backgroundColor: 'overlay.main',
+    '&:hover': { backgroundColor: 'overlay.hover' },
   },
   lightboxImage: {
     display: 'block',

@@ -22,7 +22,7 @@ const resolveThemeColor = (theme: Theme, value: string): string => {
   return typeof result === 'string' ? result : value;
 };
 
-const toCssLength = (value: string | number | undefined, fallback: string): string =>
+export const toCssLength = (value: string | number | undefined, fallback: string): string =>
   value === undefined ? fallback : typeof value === 'number' ? `${value}px` : value;
 
 const ALL_HEADING_SIDES: Array<'top' | 'right' | 'bottom' | 'left'> = ['top', 'right', 'bottom', 'left'];
@@ -30,7 +30,7 @@ const ALL_HEADING_SIDES: Array<'top' | 'right' | 'bottom' | 'left'> = ['top', 'r
 /** Longhand per-side border props (not a `border` shorthand string) so MUI's sx system can still
  * resolve a theme token like 'divider' for color, and a partial `sides` list (e.g. just
  * `['bottom']` for a simple rule under the title) only sets the sides actually wanted. */
-const getHeadingBorderSx = (border: boolean | HeadingBorderStyle | undefined) => {
+export const getHeadingBorderSx = (border: boolean | HeadingBorderStyle | undefined) => {
   const opts = typeof border === 'object' ? border : undefined;
   const width = toCssLength(opts?.width, '1px');
   const style = opts?.style || 'solid';

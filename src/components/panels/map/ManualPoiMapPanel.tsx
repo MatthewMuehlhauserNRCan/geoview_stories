@@ -11,6 +11,7 @@ import { zoomToPoiTarget } from './poi/poiZoom';
 import { getLayerLegendIconDataUrl } from './poi/legend-utils';
 import { PoiCard } from './poi/PoiCard';
 import { resolveMapId } from './mapId';
+import { usePanelFrameSx } from '../panelStyle';
 import type { Extent, MapViewer } from '@/types/GeoView';
 import type VectorSource from 'ol/source/Vector';
 
@@ -30,6 +31,7 @@ export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, pan
 
   const shared = getSharedSxClasses();
   const ownClasses = getSxClasses();
+  const frameSx = usePanelFrameSx();
   const geoviewTheme = useTheme().geoviewTheme;
   const lang = useStoryConfig()?.lang ?? 'en';
   const { error, loading, showScrollGuard } = useMapLifecycle(mapId, panel.scrollguard, geoviewTheme);
@@ -160,7 +162,7 @@ export const ManualPoiMapPanel: React.FC<ManualPoiMapPanelProps> = ({ panel, pan
     <Box sx={ownClasses.root(panel.mapPosition)}>
       {/* Map Container - Sticky on mobile and desktop */}
       <Box sx={ownClasses.mapWrapper}>
-        <Paper elevation={2} sx={[shared.paper, ownClasses.mapPaper]}>
+        <Paper elevation={2} sx={[shared.paper, ownClasses.mapPaper, frameSx]}>
           <Box sx={ownClasses.mapBody}>
             <Box
               id={mapId}

@@ -3,6 +3,7 @@ import { Box, Typography, Modal, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { ImagePanel as ImagePanelType } from '@/types/StoryConfig';
 import { getSxClasses } from './ImagePanel-style';
+import { usePanelFrameSx } from '../panelStyle';
 
 interface ImagePanelProps {
   panel: ImagePanelType;
@@ -10,6 +11,7 @@ interface ImagePanelProps {
 
 export const ImagePanel: React.FC<ImagePanelProps> = ({ panel }) => {
   const classes = getSxClasses();
+  const frameSx = usePanelFrameSx();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   // Opt-out rather than opt-in: full screen on click is the expected behavior
   // for a story image unless a panel explicitly disables it.
@@ -21,7 +23,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ panel }) => {
 
   return (
     <Box sx={classes.wrapper}>
-      <Box component="figure" sx={classes.figure}>
+      <Box component="figure" sx={[classes.figure, frameSx]}>
         <Box
           component="img"
           src={panel.src}

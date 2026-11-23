@@ -32,7 +32,7 @@ export const getSxClasses = () => ({
     zIndex: 1000,
   },
   scrollGuardOverlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'overlay.main',
     zIndex: 1001,
     transition: 'opacity 0.2s',
   },

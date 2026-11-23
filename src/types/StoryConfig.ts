@@ -34,6 +34,10 @@ export interface StoryThemeConfig {
   paperColor?: string; // Card/panel background
   textColor?: string; // Primary text color
   fontFamily?: string;
+  // Translucent background for controls drawn over photos/video (slideshow/lightbox buttons, POI
+  // photo badges, map scroll guard) - deliberately not tied to `mode`, since it sits on an image.
+  overlayColor?: string;
+  overlayHoverColor?: string;
   // Which GeoView map theme to use ('dark' | 'light' | 'geo.ca' | 'canada.ca').
   // GeoView only understands its own 4 values, so this can't always be inferred
   // from a custom app theme's mode - set explicitly if the auto-guess is wrong.
@@ -132,6 +136,28 @@ export interface BasePanel {
   // Optional utility class(es) from src/styles/panels.css (e.g. "narrow right-align") for
   // width/alignment overrides - works on every panel type, not just text.
   cssClasses?: string;
+  // Look overrides for just this panel (see PanelStyle). Colors/font cascade into a group's child
+  // panels like a nested theme; frame fields (border/shadow/radius/padding) apply to this panel only.
+  style?: PanelStyle;
+}
+
+// Per-panel look overrides. Colors/font are applied as a nested theme scoped to the panel, so
+// anything inside it drawn from theme tokens follows along; the frame fields apply to the panel's
+// own outer card/frame (a text panel's paper, a map's bordered card, each doormat card, a group's
+// container, etc.). Lengths given as numbers are px. Unset fields keep the panel's normal look.
+export interface PanelStyle {
+  // `false` removes the panel's own border (e.g. a map's); `true`/object adds one, same shape as
+  // a title's border (`sides: ['left']` for an accent rule, etc.).
+  border?: boolean | HeadingBorderStyle;
+  shadow?: boolean; // `false` removes any elevation shadow; `true` adds a soft one
+  borderRadius?: string | number;
+  padding?: string | number;
+  backgroundColor?: string; // Panel/card background (theme `paperColor` within this panel)
+  color?: string; // Primary text color within this panel
+  accentColor?: string; // Theme primary color within this panel (links, buttons, highlights)
+  fontFamily?: string;
+  overlayColor?: string; // See StoryThemeConfig.overlayColor
+  overlayHoverColor?: string;
 }
 
 // A panel that itself holds other panels, laid out in rows exactly like Slide.panel (a flat

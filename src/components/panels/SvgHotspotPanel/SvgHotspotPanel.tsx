@@ -7,6 +7,7 @@ import { useStoryConfig } from '@/core/stores/StoryStore';
 import { useScrollToSlide } from '@/hooks/useScrollToSlide';
 import { generateSlideId } from '@/utils/configLoader';
 import { getSxClasses, HOTSPOT_CLASS, SHADOW_STYLES } from './SvgHotspotPanel-style';
+import { usePanelFrameSx } from '../panelStyle';
 
 const INTERACTION_LINK_PREFIX = '#interaction:';
 const UNSAFE_HREF = /^\s*(javascript|data|vbscript):/i;
@@ -42,6 +43,7 @@ const loadSanitizedSvg = async (src: string): Promise<string> => {
  */
 export const SvgHotspotPanel: React.FC<SvgHotspotPanelProps> = ({ panel }) => {
   const classes = getSxClasses();
+  const frameSx = usePanelFrameSx();
   const hostRef = useRef<HTMLDivElement>(null);
   const scrollToSlide = useScrollToSlide(64);
   const slides = useStoryConfig()?.slides;
@@ -144,7 +146,7 @@ export const SvgHotspotPanel: React.FC<SvgHotspotPanelProps> = ({ panel }) => {
 
   return (
     <Box sx={classes.wrapper}>
-      <Box component="figure" sx={classes.figure}>
+      <Box component="figure" sx={[classes.figure, frameSx]}>
         {error ? (
           <Typography color="error" variant="body2" sx={{ p: 2 }}>
             {error}

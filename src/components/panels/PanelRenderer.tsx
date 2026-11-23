@@ -14,13 +14,20 @@ import { GroupPanel } from './GroupPanel/GroupPanel';
 import { ButtonGroupPanel } from './ButtonGroupPanel/ButtonGroupPanel';
 import { Box, Typography } from '@mui/material';
 import { getSxClasses } from './PanelRenderer-style';
+import { PanelStyleScope } from './panelStyle';
 
 interface PanelRendererProps {
   panel: Panel;
   panelInstanceId?: string;
 }
 
-export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstanceId }) => {
+export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstanceId }) => (
+  <PanelStyleScope style={panel.style}>
+    <PanelContent panel={panel} panelInstanceId={panelInstanceId} />
+  </PanelStyleScope>
+);
+
+const PanelContent: React.FC<PanelRendererProps> = ({ panel, panelInstanceId }) => {
   const classes = getSxClasses();
 
   switch (panel.type) {

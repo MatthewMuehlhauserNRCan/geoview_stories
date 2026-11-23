@@ -7,7 +7,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import type { Panel } from '@/types/StoryConfig';
 import type { DraftPanel } from '../state/editorModel';
 import { PANEL_TYPE_LABELS, PANEL_TYPES, createDefaultPanel } from '../state/panelDefaults';
-import { CommonPanelFields, PanelFieldsEditor } from './PanelFieldsEditor';
+import { CommonPanelFields, PanelFieldsEditor, PanelStyleFields } from './PanelFieldsEditor';
 import type { useEditorState } from '../state/useEditorState';
 
 interface PanelEditorProps {
@@ -76,6 +76,7 @@ export const PanelEditor: React.FC<PanelEditorProps> = ({
           Layout
         </Typography>
         <CommonPanelFields panel={panel} onChange={onChange} />
+        <PanelStyleFields panel={panel} onChange={onChange} />
       </Stack>
     </Paper>
   );

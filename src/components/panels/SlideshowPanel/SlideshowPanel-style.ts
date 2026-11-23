@@ -23,9 +23,9 @@ export const getSxClasses = () => ({
     position: 'absolute',
     top: 8,
     right: 8,
-    color: 'common.white',
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-    '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.55)' },
+    color: 'overlay.contrastText',
+    backgroundColor: 'overlay.main',
+    '&:hover': { backgroundColor: 'overlay.hover' },
   },
   // Positioned on whichever side leaves the important part of the photo uncovered
   textOverlay: (position: 'left' | 'right') => ({
@@ -37,10 +37,10 @@ export const getSxClasses = () => ({
     display: 'flex',
     alignItems: 'center',
     p: { xs: 2, sm: 3 },
-    backgroundColor: 'rgba(0, 0, 0, 0.55)',
+    backgroundColor: 'overlay.main',
   }),
   overlayText: {
-    color: 'common.white',
+    color: 'overlay.contrastText',
     lineHeight: 1.6,
   },
   navButton: (side: 'left' | 'right') => ({
@@ -48,9 +48,9 @@ export const getSxClasses = () => ({
     top: '50%',
     transform: 'translateY(-50%)',
     [side]: 8,
-    color: 'common.white',
+    color: 'overlay.contrastText',
     backgroundColor: 'transparent',
-    '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.4)' },
+    '&:hover': { backgroundColor: 'overlay.main' },
     '&.Mui-disabled': { color: 'rgba(255, 255, 255, 0.3)' },
   }),
   dots: {

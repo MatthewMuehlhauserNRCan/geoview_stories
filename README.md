@@ -182,7 +182,7 @@ A story can select a built-in theme by name, or define its own:
 }
 ```
 
-Built-in themes are `light` (default) and `dark`. A custom theme object can set `mode`, `primaryColor`, `secondaryColor`, `backgroundColor`, `paperColor`, `textColor`, `fontFamily`, and `geoviewTheme` (which GeoView map theme to sync to - GeoView only understands `dark`/`light`/`geo.ca`/`canada.ca`, so it's inferred from `mode` unless set explicitly).
+Built-in themes are `light` (default) and `dark`. A custom theme object can set `mode`, `primaryColor`, `secondaryColor`, `backgroundColor`, `paperColor`, `textColor`, `fontFamily`, `overlayColor`/`overlayHoverColor` (controls drawn over photos/video), and `geoviewTheme` (which GeoView map theme to sync to - GeoView only understands `dark`/`light`/`geo.ca`/`canada.ca`, so it's inferred from `mode` unless set explicitly).
 
 To reuse the exact same config file with a different theme (e.g. a `_dark` variant of a page) without duplicating it, add a `data-theme` attribute to the container element instead of touching the JSON - see `demo/index_dark.html` for a working example that reuses `demo/configs/demo-story.json` as-is:
 

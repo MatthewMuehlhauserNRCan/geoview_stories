@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Autocomplete, Box, Button, IconButton, MenuItem, Switch, TextField, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Box, Button, IconButton, MenuItem, Switch, TextField, Typography } from '@mui/material';
 import { Stack } from './ui/Stack';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import type { DoormatItem, InteractionButton, PointOfInterest, SlideshowItem, SvgHotspot } from '@/types/StoryConfig';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import type { DoormatItem, InteractionButton, PanelStyle, PointOfInterest, SlideshowItem, SvgHotspot } from '@/types/StoryConfig';
 import type { DraftPanel } from '../state/editorModel';
 import { assetIdFromRef, getAsset, isAssetRef, saveAsset } from '../state/assetStore';
 import { AssetField } from './AssetField';
@@ -545,3 +546,82 @@ export const CommonPanelFields: React.FC<{ panel: DraftPanel; onChange: (patch: 
     onChange={(v) => onChange({ cssClasses: v || undefined })}
   />
 );
+
+type OnOffDefault = '' | 'on' | 'off';
+const toOnOff = (v: boolean | undefined): OnOffDefault => (v === undefined ? '' : v ? 'on' : 'off');
+const fromOnOff = (v: string): boolean | undefined => (v === '' ? undefined : v === 'on');
+const toLength = (v: string): string | number | undefined => (v === '' ? undefined : /^\d+(\.\d+)?$/.test(v) ? Number(v) : v);
+
+/** Optional per-panel look overrides (`panel.style`) - collapsed by default since most panels won't use it. */
+export const PanelStyleFields: React.FC<{ panel: DraftPanel; onChange: (patch: Partial<DraftPanel>) => void }> = ({
+  panel,
+  onChange,
+}) => {
+  const style: PanelStyle = panel.style ?? {};
+  const update = (patch: Partial<PanelStyle>) => {
+    const next = Object.fromEntries(
+      Object.entries({ ...style, ...patch }).filter(([, v]) => v !== undefined && v !== '')
+    ) as PanelStyle;
+    onChange({ style: Object.keys(next).length ? next : undefined });
+  };
+  const isCustomBorder = typeof style.border === 'object';
+  // Captured once - Accordion's defaultExpanded must not change after mount.
+  const [initiallyExpanded] = useState(!!panel.style);
+
+  return (
+    <Accordion disableGutters elevation={0} variant="outlined" defaultExpanded={initiallyExpanded}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Typography variant="body2">Style overrides{panel.style ? ` (${Object.keys(panel.style).length})` : ''}</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Stack gap={1.5}>
+          <Stack direction="row" gap={1}>
+            <TextField
+              select
+              label="Border"
+              value={isCustomBorder ? 'custom' : toOnOff(style.border as boolean | undefined)}
+              onChange={(e) => e.target.value !== 'custom' && update({ border: fromOnOff(e.target.value) })}
+              size="small"
+              fullWidth
+              helperText={isCustomBorder ? 'Custom border object - edit in JSON' : undefined}
+            >
+              <MenuItem value="">Default</MenuItem>
+              <MenuItem value="off">None</MenuItem>
+              <MenuItem value="on">Show</MenuItem>
+              {isCustomBorder && <MenuItem value="custom">Custom</MenuItem>}
+            </TextField>
+            <TextField
+              select
+              label="Shadow"
+              value={toOnOff(style.shadow)}
+              onChange={(e) => update({ shadow: fromOnOff(e.target.value) })}
+              size="small"
+              fullWidth
+            >
+              <MenuItem value="">Default</MenuItem>
+              <MenuItem value="off">None</MenuItem>
+              <MenuItem value="on">Show</MenuItem>
+            </TextField>
+          </Stack>
+          <Stack direction="row" gap={1}>
+            <Field label="Border radius (px or CSS)" value={style.borderRadius} onChange={(v) => update({ borderRadius: toLength(v) })} />
+            <Field label="Padding (px or CSS)" value={style.padding} onChange={(v) => update({ padding: toLength(v) })} />
+          </Stack>
+          <Field label="Background color" value={style.backgroundColor} onChange={(v) => update({ backgroundColor: v })} />
+          <Field label="Text color" value={style.color} onChange={(v) => update({ color: v })} />
+          <Field
+            label="Accent color"
+            value={style.accentColor}
+            onChange={(v) => update({ accentColor: v })}
+            helperText="Theme primary color within this panel (links, buttons, highlights)"
+          />
+          <Field label="Font family" value={style.fontFamily} onChange={(v) => update({ fontFamily: v })} />
+          <Stack direction="row" gap={1}>
+            <Field label="Overlay color" value={style.overlayColor} onChange={(v) => update({ overlayColor: v })} />
+            <Field label="Overlay hover color" value={style.overlayHoverColor} onChange={(v) => update({ overlayHoverColor: v })} />
+          </Stack>
+        </Stack>
+      </AccordionDetails>
+    </Accordion>
+  );
+};

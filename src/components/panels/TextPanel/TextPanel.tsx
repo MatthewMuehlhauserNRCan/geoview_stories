@@ -5,6 +5,7 @@ import remarkDirective from 'remark-directive';
 import { TextPanel as TextPanelType } from '@/types/StoryConfig';
 import { runInteraction } from '@/core/interactions/runInteraction';
 import { getSxClasses } from './TextPanel-style';
+import { usePanelFrameSx } from '../panelStyle';
 import { remarkStyleDirective } from './remarkStyleDirective';
 
 const INTERACTION_LINK_PREFIX = '#interaction:';
@@ -15,6 +16,7 @@ interface TextPanelProps {
 
 export const TextPanel: React.FC<TextPanelProps> = ({ panel }) => {
   const classes = getSxClasses();
+  const frameSx = usePanelFrameSx();
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
 
@@ -47,7 +49,7 @@ export const TextPanel: React.FC<TextPanelProps> = ({ panel }) => {
   const content = panel.contentFile ? fileContent : panel.content;
 
   return (
-    <Paper elevation={0} sx={classes.paper}>
+    <Paper elevation={0} sx={[classes.paper, frameSx]}>
       <Box sx={classes.content}>
         {fileError && (
           <Typography color="error" variant="body2">
