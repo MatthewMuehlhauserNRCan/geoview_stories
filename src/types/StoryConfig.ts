@@ -116,7 +116,19 @@ export interface Slide {
 }
 
 export interface BasePanel {
-  type: 'text' | 'image' | 'map' | 'video' | 'slideshow' | 'manual-poi-map' | 'auto-poi-map' | 'quote' | 'doormat' | 'group' | 'button-group';
+  type:
+    | 'text'
+    | 'image'
+    | 'svg-hotspots'
+    | 'map'
+    | 'video'
+    | 'slideshow'
+    | 'manual-poi-map'
+    | 'auto-poi-map'
+    | 'quote'
+    | 'doormat'
+    | 'group'
+    | 'button-group';
   // Optional utility class(es) from src/styles/panels.css (e.g. "narrow right-align") for
   // width/alignment overrides - works on every panel type, not just text.
   cssClasses?: string;
@@ -157,6 +169,26 @@ export interface ImagePanel extends BasePanel {
   altText?: string;
   caption?: string;
   fullscreen?: boolean;
+}
+
+// One clickable region of an SvgHotspotPanel, bound to an element in the SVG by its own `id`.
+export interface SvgHotspot {
+  targetId: string; // `id` attribute of the element (circle, path, <g> group, ...) inside the SVG file
+  label: string; // Accessible name and hover tooltip
+  // A URL, `#<Slide.id>` to scroll to a slide, or `#interaction:<id>` to run an Interaction
+  href: string;
+  external?: boolean; // Opens in a new tab; defaults to true for absolute http(s) URLs, false otherwise
+}
+
+// An SVG graphic inlined into the page so individual shapes inside it can act as links. The same
+// panel type works for any graphic - how many hotspots there are and which shapes they map to is
+// entirely driven by `hotspots`, not by the component.
+export interface SvgHotspotPanel extends BasePanel {
+  type: 'svg-hotspots';
+  src: string; // Path/URL to an .svg file (fetched at runtime and sanitized before being inlined)
+  altText?: string;
+  caption?: string;
+  hotspots: SvgHotspot[];
 }
 
 export interface MapPanel extends BasePanel {
@@ -301,6 +333,7 @@ export interface ButtonGroupPanel extends BasePanel {
 export type Panel =
   | TextPanel
   | ImagePanel
+  | SvgHotspotPanel
   | MapPanel
   | ManualPoiMapPanel
   | AutoPoiMapPanel

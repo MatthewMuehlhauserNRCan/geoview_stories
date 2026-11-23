@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
-import { Slide as SlideType } from '@/types/StoryConfig';
+import { Panel, Slide as SlideType } from '@/types/StoryConfig';
 import { PanelRenderer } from '../panels/PanelRenderer';
 import { getSlideRows, rowHasFlowingPairing } from '@/utils/configLoader';
 import { useStoryConfig } from '@/core/stores/StoryStore';
@@ -21,6 +21,8 @@ const HEADING_BY_LEVEL = {
   4: { variant: 'subtitle1', component: 'h4' },
 } as const;
 
+const MEDIA_PANEL_TYPES: Panel['type'][] = ['image', 'svg-hotspots', 'map', 'video', 'slideshow'];
+
 export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideId, index }, ref) => {
   const theme = useTheme();
   const classes = getSxClasses(theme).slide;
@@ -28,7 +30,7 @@ export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideI
   const rows = getSlideRows(slide.panel);
   // Slide-level (not per-row) media check, so the slide's own min-height pacing kicks in as long
   // as at least one stacked row has media - not just when the very first row does.
-  const hasMedia = rows.some(row => row.some(p => ['image', 'map', 'video', 'slideshow'].includes(p.type)));
+  const hasMedia = rows.some(row => row.some(p => MEDIA_PANEL_TYPES.includes(p.type)));
   // Story-wide default (if any) plus this slide's own overrides, field by field - lets a story set
   // one look for every title without repeating it, while any slide can still override just the
   // fields it cares about (e.g. `border: false` opts back out of a default border for one slide).
@@ -56,7 +58,7 @@ export const Slide = forwardRef<HTMLElement | null, SlideProps>(({ slide, slideI
               // Determine layout: horizontal if text + image/map, vertical otherwise - computed per
               // row, since each stacked row lays out independently of its siblings.
               const hasMultiplePanels = row.length > 1;
-              const rowHasMedia = row.some(p => ['image', 'map', 'video', 'slideshow'].includes(p.type));
+              const rowHasMedia = row.some(p => MEDIA_PANEL_TYPES.includes(p.type));
               const hasPairing = rowHasFlowingPairing(row);
               // Any multi-panel row can lay out side by side on desktop (stacked on mobile), not
               // just the text/group+companion pairing - that's what lets cssClasses (grow/grow-2/

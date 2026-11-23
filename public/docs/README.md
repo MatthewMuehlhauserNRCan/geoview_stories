@@ -16,6 +16,7 @@ Complete reference for GeoView Story Library config JSON files: story structure,
 - [Panel Types](#panel-types)
   - [text](#text)
   - [image](#image)
+  - [svg-hotspots](#svg-hotspots)
   - [video](#video)
   - [map](#map)
   - [manual-poi-map](#manual-poi-map)
@@ -320,6 +321,51 @@ interface ImagePanel {
 
 `fullscreen` (Optional): click (or Enter/Space) opens a full-screen view. Set to `false` to disable. **Not shown in demo.**
 
+### svg-hotspots
+
+An SVG graphic whose individual shapes act as links - e.g. a diagram of five labelled circles, each linking somewhere different. Works with any SVG and any number of clickable shapes: which shapes are clickable, and where each one goes, is set entirely by `hotspots`.
+
+```ts
+interface SvgHotspotPanel {
+  type: "svg-hotspots";
+  src: string;            // Required, path/URL to an .svg file
+  altText?: string;        // Accessible name for the graphic as a whole
+  caption?: string;        // Shown below the graphic
+  hotspots: SvgHotspot[];  // Required
+}
+
+interface SvgHotspot {
+  targetId: string;   // Required, the `id` attribute of the element inside the SVG
+  label: string;      // Required, tooltip and screen reader text
+  href: string;       // Required, a URL, "#<slideId>", or "#interaction:<id>"
+  external?: boolean; // Opens in a new tab; default true for http(s) URLs, false otherwise
+}
+```
+
+```json
+{
+  "type": "svg-hotspots",
+  "src": "./images/principles.svg",
+  "altText": "Five guiding principles",
+  "hotspots": [
+    { "targetId": "respect", "label": "Respect", "href": "https://example.ca/respect" },
+    { "targetId": "partnership", "label": "Partnership", "href": "#partnership-slide" },
+    { "targetId": "rapids", "label": "Zoom to the rapids", "href": "#interaction:zoom-rapids" }
+  ]
+}
+```
+
+**Preparing the SVG:** give each clickable shape an `id` in your drawing tool (Illustrator: name the object in the Layers panel and export with "Object IDs: Layer Names"; Inkscape: Object Properties > ID; Figma: the layer name). To make a circle *and* its text label clickable together, group them and put the `id` on the group (`<g id="respect">`) rather than on the circle alone. The SVG should have a `viewBox` so it can scale to the column (one is added automatically from `width`/`height` if missing).
+
+**`href` options:**
+- An `http(s)` URL (or any other URL) - opens in a new tab unless `external` is `false`.
+- `#<slideId>` - scrolls to the slide whose own `id` field matches, the same as a TOC link.
+- `#interaction:<id>` - runs a configured [Interaction](#interactions), the same as a [`button-group`](#button-group) button.
+
+The SVG is fetched at runtime, sanitized (scripts, event handlers, embedded HTML, etc. are removed), and rendered in its own isolated scope - so `<style>` blocks inside it (e.g. Illustrator's `.cls-1 { ... }`) can't affect the rest of the page, and two graphics using the same ids don't conflict. Hotspots are keyboard accessible (Tab, then Enter/Space) and get a hover/focus highlight. A `targetId` that doesn't match any element logs a warning to the browser console, and the story editor suggests the ids it finds in the SVG.
+
+> See the demo's "Clickable Graphic Example" slide ([English](../demo/configs/demo-story.json) / [French](../demo/configs/demo-story-fr.json)) for a working example.
+
 ### video
 
 ```ts
@@ -563,7 +609,7 @@ interface InteractionButton {
 
 ## Interactions
 
-A story-wide list of named, reusable map actions - defined once at the top level (`StoryConfig.interactions`) and triggered from any number of [`button-group`](#button-group) buttons or a `#interaction:<id>` link inside any [`text`](#text) panel's Markdown, from anywhere in the story.
+A story-wide list of named, reusable map actions - defined once at the top level (`StoryConfig.interactions`) and triggered from any number of [`button-group`](#button-group) buttons, [`svg-hotspots`](#svg-hotspots) shapes, or a `#interaction:<id>` link inside any [`text`](#text) panel's Markdown, from anywhere in the story.
 
 ```ts
 interface BaseInteraction {

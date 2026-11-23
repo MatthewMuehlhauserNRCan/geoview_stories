@@ -4,6 +4,7 @@ import { nextKey, type DraftPanel } from './editorModel';
 export const PANEL_TYPE_LABELS: Record<Panel['type'], string> = {
   text: 'Text',
   image: 'Image',
+  'svg-hotspots': 'SVG with clickable hotspots',
   video: 'Video',
   map: 'Map',
   'manual-poi-map': 'Manual POI Map',
@@ -25,6 +26,8 @@ export const createDefaultPanel = (type: Panel['type']): DraftPanel => {
       return { _key, type, content: 'New text panel' };
     case 'image':
       return { _key, type, src: '' };
+    case 'svg-hotspots':
+      return { _key, type, src: '', hotspots: [] };
     case 'video':
       return { _key, type, src: '', videoType: 'embed' };
     case 'map':

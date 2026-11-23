@@ -152,6 +152,7 @@ Story configurations are JSON files that define the structure and content. See `
 
 - **text** - Markdown content with optional CSS classes
 - **image** - Displays images with captions; click (or Enter/Space) opens a full-screen view unless `fullscreen: false` is set
+- **svg-hotspots** - An SVG graphic whose shapes (matched by their SVG element `id`) link to URLs, other slides, or map interactions
 - **video** - Embed YouTube, local, or external videos, with optional autoplay, caption, and transcript link
 - **map** - Basic GeoView map
 - **quote** - Styled quotations with attribution

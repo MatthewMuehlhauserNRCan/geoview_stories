@@ -282,6 +282,26 @@
             ]
         },
         {
+            "title": "Exemple de graphique cliquable",
+            "id": "svg-hotspots-example",
+            "panel": [
+                {
+                    "type": "text",
+                    "content": "Un panneau **svg-hotspots** transforme des formes à l'intérieur de n'importe quel graphique SVG en liens. Chaque cercle est associé, par l'identifiant de son élément SVG, à un lien : les deux premiers mènent à d'autres diapositives de ce récit, le troisième ouvre un site externe dans un nouvel onglet.\n\nLe même type de panneau fonctionne pour n'importe quel graphique, peu importe le nombre de formes cliquables - seule la liste `hotspots` de la configuration change. Essayez aussi d'atteindre les cercles avec la touche Tab."
+                },
+                {
+                    "type": "svg-hotspots",
+                    "src": "./images/hotspots-demo-fr.svg",
+                    "altText": "Trois cercles menant à du contenu connexe",
+                    "hotspots": [
+                        { "targetId": "maps", "label": "Explorer les cartes", "href": "#4-basic-map" },
+                        { "targetId": "resources", "label": "Autres ressources", "href": "#9-additional-resources-example" },
+                        { "targetId": "open-data", "label": "Cartes ouvertes sur le Portail du gouvernement ouvert", "href": "https://ouvert.canada.ca/fr/cartes-ouvertes" }
+                    ]
+                }
+            ]
+        },
+        {
             "title": "Prochaines étapes",
             "id": "next-steps",
             "panel": [

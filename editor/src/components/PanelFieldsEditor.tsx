@@ -1,11 +1,11 @@
-import React from 'react';
-import { Box, Button, IconButton, MenuItem, Switch, TextField, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Autocomplete, Box, Button, IconButton, MenuItem, Switch, TextField, Typography } from '@mui/material';
 import { Stack } from './ui/Stack';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import type { DoormatItem, InteractionButton, PointOfInterest, SlideshowItem } from '@/types/StoryConfig';
+import type { DoormatItem, InteractionButton, PointOfInterest, SlideshowItem, SvgHotspot } from '@/types/StoryConfig';
 import type { DraftPanel } from '../state/editorModel';
-import { saveAsset } from '../state/assetStore';
+import { assetIdFromRef, getAsset, isAssetRef, saveAsset } from '../state/assetStore';
 import { AssetField } from './AssetField';
 import { RowsEditor } from './RowsEditor';
 import type { useEditorState } from '../state/useEditorState';
@@ -98,6 +98,98 @@ function RepeatableList<T>({
   );
 }
 
+// Elements that never render on their own, so an id on them (or inside them) can't be a hotspot.
+const NON_RENDERED_SVG = 'defs, clipPath, mask, linearGradient, radialGradient, pattern, filter, symbol, marker, style, title, desc, metadata';
+
+/** Reads the SVG at `src` (an uploaded asset or a reachable URL) and lists the ids of its visible elements. */
+const useSvgElementIds = (src: string | undefined): string[] => {
+  const [ids, setIds] = useState<string[]>([]);
+  useEffect(() => {
+    setIds([]);
+    if (!src) return;
+    let cancelled = false;
+    const loadText = isAssetRef(src)
+      ? getAsset(assetIdFromRef(src)).then((stored) => stored?.blob.text() ?? '')
+      : fetch(src).then((res) => (res.ok ? res.text() : ''));
+    loadText
+      .then((text) => {
+        if (cancelled || !text) return;
+        const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+        const found = Array.from(doc.querySelectorAll('[id]'))
+          .filter((el) => el !== doc.documentElement && !el.closest(NON_RENDERED_SVG))
+          .map((el) => el.id);
+        setIds([...new Set(found)]);
+      })
+      // A path the editor itself can't reach just means no suggestions - ids can still be typed.
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [src]);
+  return ids;
+};
+
+const SvgHotspotsFields: React.FC<{
+  panel: Extract<DraftPanel, { type: 'svg-hotspots' }>;
+  onChange: (patch: Partial<DraftPanel>) => void;
+  interactionIds: string[];
+}> = ({ panel, onChange, interactionIds }) => {
+  const svgIds = useSvgElementIds(panel.src);
+  return (
+    <Stack gap={1.5}>
+      <AssetField label="SVG file" value={panel.src} onChange={(v) => onChange({ src: v ?? '' })} accept="image/svg+xml,.svg" />
+      <Field label="Alt text" value={panel.altText} onChange={(v) => onChange({ altText: v })} />
+      <Field label="Caption" value={panel.caption} onChange={(v) => onChange({ caption: v })} />
+      <RepeatableList<SvgHotspot>
+        label="Hotspots"
+        items={panel.hotspots}
+        onChange={(hotspots) => onChange({ hotspots })}
+        createItem={() => ({ targetId: '', label: '', href: '' })}
+        renderItem={(item, _i, update) => {
+          const unknownId = !!item.targetId && svgIds.length > 0 && !svgIds.includes(item.targetId);
+          return (
+            <Stack gap={1}>
+              <Autocomplete
+                freeSolo
+                options={svgIds}
+                inputValue={item.targetId}
+                onInputChange={(_e, v) => update({ targetId: v })}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="SVG element id"
+                    size="small"
+                    error={unknownId}
+                    helperText={
+                      unknownId
+                        ? 'No visible element with this id in the SVG'
+                        : svgIds.length
+                          ? `${svgIds.length} element ids found in the SVG`
+                          : 'The id attribute of the shape/group to make clickable'
+                    }
+                  />
+                )}
+              />
+              <Field label="Label (tooltip and screen reader text)" value={item.label} onChange={(v) => update({ label: v })} />
+              <Field
+                label="Link"
+                value={item.href}
+                onChange={(v) => update({ href: v })}
+                helperText={`A URL, #<slide id>, or #interaction:<id>${interactionIds.length ? ` (available: ${interactionIds.join(', ')})` : ''}`}
+              />
+              <BoolField
+                label="Opens in new tab (default on for http(s) URLs)"
+                value={item.external ?? /^https?:\/\//i.test(item.href)}
+                onChange={(v) => update({ external: v })}
+              />
+            </Stack>
+          );
+        }}
+      />
+    </Stack>
+  );
+};
+
 /** Renders the field editor for whichever panel type this draft panel currently is. */
 export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange, slideIndex, groupPath, actions }) => {
   switch (panel.type) {
@@ -122,6 +214,15 @@ export const PanelFieldsEditor: React.FC<PanelFieldsProps> = ({ panel, onChange,
           <Field label="Caption" value={panel.caption} onChange={(v) => onChange({ caption: v })} />
           <BoolField label="Fullscreen on click (default on)" value={panel.fullscreen ?? true} onChange={(v) => onChange({ fullscreen: v })} />
         </Stack>
+      );
+
+    case 'svg-hotspots':
+      return (
+        <SvgHotspotsFields
+          panel={panel}
+          onChange={onChange}
+          interactionIds={actions.config.interactions?.map((i) => i.id) ?? []}
+        />
       );
 
     case 'video':

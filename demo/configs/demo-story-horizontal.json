@@ -281,6 +281,26 @@
       ]
     },
     {
+      "title": "Clickable Graphic Example",
+      "id": "svg-hotspots-example",
+      "panel": [
+        {
+          "type": "text",
+          "content": "An **svg-hotspots** panel turns shapes inside any SVG graphic into links. Each circle here is bound by its SVG element id to a link: the first two jump to other slides in this story, the third opens an external site in a new tab.\n\nThe same panel type works for any graphic with any number of clickable shapes - only the `hotspots` list in the config changes. Try tabbing to the circles with the keyboard, too."
+        },
+        {
+          "type": "svg-hotspots",
+          "src": "./images/hotspots-demo.svg",
+          "altText": "Three circles linking to related content",
+          "hotspots": [
+            { "targetId": "maps", "label": "Explore the maps", "href": "#4-basic-map" },
+            { "targetId": "resources", "label": "More resources", "href": "#9-additional-resources-example" },
+            { "targetId": "open-data", "label": "Open Maps on the Open Government Portal", "href": "https://open.canada.ca/en/open-maps" }
+          ]
+        }
+      ]
+    },
+    {
       "title": "Next Steps",
       "id": "next-steps",
       "panel": [

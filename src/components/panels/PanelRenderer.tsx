@@ -2,6 +2,7 @@ import React from 'react';
 import { BasePanel, Panel, QuotePanelConfig } from '@/types/StoryConfig';
 import { TextPanel } from './TextPanel/TextPanel';
 import { ImagePanel } from './ImagePanel/ImagePanel';
+import { SvgHotspotPanel } from './SvgHotspotPanel/SvgHotspotPanel';
 import { MapPanel } from './map/MapPanel';
 import { VideoPanel } from './VideoPanel/VideoPanel';
 import { ManualPoiMapPanel } from './map/ManualPoiMapPanel';
@@ -27,6 +28,8 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({ panel, panelInstan
       return <TextPanel panel={panel} />;
     case 'image':
       return <ImagePanel panel={panel} />;
+    case 'svg-hotspots':
+      return <SvgHotspotPanel panel={panel} />;
     case 'map':
       return <MapPanel panel={panel} panelInstanceId={panelInstanceId} />;
     case 'manual-poi-map':
