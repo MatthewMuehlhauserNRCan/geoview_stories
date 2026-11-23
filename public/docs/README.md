@@ -307,6 +307,23 @@ interface TextPanel {
 
 Long-form content can be kept out of the JSON entirely with `contentFile` - useful for slides with a lot of prose (see the [French demo](../demo/configs/demo-story-fr.json)'s "Guiding Principles" slide, which loads [content/guiding-principles-fr.md](../demo/content/guiding-principles-fr.md)). The path is resolved like any other relative path in a config (e.g. an image `src`) - relative to the HTML page, not to the config JSON's own location.
 
+#### Inline styling with the `style` directive
+
+Standard Markdown has no way to style a word or two in a paragraph - the usual workaround, writing raw HTML like `<span style="...">`, isn't supported here. Instead, `content`/`contentFile` support a `style` directive for an allowlisted set of classes, so authors get inline styling without raw HTML (no injection risk) and without reaching for heading tags mid-paragraph (which would break the WCAG heading outline):
+
+```md
+This is :style[really important]{.accent} context for the map below.
+
+:::style{.lead}
+A whole paragraph rendered larger, e.g. as an intro/lead-in line.
+:::
+```
+
+- `:style[text]{.class}` wraps `text` in a `<span>` - use this inline, within a sentence.
+- `:::style{.class}\n...\n:::` wraps a whole block in a `<div>` - use this for a full paragraph or more.
+
+Allowed classes: `lead` (larger body text), `small`, `accent` (primary theme color), `muted` (secondary/dimmer text), `highlight` (background highlight). Any other class name, or any attribute other than `class`, is silently dropped rather than applied - see `STYLE_DIRECTIVE_CLASSES` in `src/components/panels/TextPanel/remarkStyleDirective.ts` for the definitive list and `src/components/panels/TextPanel/TextPanel-style.ts` for how each one looks. Keeping the set fixed (instead of allowing arbitrary CSS) means every style stays theme-aware (adapts to light/dark/custom themes) and keeps colour contrast/sizing choices reviewed up front.
+
 ### image
 
 ```ts

@@ -25,6 +25,14 @@ export const getSxClasses = () => ({
     '& blockquote p': {
       fontSize: '1.2rem',
       fontStyle: 'italic',
-    }
+    },
+    // Classes applied by remarkStyleDirective.ts to `style` directives (e.g. `:style[text]{.accent}`
+    // or a `:::style{.lead}` block) - the only inline/block styling a story's markdown can request,
+    // so colours and sizes stay theme-aware and contrast-checked instead of ad hoc per-story values.
+    '& .md-lead': { fontSize: '1.25rem', lineHeight: 1.6 },
+    '& .md-small': { fontSize: '0.875rem' },
+    '& .md-accent': { color: 'primary.main' },
+    '& .md-muted': { color: 'text.secondary' },
+    '& .md-highlight': { backgroundColor: 'warning.light', color: 'warning.contrastText', px: 0.5, borderRadius: 0.5 },
   },
 });

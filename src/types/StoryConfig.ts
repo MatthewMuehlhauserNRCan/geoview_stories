@@ -146,7 +146,11 @@ export interface GroupPanel extends BasePanel {
 
 export interface TextPanel extends BasePanel {
   type: 'text';
-  content?: string; // Inline markdown. Provide this or contentFile (contentFile wins if both are set).
+  // Inline markdown. Provide this or contentFile (contentFile wins if both are set). Supports a
+  // `style` directive for inline/block styling without raw HTML or header tags, e.g.
+  // `:style[important text]{.accent}` or a `:::style{.lead}\n...\n:::` block - see
+  // STYLE_DIRECTIVE_CLASSES in TextPanel/remarkStyleDirective.ts for the allowed class names.
+  content?: string;
   contentFile?: string; // Path to an external .md file, fetched at runtime - keeps long-form content out of the JSON.
 }
 
