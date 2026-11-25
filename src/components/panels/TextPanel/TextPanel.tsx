@@ -78,7 +78,7 @@ export const TextPanel: React.FC<TextPanelProps> = ({ panel }) => {
                     {children}
                   </a>
                 ) : (
-                  <a href={href} {...rest}>
+                  <a href={href} target="_blank" rel="noopener noreferrer" {...rest}>
                     {children}
                   </a>
                 ),
